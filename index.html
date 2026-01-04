@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beranda</title>
+</head>
+<body>
+<h2>Daftar Video</h2>
+<div id="videos"></div>
+
+<script>
+const API = "https://asupan.aku679093.workers.dev/api/videos";
+
+async function loadVideos() {
+  const res = await fetch(API);
+  const data = await res.json();
+  const container = document.getElementById("videos");
+
+  container.innerHTML = data.map(video => `
+    <div style="margin-bottom:15px;">
+      <img src="${video.thumbnail}" width="200"><br>
+      <a href="player.html?id=${video.id}">${video.title}</a><br>
+      Genre: <a href="genre.html?name=${video.genre}">${video.genre}</a><br>
+      Views: ${video.views}
+    </div>
+  `).join('');
+}
+
+loadVideos();
+</script>
+</body>
+</html>
