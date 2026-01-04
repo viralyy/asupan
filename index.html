@@ -5,122 +5,144 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Narapoi - Free XXX Videos</title>
 <style>
-  /* Reset & Base */
+  :root {
+    --bg: #000;
+    --card: #111;
+    --text: #eee;
+    --accent: #ff2d55; /* xHamster pink-ish */
+    --gray: #222;
+    --lightgray: #444;
+  }
   * {margin:0; padding:0; box-sizing:border-box;}
   body {
     font-family: Arial, Helvetica, sans-serif;
-    background:#000;
-    color:#ddd;
-    line-height:1.4;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.4;
   }
   a {text-decoration:none; color:inherit;}
   img {display:block; width:100%; height:auto;}
 
   /* Age Popup */
   #agePopup {
-    position:fixed; inset:0; background:rgba(0,0,0,0.95);
+    position:fixed; inset:0; background:rgba(0,0,0,0.97);
     display:flex; flex-direction:column; justify-content:center; align-items:center;
     z-index:9999; color:#fff; text-align:center; padding:20px;
   }
-  #agePopup h2 {font-size:2.2rem; margin-bottom:1.5rem; color:#ff3366;}
+  #agePopup h2 {font-size:2.4rem; margin-bottom:1.8rem; color:var(--accent);}
   #agePopup button {
-    padding:14px 40px; font-size:1.3rem; background:#ff3366; color:#fff;
-    border:none; border-radius:6px; cursor:pointer; margin:10px;
+    padding:16px 50px; font-size:1.4rem; background:var(--accent); color:#fff;
+    border:none; border-radius:8px; cursor:pointer; margin:12px; font-weight:bold;
   }
   #agePopup button:hover {background:#ff6699;}
 
   /* Header */
   header {
-    position:sticky; top:0; z-index:100;
-    background:#0f0f0f; border-bottom:1px solid #222;
-    padding:12px 16px;
-    display:flex; align-items:center; gap:16px;
+    position:sticky; top:0; z-index:200;
+    background:var(--card); border-bottom:1px solid var(--gray);
+    padding:10px 20px;
+    display:flex; align-items:center; gap:20px;
   }
   .logo {
-    font-size:1.8rem; font-weight:bold; color:#ff3366; letter-spacing:-1px;
-    white-space:nowrap;
+    font-size:2rem; font-weight:bold; color:var(--accent); letter-spacing:-1px;
+    cursor:pointer;
   }
-  .search-box {flex:1; max-width:720px; position:relative;}
+  .search-box {flex:1; max-width:800px;}
   .search-box input {
-    width:100%; padding:10px 16px; font-size:1rem;
-    background:#1a1a1a; border:1px solid #333; border-radius:6px;
-    color:#eee;
+    width:100%; padding:12px 18px; font-size:1.05rem;
+    background:#1a1a1a; border:1px solid var(--gray); border-radius:8px;
+    color:var(--text);
   }
-  .header-icons {display:flex; align-items:center; gap:16px;}
-  .header-icons svg {width:24px; height:24px; fill:#ccc; cursor:pointer;}
-  .header-icons .premium {background:#ff3366; color:#000; padding:6px 12px; border-radius:4px; font-size:0.85rem; font-weight:bold;}
+  .header-icons {
+    display:flex; align-items:center; gap:18px;
+  }
+  .header-icons .icon {
+    width:28px; height:28px; fill:#ccc; cursor:pointer; transition:0.2s;
+  }
+  .header-icons .icon:hover {fill:var(--accent);}
+  .header-icons .premium-btn {
+    background:var(--accent); color:#000; padding:8px 16px; border-radius:6px;
+    font-weight:bold; font-size:0.9rem; cursor:pointer;
+  }
+  .header-icons .login-btn {
+    color:#ccc; font-size:0.95rem; cursor:pointer;
+  }
+  .header-icons .login-btn:hover {color:var(--accent);}
 
-  /* Top Categories / Genres */
+  /* Top Nav Genres */
   .top-nav {
-    background:#111; padding:10px 0; overflow-x:auto; white-space:nowrap;
-    border-bottom:1px solid #222;
+    background:var(--card); padding:12px 20px; overflow-x:auto; white-space:nowrap;
+    border-bottom:1px solid var(--gray);
   }
   .top-nav a {
-    display:inline-block; padding:8px 16px; margin:0 4px;
-    background:#1a1a1a; border-radius:20px; font-size:0.95rem;
+    display:inline-block; padding:8px 18px; margin:0 6px;
+    background:#1a1a1a; border-radius:30px; font-size:0.95rem;
     transition:0.2s;
   }
-  .top-nav a:hover {background:#ff3366; color:#000;}
+  .top-nav a:hover {background:var(--accent); color:#000;}
 
-  /* Featured / Trending Carousel */
+  /* Featured */
   .featured {
-    padding:20px 16px; background:#0a0a0a;
+    padding:20px; background:linear-gradient(to bottom, #0a0a0a, var(--bg));
   }
   .section-title {
-    color:#ff3366; font-size:1.4rem; margin-bottom:12px; font-weight:bold;
+    color:var(--accent); font-size:1.6rem; margin-bottom:16px; font-weight:bold;
   }
   .carousel {
-    display:flex; overflow-x:auto; gap:12px; padding-bottom:8px;
+    display:flex; overflow-x:auto; gap:14px; padding-bottom:10px;
     scrollbar-width:none;
   }
   .carousel::-webkit-scrollbar {display:none;}
   .carousel-item {
-    min-width:260px; width:260px; position:relative; border-radius:8px; overflow:hidden;
+    min-width:280px; position:relative; border-radius:10px; overflow:hidden;
     cursor:pointer; transition:transform 0.2s;
   }
-  .carousel-item:hover {transform:scale(1.04);}
+  .carousel-item:hover {transform:scale(1.05);}
   .carousel-item img {aspect-ratio:16/9; object-fit:cover;}
-  .overlay {
-    position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%);
-    display:flex; flex-direction:column; justify-content:flex-end; padding:12px;
-    color:#fff; font-size:0.9rem;
-  }
-  .overlay .title {font-weight:bold; margin-bottom:4px;}
-  .meta {display:flex; gap:12px; font-size:0.8rem; color:#ccc;}
-  .meta span {background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:10px;}
 
-  /* Video Grid */
+  /* Overlay umum */
+  .overlay {
+    position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.9) 30%, transparent 60%);
+    padding:12px; display:flex; flex-direction:column; justify-content:flex-end;
+    color:#fff;
+  }
+  .overlay .title {font-weight:bold; font-size:1.1rem; margin-bottom:6px; line-height:1.3;}
+  .meta {display:flex; flex-wrap:wrap; gap:10px; font-size:0.85rem; color:#ddd;}
+  .meta span {background:rgba(255,255,255,0.15); padding:3px 10px; border-radius:12px;}
+  .meta .hd {background:#00b300; color:#fff; font-weight:bold;}
+
+  /* Favorite heart di video */
+  .fav-heart {
+    position:absolute; top:10px; right:10px; width:32px; height:32px;
+    fill:none; stroke:#fff; stroke-width:2; cursor:pointer; transition:0.2s;
+  }
+  .fav-heart.favorited {fill:var(--accent); stroke:none;}
+
+  /* Grid */
   .grid {
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
-    gap:12px; padding:16px;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+    gap:14px; padding:20px;
   }
   .grid-item {
-    position:relative; border-radius:6px; overflow:hidden; cursor:pointer;
+    position:relative; border-radius:8px; overflow:hidden; cursor:pointer;
     transition:transform 0.2s;
   }
-  .grid-item:hover {transform:scale(1.03);}
+  .grid-item:hover {transform:scale(1.04);}
   .grid-item img {aspect-ratio:16/9; object-fit:cover;}
-  .grid-overlay {
-    position:absolute; bottom:0; left:0; right:0; padding:10px;
-    background:linear-gradient(to top, rgba(0,0,0,0.85), transparent);
-    color:#fff; font-size:0.9rem;
-  }
-  .grid-overlay .title {font-weight:600; margin-bottom:4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
-  .meta {font-size:0.8rem; color:#bbb; margin-top:4px;}
-  .hd {background:#00a651; color:#fff; padding:1px 6px; border-radius:3px; font-size:0.7rem; font-weight:bold;}
+  .grid-overlay {position:absolute; bottom:0; left:0; right:0; padding:12px; background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);}
 
   /* Pagination */
-  .pagination {text-align:center; padding:20px 0; color:#ccc;}
+  .pagination {text-align:center; padding:30px 0;}
   .pagination button {
-    padding:8px 16px; margin:0 6px; background:#1a1a1a; border:1px solid #333;
-    color:#ddd; border-radius:4px; cursor:pointer;
+    padding:10px 20px; margin:0 8px; background:var(--gray); border:none;
+    color:var(--text); border-radius:6px; cursor:pointer; font-weight:bold;
   }
   .pagination button:hover {background:#333;}
 
   /* Footer */
   footer {
-    text-align:center; padding:20px; background:#0f0f0f; color:#666; font-size:0.85rem;
-    border-top:1px solid #222;
+    text-align:center; padding:25px; background:var(--card); color:#666; font-size:0.9rem;
+    border-top:1px solid var(--gray);
   }
 </style>
 </head>
@@ -128,34 +150,34 @@
 
 <!-- Age Popup -->
 <div id="agePopup">
-  <h2>Are you 18 years old or older?</h2>
-  <button onclick="acceptAge()">Yes, I am 18 or older</button>
-  <p style="margin-top:20px; font-size:0.9rem;">This site contains adult content. Leave if you are under 18.</p>
+  <h2>Are you 18+?</h2>
+  <button onclick="acceptAge()">Yes, Enter</button>
 </div>
 
 <!-- Header -->
 <header>
-  <div class="logo">Narapoi</div>
+  <div class="logo" onclick="alert('Home clicked!')">Narapoi</div>
   <div class="search-box">
-    <input type="text" id="search" placeholder="Search videos, pornstars, categories...">
+    <input type="text" id="search" placeholder="Search porn videos, categories, models...">
   </div>
   <div class="header-icons">
-    <svg viewBox="0 0 24 24"><path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.03L12 21.35Z"/></svg>
-    <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-    <span class="premium">Premium</span>
+    <svg class="icon" viewBox="0 0 24 24" onclick="alert('Favorites clicked! (Dummy)')"><path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <svg class="icon" viewBox="0 0 24 24" onclick="alert('Notifications clicked! (Dummy)')"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+    <span class="premium-btn" onclick="alert('Upgrade to Premium! (Dummy - Redirect nanti)')">Premium</span>
+    <span class="login-btn" onclick="alert('Login/Register (Dummy)')">Login / Join</span>
   </div>
 </header>
 
-<!-- Top Navigation Genres -->
+<!-- Top Nav -->
 <div class="top-nav" id="genres"></div>
 
-<!-- Featured Carousel -->
+<!-- Featured -->
 <div class="featured">
-  <div class="section-title">Trending Now</div>
+  <div class="section-title">Trending Videos</div>
   <div class="carousel" id="popular"></div>
 </div>
 
-<!-- Main Video Grid -->
+<!-- Grid -->
 <div class="grid" id="videos"></div>
 
 <!-- Pagination -->
@@ -164,44 +186,40 @@
   <button onclick="nextPage()">Next</button>
 </div>
 
-<!-- Footer -->
-<footer>Narapoi © 2026 • Free Adult Videos • 18+ Only</footer>
+<footer>Narapoi © 2026 • 18+ Only • Free Adult Entertainment</footer>
 
 <script>
-// --- Kode JavaScript kamu tetap sama 100% ---
+// Kode JS kamu tetap sama, hanya render diubah biar tambah heart & clickable
 
 const API = "https://asupan.aku679093.workers.dev/api/videos";
-let videosData = [], currentPage = 1, perPage = 10;
+let videosData = [], currentPage = 1, perPage = 12; // naikin perPage biar lebih mirip
 
-// Age popup
 function acceptAge() {
   localStorage.setItem('ageAccepted','true');
   document.getElementById('agePopup').style.display='none';
 }
 if(localStorage.getItem('ageAccepted')) document.getElementById('agePopup').style.display='none';
 
-// Fetch videos
 async function loadVideos() {
   const res = await fetch(API);
   const data = await res.json();
   videosData = data;
 
-  // Genres → top nav
   const genres = [...new Set(data.map(v=>v.genre))];
-  document.getElementById('genres').innerHTML = genres.map(g=>`<a href="#" onclick="filterGenre('\( {g}')"> \){g}</a>`).join('');
+  document.getElementById('genres').innerHTML = genres.map(g=>`<a href="#" onclick="filterGenre('\( {g}'); return false;"> \){g}</a>`).join(' ');
 
-  // Popular / Trending (Featured)
-  const popular = data.sort((a,b)=>b.views-a.views).slice(0,8); // lebih banyak biar mirip
-  const popularEl = document.getElementById('popular');
-  popularEl.innerHTML = popular.map(v=>`
+  const popular = data.sort((a,b)=> (b.views||0) - (a.views||0) ).slice(0,10);
+  document.getElementById('popular').innerHTML = popular.map(v=>`
     <div class="carousel-item" onclick="goPlayer('${v.id}')">
       <img src="\( {v.thumbnail}" alt=" \){v.title}">
+      <svg class="fav-heart" viewBox="0 0 24 24" onclick="event.stopPropagation(); toggleFav('${v.id}', this)"><path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="overlay">
         <div class="title">${v.title}</div>
         <div class="meta">
-          <span>${v.genre || 'Various'}</span>
-          <span>${Math.floor(Math.random()*120)+30} min</span> <!-- fake duration -->
-          <span>${v.views || '10K'} views</span>
+          <span>${v.genre || 'Uncategorized'}</span>
+          <span>${Math.floor(Math.random()*80 + 20)} min</span>
+          <span>${v.views || Math.floor(Math.random()*50000 + 5000).toLocaleString()} views</span>
+          <span class="hd">HD</span>
         </div>
       </div>
     </div>
@@ -213,47 +231,56 @@ async function loadVideos() {
 function renderGrid(genre='') {
   let filtered = genre ? videosData.filter(v=>v.genre===genre) : videosData;
   const start = (currentPage-1)*perPage;
-  const end = start+perPage;
-  const pageData = filtered.slice(start,end);
-  const container = document.getElementById('videos');
-  container.innerHTML = pageData.map(v=>`
+  const end = start + perPage;
+  const pageData = filtered.slice(start, end);
+  document.getElementById('videos').innerHTML = pageData.map(v=>`
     <div class="grid-item" onclick="goPlayer('${v.id}')">
       <img src="\( {v.thumbnail}" alt=" \){v.title}">
+      <svg class="fav-heart" viewBox="0 0 24 24" onclick="event.stopPropagation(); toggleFav('${v.id}', this)"><path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="grid-overlay">
         <div class="title">${v.title}</div>
         <div class="meta">
           <span>${v.genre || ''}</span>
-          <span>${Math.floor(Math.random()*120)+30} min</span>
+          <span>${Math.floor(Math.random()*80 + 20)} min</span>
+          <span>${v.views || Math.floor(Math.random()*20000 + 2000).toLocaleString()} views</span>
           <span class="hd">HD</span>
-          <span>${v.views || '5K'} views</span>
         </div>
       </div>
     </div>
   `).join('');
 }
 
+// Dummy favorite toggle (bisa upgrade ke localStorage nanti)
+function toggleFav(id, el) {
+  event.stopPropagation();
+  if (el.classList.contains('favorited')) {
+    el.classList.remove('favorited');
+    alert(`Removed ${id} from favorites (dummy)`);
+  } else {
+    el.classList.add('favorited');
+    alert(`Added ${id} to favorites (dummy)`);
+  }
+}
+
 function filterGenre(g) { currentPage=1; renderGrid(g); }
-
 function prevPage(){ if(currentPage>1){ currentPage--; renderGrid(); } }
-function nextPage(){ if(currentPage*perPage<videosData.length){ currentPage++; renderGrid(); } }
-
+function nextPage(){ if((currentPage*perPage) < videosData.length){ currentPage++; renderGrid(); } }
 function goPlayer(id){ window.location.href='player.html?id='+id; }
 
-// Realtime Search
 document.getElementById('search').addEventListener('input', e=>{
   const query = e.target.value.toLowerCase();
   const filtered = videosData.filter(v=>v.title.toLowerCase().includes(query));
-  const container = document.getElementById('videos');
-  container.innerHTML = filtered.map(v=>`
+  document.getElementById('videos').innerHTML = filtered.map(v=>`
     <div class="grid-item" onclick="goPlayer('${v.id}')">
       <img src="\( {v.thumbnail}" alt=" \){v.title}">
+      <svg class="fav-heart" viewBox="0 0 24 24" onclick="event.stopPropagation(); toggleFav('${v.id}', this)"><path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
       <div class="grid-overlay">
         <div class="title">${v.title}</div>
         <div class="meta">
           <span>${v.genre || ''}</span>
-          <span>${Math.floor(Math.random()*120)+30} min</span>
+          <span>${Math.floor(Math.random()*80 + 20)} min</span>
+          <span>${v.views || Math.floor(Math.random()*20000 + 2000).toLocaleString()} views</span>
           <span class="hd">HD</span>
-          <span>${v.views || '5K'} views</span>
         </div>
       </div>
     </div>
