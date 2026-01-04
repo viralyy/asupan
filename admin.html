@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<h2>Admin Panel</h2>
+
+<input id="title" placeholder="Judul"><br><br>
+<input id="thumbnail" placeholder="Thumbnail URL"><br><br>
+<input id="video" placeholder="Video URL"><br><br>
+<input id="genre" placeholder="Genre"><br><br>
+
+<button onclick="kirim()">Submit</button>
+
+<p id="status"></p>
+
+<script>
+  const API = "https://NAMA-WORKER-LU.workers.dev/api/admin/add";
+
+  function kirim() {
+    fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title.value,
+        thumbnail: thumbnail.value,
+        video_url: video.value,
+        genre: genre.value
+      })
+    })
+    .then(() => {
+      status.innerText = "✅ Berhasil";
+    })
+    .catch(() => {
+      status.innerText = "❌ Error";
+    });
+  }
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<h2>Admin Panel</h2>
+
+<input id="title" placeholder="Judul"><br><br>
+<input id="thumbnail" placeholder="Thumbnail URL"><br><br>
+<input id="video" placeholder="Video URL"><br><br>
+<input id="genre" placeholder="Genre"><br><br>
+
+<button onclick="kirim()">Submit</button>
+
+<p id="status"></p>
+
+<script>
+  const API = "https://NAMA-WORKER-LU.workers.dev/api/admin/add";
+
+  function kirim() {
+    fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: title.value,
+        thumbnail: thumbnail.value,
+        video_url: video.value,
+        genre: genre.value
+      })
+    })
+    .then(() => {
+      status.innerText = "✅ Berhasil";
+    })
+    .catch(() => {
+      status.innerText = "❌ Error";
+    });
+  }
+</script>
+
+</body>
+</html>
