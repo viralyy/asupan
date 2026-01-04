@@ -2,267 +2,184 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Narapoi</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap">
 <style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #0f172a;
-    color: #fff;
-  }
+/* ========== Reset & Base ========== */
+* { box-sizing: border-box; margin:0; padding:0; font-family: 'Segoe UI', sans-serif; }
+body { background: #0f172a; color:#fff; overflow-x:hidden; }
 
-  /* 18+ overlay */
-  #ageOverlay {
-    position: fixed; inset:0;
-    background: rgba(0,0,0,0.95);
-    display: flex; justify-content: center; align-items: center;
-    flex-direction: column; text-align:center; padding:20px;
-    opacity:0; pointer-events:none;
-    transition: opacity 0.5s ease;
-    z-index: 1000;
-  }
-  #ageOverlay.show { opacity:1; pointer-events:auto; }
-  #ageOverlay h2 { font-size: 24px; margin-bottom: 20px; }
-  #ageOverlay button {
-    margin: 5px; padding:10px 20px; border:none; border-radius:8px;
-    font-size:16px; cursor:pointer; transition:0.3s;
-  }
-  #ageOverlay button:hover { opacity:0.8; }
-  #ageOverlay .yes { background:#3b82f6; color:#fff; }
-  #ageOverlay .no { background:#f87171; color:#fff; }
+/* ========== Popup 18+ ========== */
+#agePopup {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center;
+  z-index:9999; opacity:0; pointer-events:none; transition:0.4s ease;
+}
+#agePopup.active { opacity:1; pointer-events:auto; }
+#agePopup div {
+  background:#1e293b; padding:30px; border-radius:12px; text-align:center;
+  max-width:320px; width:90%;
+}
+#agePopup button {
+  margin:10px; padding:10px 20px; border:none; border-radius:6px;
+  cursor:pointer; font-weight:bold;
+}
+#agePopup button#yes { background:#2563eb; color:#fff; }
+#agePopup button#no { background:#ef4444; color:#fff; }
 
-  /* header */
-  header {
-    display:flex; justify-content:space-between; align-items:center;
-    padding:15px 20px; background:#1e293b; position: sticky; top:0; z-index:500;
-  }
-  #logoTitle {
-    font-size:28px; font-weight:bold;
-    animation: colorChange 5s infinite;
-  }
-  @keyframes colorChange {
-    0% {color:#3b82f6;} 25% {color:#10b981;} 50% {color:#facc15;}
-    75% {color:#f472b6;} 100% {color:#3b82f6;}
-  }
-  .header-left, .header-right { display:flex; align-items:center; }
-  .header-left svg, .header-right svg { width:24px; height:24px; margin-right:10px; cursor:pointer; }
+/* ========== Header ========== */
+header { display:flex; justify-content:space-between; align-items:center; padding:15px 20px; background:#0f172a; position:sticky; top:0; z-index:100; }
+header .logo { font-size:1.8rem; font-weight:bold; background:linear-gradient(45deg,#f43f5e,#3b82f6,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:rainbow 3s linear infinite; }
+@keyframes rainbow { 0%{background-position:0 0;}100%{background-position:300% 0;} }
 
-  /* Sidebar genre */
-  .genre-sidebar {
-    position: fixed; top:0; left:-260px; width:260px; height:100%; background:#1e293b; padding:20px;
-    transition: 0.3s; overflow-y:auto; z-index:600;
-  }
-  .genre-sidebar.show { left:0; }
-  .genre-sidebar h3 { margin-bottom:15px; }
-  .genre-item { padding:8px; border-radius:6px; cursor:pointer; transition:0.3s; }
-  .genre-item:hover { background:#334155; }
+header .actions { display:flex; align-items:center; gap:15px; }
+header input { padding:8px 12px; border-radius:8px; border:none; background:#1e293b; color:#fff; width:200px; transition:0.3s; }
+header input::placeholder { color:#94a3b8; }
+header input:focus { outline:none; background:#2e3a5e; }
 
-  /* search */
-  #searchInput {
-    padding:6px 10px; border-radius:6px; border:none; width:200px; background:#0f172a; color:#fff;
-  }
+header .menu-icon { display:none; cursor:pointer; font-size:1.5rem; }
 
-  /* popular carousel */
-  .popular-container {
-    display:flex; overflow:hidden; margin:20px; position:relative;
-  }
-  .popular-scroll {
-    display:flex; transition: transform 0.5s ease-in-out;
-  }
-  .popular-item {
-    min-width:200px; margin-right:15px; background:#1e293b; border-radius:12px; position:relative;
-    overflow:hidden; flex-shrink:0; cursor:pointer; transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .popular-item:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-  .popular-item img { width:100%; height:120px; object-fit:cover; display:block; transition: transform 0.3s; }
-  .popular-item:hover img { transform: scale(1.08); }
-  .popular-overlay {
-    position:absolute; bottom:0; left:0; width:100%;
-    background: linear-gradient(0deg, rgba(0,0,0,0.8), transparent);
-    color:#fff; padding:5px 10px; opacity:0; transition: opacity 0.3s;
-  }
-  .popular-item:hover .popular-overlay { opacity:1; }
-  .popular-overlay p { margin:0; font-size:14px; font-weight:bold; }
+/* ========== Popular Carousel ========== */
+#popular { margin:20px; overflow:hidden; position:relative; }
+#popular .track { display:flex; gap:15px; transition:0.5s ease; }
+#popular .item { min-width:200px; background:#1e293b; border-radius:10px; overflow:hidden; position:relative; cursor:pointer; flex-shrink:0; }
+#popular .item img { width:100%; display:block; }
+#popular .item .overlay {
+  position:absolute; bottom:0; left:0; width:100%; background:rgba(0,0,0,0.6); color:#fff; padding:10px; opacity:0; transition:0.3s;
+}
+#popular .item:hover .overlay { opacity:1; }
+#popular .nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); border:none; color:#fff; padding:10px; cursor:pointer; border-radius:50%; }
+#popular .nav.prev { left:10px; }
+#popular .nav.next { right:10px; }
 
-  .carousel-btn {
-    position:absolute; top:50%; transform:translateY(-50%);
-    background: rgba(0,0,0,0.5); border:none; color:#fff; padding:5px 10px; border-radius:6px; cursor:pointer;
-    transition:0.3s;
-  }
-  .carousel-btn:hover { background: rgba(0,0,0,0.7); }
-  .carousel-btn.left { left:0; }
-  .carousel-btn.right { right:0; }
+/* ========== Video Grid ========== */
+#videos { display:grid; gap:15px; padding:0 20px; margin-bottom:30px; }
+@media (min-width:768px){ #videos { grid-template-columns:repeat(2,1fr); } }
+@media (min-width:1024px){ #videos { grid-template-columns:repeat(4,1fr); } }
 
-  /* video grid */
-  .grid-container {
-    display:grid; gap:15px; margin:20px;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-  .grid-item {
-    position:relative; overflow:hidden; background:#1e293b; border-radius:12px; cursor:pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .grid-item:hover { transform: scale(1.03); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-  .grid-item img { width:100%; border-radius:8px; transition: transform 0.3s; }
-  .grid-item:hover img { transform: scale(1.05); }
-  .grid-overlay {
-    position:absolute; inset:0; background: rgba(0,0,0,0.6);
-    color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center;
-    opacity:0; transition:opacity 0.3s; text-align:center; padding:5px;
-  }
-  .grid-item:hover .grid-overlay { opacity:1; }
-  .grid-overlay p { margin:2px 0; font-size:14px; }
+.video-card { background:#1e293b; border-radius:12px; overflow:hidden; position:relative; cursor:pointer; transition:0.3s; }
+.video-card img { width:100%; display:block; }
+.video-card .overlay {
+  position:absolute; bottom:0; left:0; width:100%; background:rgba(0,0,0,0.6); color:#fff; padding:8px; opacity:0; transition:0.3s;
+}
+.video-card:hover .overlay { opacity:1; }
 
-  .pagination { display:flex; justify-content:center; margin:20px 0; }
-  .pagination button { margin:0 5px; padding:6px 12px; border:none; border-radius:6px; background:#3b82f6; color:#fff; cursor:pointer; transition:0.3s; }
-  .pagination button:hover { background:#2563eb; }
+/* ========== Pagination ========== */
+.pagination { display:flex; justify-content:center; gap:10px; margin:20px 0; }
+.pagination button { padding:8px 14px; border:none; border-radius:6px; background:#2563eb; color:#fff; cursor:pointer; }
 
-  footer { text-align:center; padding:15px; background:#1e293b; }
+/* ========== Footer ========== */
+footer { text-align:center; padding:15px; background:#0f172a; color:#fff; margin-top:20px; font-size:0.9rem; }
+
+/* ========== Animations ========== */
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 </style>
 </head>
 <body>
 
-<!-- 18+ overlay -->
-<div id="ageOverlay" class="show">
-  <h2>Apakah Anda berumur 18 tahun ke atas?</h2>
-  <button class="yes" onclick="confirmAge(true)">Ya</button>
-  <button class="no" onclick="confirmAge(false)">Tidak</button>
-</div>
-
-<!-- Sidebar genre -->
-<div class="genre-sidebar" id="genreSidebar">
-  <h3>Genre</h3>
-  <div id="genreListSidebar"></div>
-  <h3>Follow</h3>
-  <a href="#" target="_blank"><svg>...WA...</svg></a>
-  <a href="#" target="_blank"><svg>...Telegram...</svg></a>
-  <a href="#" target="_blank"><svg>...YouTube...</svg></a>
+<!-- 18+ Popup -->
+<div id="agePopup" class="active">
+  <div>
+    <p>Apakah umur Anda 18+?</p>
+    <button id="yes">Ya</button>
+    <button id="no">Tidak</button>
+  </div>
 </div>
 
 <!-- Header -->
 <header>
-  <div class="header-left">
-    <svg id="menuBtn" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    <div id="logoTitle">Narapoi</div>
-  </div>
-  <div class="header-right">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/></svg>
-    <input type="text" id="searchInput" placeholder="Cari video...">
-  </div>
+  <div class="logo">Narapoi</div>
+  <input type="text" id="search" placeholder="Cari video...">
 </header>
 
 <!-- Popular -->
-<div class="popular-container">
-  <button class="carousel-btn left" onclick="scrollPopular(-1)">‹</button>
-  <div class="popular-scroll" id="popularScroll"></div>
-  <button class="carousel-btn right" onclick="scrollPopular(1)">›</button>
-</div>
+<section id="popular">
+  <button class="nav prev">&#10094;</button>
+  <div class="track"></div>
+  <button class="nav next">&#10095;</button>
+</section>
 
-<!-- Video grid -->
-<div class="grid-container" id="videoGrid"></div>
+<!-- Videos Grid -->
+<section id="videos"></section>
 
+<!-- Pagination -->
 <div class="pagination">
-  <button onclick="prevPage()">Prev</button>
-  <button onclick="nextPage()">Next</button>
+  <button id="prev">Prev</button>
+  <button id="next">Next</button>
 </div>
 
 <footer>Narapoi</footer>
 
 <script>
 const API = "https://asupan.aku679093.workers.dev/api/videos";
-let videos=[], filteredVideos=[];
-let currentPage=0;
-const pageSize=10;
-let popularVideos=[];
+let videos = [];
+let currentPage = 1;
+const perPage = 10;
 
-// 18+ overlay
-function confirmAge(ok){
-  const overlay = document.getElementById("ageOverlay");
-  if(ok){ overlay.classList.remove("show"); loadVideos(); }
-  else{ overlay.innerHTML="<h2>Anda harus berumur 18+ untuk mengakses situs ini.</h2>"; }
-}
+// ========== 18+ Popup ==========
+const agePopup = document.getElementById("agePopup");
+document.getElementById("yes").onclick = () => { agePopup.classList.remove("active"); }
+document.getElementById("no").onclick = () => { alert("Anda harus berumur 18+ untuk masuk"); }
 
-// Sidebar toggle
-document.getElementById("menuBtn").addEventListener("click", ()=>{
-  document.getElementById("genreSidebar").classList.toggle("show");
-});
-
-// Load videos
-async function loadVideos(){
+// ========== Fetch Videos ==========
+async function fetchVideos(){
   const res = await fetch(API);
   videos = await res.json();
-  popularVideos = [...videos].sort((a,b)=>b.views - a.views).slice(0,5);
   renderPopular();
-  filteredVideos = [...videos];
   renderGrid();
-  renderGenresSidebar();
 }
 
-// Render Popular
+// ========== Popular Carousel ==========
+const track = document.querySelector("#popular .track");
 function renderPopular(){
-  const container = document.getElementById("popularScroll");
-  container.innerHTML = popularVideos.map(v=>`
-    <div class="popular-item" onclick="goPlayer(${v.id})">
-      <img src="${v.thumbnail}">
-      <div class="popular-overlay">
-        <p>${v.title}</p>
-        <p>${v.genre}</p>
-      </div>
+  const popular = [...videos].sort((a,b)=>b.views-a.views).slice(0,5);
+  track.innerHTML = popular.map(v=>`
+    <div class="item">
+      <img src="${v.thumbnail}" alt="${v.title}">
+      <div class="overlay">${v.title}<br>${v.genre}</div>
     </div>
   `).join('');
 }
-function scrollPopular(dir){
-  const scrollDiv = document.getElementById("popularScroll");
-  scrollDiv.scrollBy({left: dir*220, behavior:'smooth'});
+
+let scrollIndex = 0;
+document.querySelector("#popular .next").onclick = () => {
+  if(scrollIndex < track.children.length-1){ scrollIndex++; track.style.transform=`translateX(-${scrollIndex*215}px)`; }
+}
+document.querySelector("#popular .prev").onclick = () => {
+  if(scrollIndex>0){ scrollIndex--; track.style.transform=`translateX(-${scrollIndex*215}px)`; }
 }
 
-// Render grid
+// ========== Grid Videos ==========
+const grid = document.getElementById("videos");
 function renderGrid(){
-  const container = document.getElementById("videoGrid");
-  const start = currentPage*pageSize;
-  const end = start+pageSize;
-  const pageVideos = filteredVideos.slice(start,end);
-  container.innerHTML = pageVideos.map(v=>`
-    <div class="grid-item" onclick="goPlayer(${v.id})">
-      <img src="${v.thumbnail}">
-      <div class="grid-overlay">
-        <p>${v.title}</p>
-        <p>Genre: ${v.genre}</p>
-        <p>Views: ${v.views}</p>
-      </div>
+  const start = (currentPage-1)*perPage;
+  const pageVideos = videos.slice(start,start+perPage);
+  grid.innerHTML = pageVideos.map(v=>`
+    <div class="video-card">
+      <img src="${v.thumbnail}" alt="${v.title}">
+      <div class="overlay">${v.title}<br>${v.genre}</div>
     </div>
   `).join('');
 }
 
-// Pagination
-function prevPage(){ if(currentPage>0){ currentPage--; renderGrid(); } }
-function nextPage(){ if((currentPage+1)*pageSize < filteredVideos.length){ currentPage++; renderGrid(); } }
+// ========== Pagination ==========
+document.getElementById("prev").onclick = () => { if(currentPage>1){ currentPage--; renderGrid(); } }
+document.getElementById("next").onclick = () => { if(currentPage<Math.ceil(videos.length/perPage)){ currentPage++; renderGrid(); } }
 
-// Go to player
-function goPlayer(id){ window.location.href=`player.html?id=${id}`; }
-
-// Render genres sidebar
-function renderGenresSidebar(){
-  const container = document.getElementById("genreListSidebar");
-  const uniqueGenres = [...new Set(videos.map(v=>v.genre))];
-  container.innerHTML = uniqueGenres.map(g=>`<div class="genre-item" onclick="filterGenre('${g}')">${g}</div>`).join('');
-}
-function filterGenre(g){
-  filteredVideos = videos.filter(v=>v.genre===g);
-  currentPage=0;
-  renderGrid();
-  document.getElementById("genreSidebar").classList.remove("show");
-}
-
-// Search realtime
-document.getElementById("searchInput").addEventListener("input", ()=>{
-  const q = document.getElementById("searchInput").value.toLowerCase();
-  filteredVideos = videos.filter(v=>v.title.toLowerCase().includes(q));
-  currentPage=0;
-  renderGrid();
+// ========== Search ==========
+document.getElementById("search").addEventListener("input",(e)=>{
+  const val = e.target.value.toLowerCase();
+  const filtered = videos.filter(v=>v.title.toLowerCase().includes(val));
+  grid.innerHTML = filtered.slice(0,perPage).map(v=>`
+    <div class="video-card">
+      <img src="${v.thumbnail}" alt="${v.title}">
+      <div class="overlay">${v.title}<br>${v.genre}</div>
+    </div>
+  `).join('');
 });
+
+fetchVideos();
 </script>
+
 </body>
 </html>
