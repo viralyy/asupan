@@ -6,43 +6,30 @@
 <title>Narapoi</title>
 <style>
 /* ================= Base ================= */
-* {margin:0;padding:0;box-sizing:border-box;}
-body {font-family:'Segoe UI',sans-serif;background:#0f172a;color:#fff;transition:background 0.3s,color 0.3s;}
-a {text-decoration:none;color:inherit;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#fff;transition:background 0.3s,color 0.3s;}
+a{text-decoration:none;color:inherit;}
 
-/* ================= Dark/Light Toggle ================= */
-body.light {background:#f5f5f5;color:#111;}
-body.light header, body.light .genres, body.light footer {background:#e5e7eb;color:#111;}
-body.light .grid-item .info, body.light .grid-item:hover .info {background:rgba(0,0,0,0.1);color:#111;}
+/* ================= Dark/Light Mode ================= */
+body.light{background:#f5f5f5;color:#111;}
+body.light header,body.light .genres,body.light footer{background:#e5e7eb;color:#111;}
+body.light .grid-item .info,body.light .grid-item:hover .info{background:rgba(0,0,0,0.1);color:#111;}
 
 /* ================= Popup 18+ ================= */
-#agePopup {
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;
-  z-index:9999;opacity:0;pointer-events:none;transition:0.4s ease;
-}
-#agePopup.active {opacity:1;pointer-events:auto;}
-#agePopup div{
-  background:#1e293b;padding:30px;border-radius:12px;text-align:center;max-width:320px;width:90%;
-  animation:fadeIn 0.5s ease;
-}
-#agePopup button{
-  margin:10px;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;transition:0.3s;
-}
+#agePopup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:9999;opacity:0;pointer-events:none;transition:0.4s ease;}
+#agePopup.active{opacity:1;pointer-events:auto;}
+#agePopup div{background:#1e293b;padding:30px;border-radius:12px;text-align:center;max-width:320px;width:90%;animation:fadeIn 0.5s ease;}
+#agePopup button{margin:10px;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;transition:0.3s;}
 #agePopup button#yes{background:#2563eb;color:#fff;}
 #agePopup button#no{background:#ef4444;color:#fff;}
 
 /* ================= Header ================= */
-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:15px 20px;background:#111827;position:sticky;top:0;z-index:100;
-}
+header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:#111827;position:sticky;top:0;z-index:100;}
 header .logo{font-size:1.8rem;font-weight:bold;color:#ec4899;}
-header input{
-  padding:8px 12px;border-radius:6px;border:none;background:#1f2937;color:#fff;width:200px;
-}
+header .controls{display:flex;align-items:center;gap:10px;}
+header input{padding:8px 12px;border-radius:6px;border:none;background:#1f2937;color:#fff;width:200px;}
 header input::placeholder{color:#94a3b8;}
-#toggleTheme{margin-left:15px;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;background:#2563eb;color:#fff;}
+#toggleTheme{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;}
 
 /* ================= Genre Nav ================= */
 .genres{display:flex;overflow-x:auto;padding:10px 20px;gap:10px;background:#111827;}
@@ -62,7 +49,7 @@ header input::placeholder{color:#94a3b8;}
 #videos{display:grid;gap:20px;padding:15px 20px;grid-template-columns:repeat(2,1fr);}
 @media(min-width:768px){#videos{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:1024px){#videos{grid-template-columns:repeat(4,1fr);}}
-.grid-item{border-radius:8px;overflow:hidden;transition:0.3s;}
+.grid-item{border-radius:8px;overflow:hidden;transition:0.3s;cursor:pointer;}
 .grid-item img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:6px;display:block;}
 .grid-item .info{margin-top:6px;font-size:14px;background:rgba(0,0,0,0.6);padding:4px;border-radius:4px;}
 .grid-item .info .title{font-weight:bold;margin-bottom:3px;}
@@ -70,15 +57,13 @@ header input::placeholder{color:#94a3b8;}
 
 /* ================= Pagination ================= */
 .pagination{display:flex;justify-content:center;gap:10px;margin:20px 0;}
-.pagination button{padding:8px 14px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;transition:0.3s;}
+.pagination button{padding:8px 14px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.3s;}
 .pagination button:hover{background:#3b82f6;}
 
 /* ================= Footer ================= */
-footer{text-align:center;padding:15px 0;background:#111827;color:#9ca3af;margin-top:20px;font-size:0.9rem;}
-
-/* ================= Skeleton Loader ================= */
-.skeleton{background:#1f2937; border-radius:6px; aspect-ratio:16/9; animation:shimmer 1.5s infinite;}
-@keyframes shimmer{0%{background-position:-200px 0;}100%{background-position:200px 0;}}
+footer{text-align:center;padding:15px 0;background:#111827;color:#9ca3af;margin-top:20px;font-size:0.9rem;display:flex;justify-content:center;gap:15px;}
+footer a svg{fill:#9ca3af;transition:0.3s;width:20px;height:20px;}
+footer a:hover svg{fill:#2563eb;}
 
 /* ================= Animations ================= */
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
@@ -98,9 +83,13 @@ footer{text-align:center;padding:15px 0;background:#111827;color:#9ca3af;margin-
 <!-- Header -->
 <header>
   <div class="logo">Narapoi</div>
-  <div>
+  <div class="controls">
     <input type="text" id="search" placeholder="Cari video...">
-    <button id="toggleTheme">🌙</button>
+    <button id="toggleTheme" title="Toggle Dark/Light">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+        <path d="M12 2a9.934 9.934 0 0 0-7.07 2.93A9.934 9.934 0 0 0 2 12c0 2.667 1.034 5.134 2.93 7.07A9.934 9.934 0 0 0 12 22c2.667 0 5.134-1.034 7.07-2.93A9.934 9.934 0 0 0 22 12c0-2.667-1.034-5.134-2.93-7.07A9.934 9.934 0 0 0 12 2z"/>
+      </svg>
+    </button>
   </div>
 </header>
 
@@ -115,12 +104,27 @@ footer{text-align:center;padding:15px 0;background:#111827;color:#9ca3af;margin-
 
 <!-- Pagination -->
 <div class="pagination">
-  <button id="prev">Prev</button>
-  <button id="next">Next</button>
+  <button id="prev">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button id="next">
+    <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
 </div>
 
 <!-- Footer -->
-<footer>Narapoi | Socials: WA | Telegram | YouTube</footer>
+<footer>
+  Narapoi |
+  <a href="#" class="social" title="WA">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.99 3.66 9.12 8.44 9.88v-6.99H8.12v-2.89h2.32V10.1c0-2.3 1.38-3.57 3.5-3.57.997 0 1.854.074 2.102.107v2.44h-1.445c-1.134 0-1.355.538-1.355 1.33v1.74h2.707l-.352 2.89h-2.355v6.99C18.34 21.12 22 16.99 22 12c0-5.52-4.48-10-10-10z"/></svg>
+  </a>
+  <a href="#" class="social" title="Telegram">
+    <svg viewBox="0 0 24 24"><path d="M22 4L2 12l20 8V4z"/></svg>
+  </a>
+  <a href="#" class="social" title="YouTube">
+    <svg viewBox="0 0 24 24"><path d="M10 15l5-3-5-3v6zM12 2C6.48 2 2 6.48 2 12c0 4.99 3.66 9.12 8.44 9.88v-6.99H8.12v-2.89h2.32V10.1c0-2.3 1.38-3.57 3.5-3.57.997 0 1.854.074 2.102.107v2.44h-1.445c-1.134 0-1.355.538-1.355 1.33v1.74h2.707l-.352 2.89h-2.355v6.99C18.34 21.12 22 16.99 22 12c0-5.52-4.48-10-10-10z"/></svg>
+  </a>
+</footer>
 
 <script>
 const API="https://asupan.aku679093.workers.dev/api/videos";
@@ -136,7 +140,7 @@ if(localStorage.getItem('ageAccepted')) agePopup.classList.remove('active');
 const toggleTheme=document.getElementById('toggleTheme');
 toggleTheme.onclick=()=>{
   document.body.classList.toggle('light');
-  toggleTheme.textContent=document.body.classList.contains('light')?'🌙':'☀️';
+  toggleTheme.innerHTML=document.body.classList.contains('light')?`<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a9.934 9.934 0 0 0-7.07 2.93A9.934 9.934 0 0 0 2 12c0 2.667 1.034 5.134 2.93 7.07A9.934 9.934 0 0 0 12 22c2.667 0 5.134-1.034 7.07-2.93A9.934 9.934 0 0 0 22 12c0-2.667-1.034-5.134-2.93-7.07A9.934 9.934 0 0 0 12 2z"/></svg>`:`<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a9.934 9.934 0 0 0-7.07 2.93A9.934 9.934 0 0 0 2 12c0 2.667 1.034 5.134 2.93 7.07A9.934 9.934 0 0 0 12 22c2.667 0 5.134-1.034 7.07-2.93A9.934 9.934 0 0 0 22 12c0-2.667-1.034-5.134-2.93-7.07A9.934 9.934 0 0 0 12 2z"/></svg>`;
 }
 
 // ================= Load Videos =================
@@ -148,9 +152,9 @@ async function loadVideos(){
   const genres=[...new Set(videosData.map(v=>v.genre))];
   document.getElementById('genres').innerHTML=genres.map(g=>`<a href="#" onclick="filterGenre('${g}')">${g}</a>`).join('');
 
-  // Trending 5 latest views
+  // Trending 5 views terbanyak
   const trending=document.getElementById('trending');
-  const top= [...videosData].sort((a,b)=>b.views-a.views).slice(0,5);
+  const top=[...videosData].sort((a,b)=>b.views-a.views).slice(0,5);
   trending.innerHTML=top.map(v=>`
     <div class="trending-item" onclick="goPlayer('${v.id}')">
       <img src="${v.thumbnail}" alt="${v.title}">
