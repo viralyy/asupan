@@ -5,111 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin Panel</title>
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #0f172a;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-  }
-  .container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 20px 30px;
-    background: #1e293b;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-  }
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  input, select, button {
-    width: 100%;
-    margin-bottom: 15px;
-    padding: 12px 15px;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
-  input, select {
-    background: #0f172a;
-    color: #fff;
-    border: 1px solid #334155;
-  }
-  input:focus, select:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 5px #3b82f6;
-  }
-  button {
-    background: #3b82f6;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover {
-    background: #2563eb;
-  }
-  #status {
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  #history {
-    margin-top: 20px;
-    max-height: 300px;
-    overflow-y: auto;
-    border-top: 1px solid #334155;
-    padding-top: 10px;
-  }
-  .history-item {
-    padding: 8px 10px;
-    background: #1e293b;
-    margin-bottom: 5px;
-    border-radius: 6px;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .history-item span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 80%;
-  }
-  .history-nav {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  .history-nav button {
-    width: 48%;
-    background: #64748b;
-  }
-  .login-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  .login-box {
-    background: #1e293b;
-    padding: 30px;
-    border-radius: 12px;
-    width: 300px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-  }
-  .login-box h3 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+  body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#fff;margin:0;padding:0;}
+  .container{max-width:600px;margin:40px auto;padding:20px 30px;background:#1e293b;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.5);}
+  h2{text-align:center;margin-bottom:20px;}
+  input, select, button{width:100%;margin-bottom:15px;padding:12px 15px;border-radius:8px;border:none;font-size:16px;box-sizing:border-box;}
+  input, select{background:#0f172a;color:#fff;border:1px solid #334155;}
+  input:focus, select:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 5px #3b82f6;}
+  button{background:#3b82f6;color:#fff;font-weight:bold;cursor:pointer;transition:0.3s;}
+  button:hover{background:#2563eb;}
+  #status{text-align:center;font-weight:bold;margin-bottom:10px;}
+  #history{margin-top:20px;max-height:300px;overflow-y:auto;border-top:1px solid #334155;padding-top:10px;}
+  .history-item{padding:8px 10px;background:#1e293b;margin-bottom:5px;border-radius:6px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
+  .history-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%;}
+  .history-item button{background:#10b981;color:#fff;border:none;padding:5px 8px;border-radius:6px;font-size:12px;cursor:pointer;}
+  .history-item button:hover{background:#059669;}
+  .history-nav{display:flex;justify-content:space-between;margin-bottom:10px;}
+  .history-nav button{width:48%;background:#64748b;}
+  .login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:1000;}
+  .login-box{background:#1e293b;padding:30px;border-radius:12px;width:300px;box-shadow:0 8px 20px rgba(0,0,0,0.5);}
+  .login-box h3{text-align:center;margin-bottom:20px;}
+  #genreList{background:#0f172a;border:1px solid #334155;border-radius:6px;display:none;position:absolute;z-index:10;max-height:100px;overflow-y:auto;}
+  #genreList div{padding:5px;cursor:pointer;}
+  #genreList div:hover{background:#334155;}
 </style>
 </head>
 <body>
@@ -131,9 +48,8 @@
   <input id="title" placeholder="Judul video">
   <input id="thumbnail" placeholder="URL Thumbnail">
   <input id="video" placeholder="URL Video">
-
   <input id="genre" placeholder="Genre (ketik untuk autocomplete)">
-  <div id="genreList" style="background:#0f172a;border:1px solid #334155;border-radius:6px;display:none;position:absolute;z-index:10;max-height:100px;overflow-y:auto;"></div>
+  <div id="genreList"></div>
 
   <button onclick="submitVideo()">Submit</button>
 
@@ -178,7 +94,7 @@ genreInput.addEventListener("input", ()=>{
   const matches = genres.filter(g=>g.toLowerCase().includes(val));
   if(matches.length){
     genreList.style.display = "block";
-    genreList.innerHTML = matches.map(g=>`<div style="padding:5px;cursor:pointer;" onclick="selectGenre('${g}')">${g}</div>`).join("");
+    genreList.innerHTML = matches.map(g=>`<div onclick="selectGenre('${g}')">${g}</div>`).join("");
   } else {
     genreList.style.display = "none";
   }
@@ -192,7 +108,12 @@ function selectGenre(g){
 // ==== HISTORY ====
 function loadHistory(){
   const container = document.getElementById("historyItems");
-  container.innerHTML = history.slice(historyIndex, historyIndex+10).map(item=>`<div class="history-item"><span>${item.title} - ${item.genre}</span></div>`).join("");
+  container.innerHTML = history.slice(historyIndex, historyIndex+10).map((item,i)=>`
+    <div class="history-item">
+      <span>${item.title} - ${item.genre}</span>
+      <button onclick="window.open('${item.video}','_blank')">Download FULL KONTEN</button>
+    </div>
+  `).join("");
 }
 
 function prevHistory(){
@@ -230,17 +151,16 @@ async function submitVideo(){
     });
     const text = await res.text();
 
-    // notif pop-up
-    alert(text);
+    alert(text); // pop-up berhasil/error
 
-    // UPDATE GENRES & HISTORY
+    // update genres & history
     if(!genres.includes(genre)) genres.push(genre);
     localStorage.setItem("genres", JSON.stringify(genres));
 
     history.unshift({title, video, genre, thumbnail});
-    if(history.length>100) history.pop(); // max 100
+    if(history.length>100) history.pop();
     localStorage.setItem("history", JSON.stringify(history));
-    historyIndex=0;
+    historyIndex = 0;
     loadHistory();
 
     // reset form
