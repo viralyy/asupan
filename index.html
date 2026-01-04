@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Narapoi</title>
 <style>
-/* ===== Reset & Base ===== */
-* {margin:0; padding:0; box-sizing:border-box;}
-body {font-family:'Segoe UI', sans-serif; background:#0f172a; color:#fff;}
-a {text-decoration:none; color:inherit;}
-img {display:block; width:100%;}
+/* ================= Base & Reset ================= */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI', sans-serif; background:#0f172a; color:#fff; }
+a { text-decoration:none; color:inherit; }
+img { display:block; width:100%; }
 
-/* ===== Popup 18+ ===== */
+/* ================= Popup 18+ ================= */
 #agePopup {
   position:fixed; top:0; left:0; width:100%; height:100%;
   background:rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center;
@@ -20,8 +20,7 @@ img {display:block; width:100%;}
 #agePopup.active { opacity:1; pointer-events:auto; }
 #agePopup div {
   background:#1e293b; padding:30px; border-radius:12px; text-align:center;
-  max-width:320px; width:90%;
-  animation:fadeIn 0.5s ease;
+  max-width:320px; width:90%; animation:fadeIn 0.5s ease;
 }
 #agePopup button {
   margin:10px; padding:10px 20px; border:none; border-radius:6px;
@@ -30,16 +29,19 @@ img {display:block; width:100%;}
 #agePopup button#yes { background:#2563eb; color:#fff; }
 #agePopup button#no { background:#ef4444; color:#fff; }
 
-/* ===== Header ===== */
+/* ================= Header ================= */
 header {
   display:flex; justify-content:space-between; align-items:center;
   padding:15px 20px; background:#111827; position:sticky; top:0; z-index:100;
 }
 .logo { font-size:1.8rem; font-weight:bold; color:#ec4899; }
-header input { padding:8px 12px; border-radius:6px; border:none; background:#1f2937; color:#fff; width:200px; }
+header input {
+  padding:8px 12px; border-radius:6px; border:none;
+  background:#1f2937; color:#fff; width:200px;
+}
 header input::placeholder { color:#94a3b8; }
 
-/* ===== Genre Nav ===== */
+/* ================= Genre Nav ================= */
 .genres {
   display:flex; overflow-x:auto; padding:10px 20px; gap:10px; background:#111827;
 }
@@ -48,40 +50,57 @@ header input::placeholder { color:#94a3b8; }
 }
 .genres a:hover { background:#2563eb; }
 
-/* ===== Popular Carousel ===== */
-#popular { display:flex; overflow-x:auto; gap:15px; padding:15px 20px; scroll-behavior:smooth; }
-#popular::-webkit-scrollbar {display:none;}
+/* ================= Popular Carousel ================= */
+#popular {
+  display:flex; overflow-x:auto; gap:15px; padding:15px 20px;
+  scroll-behavior:smooth;
+}
+#popular::-webkit-scrollbar { display:none; }
 .carousel-item {
-  min-width:200px; position:relative; border-radius:10px; overflow:hidden; cursor:pointer; transition:transform 0.3s;
-  aspect-ratio:16/9;
+  min-width:200px; position:relative; border-radius:10px; overflow:hidden;
+  cursor:pointer; transition:transform 0.3s; aspect-ratio:16/9;
 }
 .carousel-item:hover { transform:scale(1.05); }
 .carousel-item img { width:100%; height:100%; object-fit:cover; }
 .carousel-item .overlay {
-  position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6);
-  color:#fff; padding:8px; font-size:14px; opacity:0; transition:0.3s;
+  position:absolute; bottom:0; left:0; right:0;
+  background:rgba(0,0,0,0.6); color:#fff; padding:8px; font-size:14px;
+  opacity:0; transition:0.3s;
 }
 .carousel-item:hover .overlay { opacity:1; }
 
-/* ===== Grid Videos ===== */
-#videos { display:grid; gap:15px; padding:15px 20px; }
-@media (min-width:768px){ #videos { grid-template-columns:repeat(2,1fr); } }
-@media (min-width:1024px){ #videos { grid-template-columns:repeat(4,1fr); } }
-.grid-item { position:relative; border-radius:8px; overflow:hidden; cursor:pointer; transition:0.3s; aspect-ratio:16/9; }
+/* ================= Grid Videos ================= */
+#videos { display:grid; gap:15px; padding:15px 20px; grid-template-columns:repeat(2,1fr); }
+@media (min-width:768px){ #videos { grid-template-columns:repeat(2,1fr); } } /* tablet tetap 2 */
+@media (min-width:1024px){ #videos { grid-template-columns:repeat(4,1fr); } } /* desktop 4 */
+.grid-item {
+  position:relative; border-radius:8px; overflow:hidden;
+  cursor:pointer; transition:0.3s; aspect-ratio:16/9;
+}
 .grid-item:hover { transform:scale(1.03); }
 .grid-item img { width:100%; height:100%; object-fit:cover; }
-.grid-item .overlay { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.7); color:#fff; padding:6px; font-size:13px; opacity:0; transition:0.3s; }
+.grid-item .overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  background:rgba(0,0,0,0.7); color:#fff; padding:6px; font-size:13px;
+  opacity:0; transition:0.3s;
+}
 .grid-item:hover .overlay { opacity:1; }
 
-/* ===== Pagination ===== */
+/* ================= Pagination ================= */
 .pagination { display:flex; justify-content:center; gap:10px; margin:20px 0; }
-.pagination button { padding:8px 14px; border:none; border-radius:6px; background:#2563eb; color:#fff; cursor:pointer; transition:0.3s; }
+.pagination button {
+  padding:8px 14px; border:none; border-radius:6px;
+  background:#2563eb; color:#fff; cursor:pointer; transition:0.3s;
+}
 .pagination button:hover { background:#3b82f6; }
 
-/* ===== Footer ===== */
-footer { text-align:center; padding:15px 0; background:#111827; color:#9ca3af; margin-top:20px; font-size:0.9rem; }
+/* ================= Footer ================= */
+footer {
+  text-align:center; padding:15px 0; background:#111827; color:#9ca3af;
+  margin-top:20px; font-size:0.9rem;
+}
 
-/* ===== Animations ===== */
+/* ================= Animations ================= */
 @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 </style>
 </head>
@@ -124,13 +143,15 @@ footer { text-align:center; padding:15px 0; background:#111827; color:#9ca3af; m
 const API = "https://asupan.aku679093.workers.dev/api/videos";
 let videosData = [], currentPage=1, perPage=10;
 
-// 18+ Popup
+// ================= Popup 18+ =================
 const agePopup = document.getElementById("agePopup");
-document.getElementById("yes").onclick = () => { localStorage.setItem('ageAccepted','true'); agePopup.classList.remove('active'); }
+document.getElementById("yes").onclick = () => {
+  localStorage.setItem('ageAccepted','true'); agePopup.classList.remove('active');
+}
 document.getElementById("no").onclick = () => { alert("Harus berumur 18+"); }
 if(localStorage.getItem('ageAccepted')) agePopup.classList.remove('active');
 
-// Load Videos
+// ================= Load Videos =================
 async function loadVideos(){
   const res = await fetch(API);
   videosData = await res.json();
@@ -152,7 +173,7 @@ async function loadVideos(){
   renderGrid();
 }
 
-// Render Grid
+// ================= Render Grid =================
 function renderGrid(genre=''){
   let filtered = genre? videosData.filter(v=>v.genre===genre) : videosData;
   const start = (currentPage-1)*perPage;
@@ -166,17 +187,17 @@ function renderGrid(genre=''){
   `).join('');
 }
 
-// Pagination
-document.getElementById('prev').onclick = ()=>{if(currentPage>1){currentPage--;renderGrid();}}
-document.getElementById('next').onclick = ()=>{if(currentPage*perPage<videosData.length){currentPage++;renderGrid();}}
+// ================= Pagination =================
+document.getElementById('prev').onclick = ()=>{if(currentPage>1){currentPage--; renderGrid();}}
+document.getElementById('next').onclick = ()=>{if(currentPage*perPage<videosData.length){currentPage++; renderGrid();}}
 
-// Filter genre
-function filterGenre(g){currentPage=1; renderGrid(g);}
+// ================= Filter Genre =================
+function filterGenre(g){ currentPage=1; renderGrid(g); }
 
-// Go to player
-function goPlayer(id){ window.location.href='player.html?id='+id;}
+// ================= Go to Player =================
+function goPlayer(id){ window.location.href='player.html?id='+id; }
 
-// Search
+// ================= Search =================
 document.getElementById('search').addEventListener('input', e=>{
   const q = e.target.value.toLowerCase();
   const filtered = videosData.filter(v=>v.title.toLowerCase().includes(q));
