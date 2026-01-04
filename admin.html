@@ -1,92 +1,257 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #fff;
-      padding: 20px;
-    }
-    input, button {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:active {
-      opacity: 0.7;
-    }
-    #status {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f172a;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px 30px;
+    background: #1e293b;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  input, select, button {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  input, select {
+    background: #0f172a;
+    color: #fff;
+    border: 1px solid #334155;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 5px #3b82f6;
+  }
+  button {
+    background: #3b82f6;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: #2563eb;
+  }
+  #status {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  #history {
+    margin-top: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    border-top: 1px solid #334155;
+    padding-top: 10px;
+  }
+  .history-item {
+    padding: 8px 10px;
+    background: #1e293b;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .history-item span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80%;
+  }
+  .history-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .history-nav button {
+    width: 48%;
+    background: #64748b;
+  }
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .login-box {
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 12px;
+    width: 300px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+  .login-box h3 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+</style>
 </head>
 <body>
 
-<h2>Admin Panel</h2>
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h3>Admin Login</h3>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginStatus" style="color:#f87171;text-align:center;margin-top:10px;"></p>
+  </div>
+</div>
 
-<input id="title" placeholder="Judul video">
-<input type="file" id="thumbnail" accept="image/*">
-<input id="video" placeholder="Video URL">
-<input id="genre" placeholder="Genre">
+<div class="container" id="adminPanel" style="display:none;">
+  <h2>Admin Panel</h2>
+  <div id="status"></div>
 
-<button onclick="submitVideo()">Submit</button>
+  <input id="title" placeholder="Judul video">
+  <input id="thumbnail" placeholder="URL Thumbnail">
+  <input id="video" placeholder="URL Video">
 
-<p id="status"></p>
+  <input id="genre" placeholder="Genre (ketik untuk autocomplete)">
+  <div id="genreList" style="background:#0f172a;border:1px solid #334155;border-radius:6px;display:none;position:absolute;z-index:10;max-height:100px;overflow-y:auto;"></div>
+
+  <button onclick="submitVideo()">Submit</button>
+
+  <div id="history">
+    <div class="history-nav">
+      <button onclick="prevHistory()">Prev</button>
+      <button onclick="nextHistory()">Next</button>
+    </div>
+    <div id="historyItems"></div>
+  </div>
+</div>
 
 <script>
 const API = "https://asupan.aku679093.workers.dev/api/admin/add";
+const loginCreds = { username:"admin", password:"Wwwaaa123" };
 
-function submitVideo() {
+let genres = JSON.parse(localStorage.getItem("genres")||"[]");
+let history = JSON.parse(localStorage.getItem("history")||"[]");
+let historyIndex = 0;
+
+// ==== LOGIN ====
+function login(){
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const status = document.getElementById("loginStatus");
+
+  if(user === loginCreds.username && pass === loginCreds.password){
+    document.getElementById("loginOverlay").style.display = "none";
+    document.getElementById("adminPanel").style.display = "block";
+    loadHistory();
+  } else {
+    status.innerText = "❌ Username / Password salah";
+  }
+}
+
+// ==== AUTOCOMPLETE GENRE ====
+const genreInput = document.getElementById("genre");
+const genreList = document.getElementById("genreList");
+
+genreInput.addEventListener("input", ()=>{
+  const val = genreInput.value.toLowerCase();
+  const matches = genres.filter(g=>g.toLowerCase().includes(val));
+  if(matches.length){
+    genreList.style.display = "block";
+    genreList.innerHTML = matches.map(g=>`<div style="padding:5px;cursor:pointer;" onclick="selectGenre('${g}')">${g}</div>`).join("");
+  } else {
+    genreList.style.display = "none";
+  }
+});
+
+function selectGenre(g){
+  genreInput.value = g;
+  genreList.style.display = "none";
+}
+
+// ==== HISTORY ====
+function loadHistory(){
+  const container = document.getElementById("historyItems");
+  container.innerHTML = history.slice(historyIndex, historyIndex+10).map(item=>`<div class="history-item"><span>${item.title} - ${item.genre}</span></div>`).join("");
+}
+
+function prevHistory(){
+  if(historyIndex>0){
+    historyIndex -= 1;
+    loadHistory();
+  }
+}
+
+function nextHistory(){
+  if(historyIndex+10 < history.length){
+    historyIndex += 1;
+    loadHistory();
+  }
+}
+
+// ==== SUBMIT VIDEO ====
+async function submitVideo(){
   const title = document.getElementById("title").value;
   const video = document.getElementById("video").value;
   const genre = document.getElementById("genre").value;
-  const file = document.getElementById("thumbnail").files[0];
+  const thumbnail = document.getElementById("thumbnail").value;
   const statusEl = document.getElementById("status");
 
-  if (!title || !video || !file) {
+  if(!title || !video || !genre || !thumbnail){
     statusEl.innerText = "❌ Data belum lengkap";
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = async function () {
-    try {
-      const res = await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: title,
-          thumbnail: reader.result,
-          video_url: video,
-          genre: genre
-        })
-      });
+  try {
+    const res = await fetch(API,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ title, video_url: video, genre, thumbnail })
+    });
+    const text = await res.text();
 
-      const text = await res.text();
+    // notif pop-up
+    alert(text);
 
-      if (!res.ok) {
-        throw new Error(text);
-      }
+    // UPDATE GENRES & HISTORY
+    if(!genres.includes(genre)) genres.push(genre);
+    localStorage.setItem("genres", JSON.stringify(genres));
 
-      statusEl.innerText = text; // Akan tampil ✅ Berhasil ditambahkan
-    } catch (err) {
-      statusEl.innerText = err.message; // Akan tampil ❌ Error: ...
-    }
-  };
+    history.unshift({title, video, genre, thumbnail});
+    if(history.length>100) history.pop(); // max 100
+    localStorage.setItem("history", JSON.stringify(history));
+    historyIndex=0;
+    loadHistory();
 
-  reader.readAsDataURL(file);
+    // reset form
+    document.getElementById("title").value="";
+    document.getElementById("video").value="";
+    document.getElementById("genre").value="";
+    document.getElementById("thumbnail").value="";
+
+  } catch(err){
+    alert("❌ Error: "+err.message);
+  }
 }
 </script>
 
