@@ -4,85 +4,79 @@
   <meta charset="UTF-8">
   <title>Admin Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      padding: 20px;
+    }
+    input, button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:active {
+      opacity: 0.7;
+    }
+  </style>
 </head>
 <body>
 
 <h2>Admin Panel</h2>
 
-<input id="title" placeholder="Judul"><br><br>
-<input id="thumbnail" placeholder="Thumbnail URL"><br><br>
-<input id="video" placeholder="Video URL"><br><br>
-<input id="genre" placeholder="Genre"><br><br>
+<input id="title" placeholder="Judul video">
+<input type="file" id="thumbnail" accept="image/*">
+<input id="video" placeholder="Video URL">
+<input id="genre" placeholder="Genre">
 
-<button onclick="kirim()">Submit</button>
-
-<p id="status"></p>
-
-<script>
-  const API = "https://asupan.aku679093.workers.dev/api/admin/add";
-
-  function kirim() {
-    fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: title.value,
-        thumbnail: thumbnail.value,
-        video_url: video.value,
-        genre: genre.value
-      })
-    })
-    .then(() => {
-      status.innerText = "✅ Berhasil";
-    })
-    .catch(() => {
-      status.innerText = "❌ Error";
-    });
-  }
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-
-<h2>Admin Panel</h2>
-
-<input id="title" placeholder="Judul"><br><br>
-<input id="thumbnail" placeholder="Thumbnail URL"><br><br>
-<input id="video" placeholder="Video URL"><br><br>
-<input id="genre" placeholder="Genre"><br><br>
-
-<button onclick="kirim()">Submit</button>
+<button onclick="submitVideo()">Submit</button>
 
 <p id="status"></p>
 
 <script>
-  const API = "https://NAMA-WORKER-LU.workers.dev/api/admin/add";
+const API = "https://asupan.aku679093.workers.dev/api/admin/add";
 
-  function kirim() {
+function submitVideo() {
+  const title = document.getElementById("title").value;
+  const video = document.getElementById("video").value;
+  const genre = document.getElementById("genre").value;
+  const file = document.getElementById("thumbnail").files[0];
+
+  if (!title || !video || !file) {
+    status.innerText = "❌ Data belum lengkap";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function () {
     fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: title.value,
-        thumbnail: thumbnail.value,
-        video_url: video.value,
-        genre: genre.value
+        title: title,
+        thumbnail: reader.result, // BASE64
+        video_url: video,
+        genre: genre
       })
     })
     .then(() => {
-      status.innerText = "✅ Berhasil";
+      status.innerText = "✅ Berhasil ditambahkan";
     })
     .catch(() => {
-      status.innerText = "❌ Error";
+      status.innerText = "❌ Gagal kirim";
     });
-  }
+  };
+
+  reader.readAsDataURL(file);
+}
 </script>
 
 </body>
