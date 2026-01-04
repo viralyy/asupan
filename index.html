@@ -4,111 +4,128 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Narapoi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #fff;
+  }
 
-  body{
-    font-family:'Segoe UI',sans-serif;
-    margin:0;
-    background:#0f172a;
-    color:#fff;
-    overflow-x:hidden;
-  }
   /* 18+ overlay */
-  #ageOverlay{
-    position:fixed;inset:0;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;z-index:1000;
-    flex-direction:column;text-align:center;padding:20px;
+  #ageOverlay {
+    position: fixed; inset:0;
+    background: rgba(0,0,0,0.95);
+    display: flex; justify-content: center; align-items: center;
+    flex-direction: column; text-align:center; padding:20px;
+    opacity:0; pointer-events:none;
+    transition: opacity 0.5s ease;
+    z-index: 1000;
   }
-  #ageOverlay button{
-    margin:10px;padding:10px 20px;border:none;border-radius:8px;font-size:16px;cursor:pointer;
+  #ageOverlay.show { opacity:1; pointer-events:auto; }
+  #ageOverlay h2 { font-size: 24px; margin-bottom: 20px; }
+  #ageOverlay button {
+    margin: 5px; padding:10px 20px; border:none; border-radius:8px;
+    font-size:16px; cursor:pointer; transition:0.3s;
   }
-  #ageOverlay button.yes{background:#3b82f6;color:#fff;}
-  #ageOverlay button.no{background:#f87171;color:#fff;}
+  #ageOverlay button:hover { opacity:0.8; }
+  #ageOverlay .yes { background:#3b82f6; color:#fff; }
+  #ageOverlay .no { background:#f87171; color:#fff; }
 
   /* header */
-  header{
-    display:flex;justify-content:space-between;align-items:center;padding:15px 20px;
-    background:#1e293b;position:sticky;top:0;z-index:500;
+  header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:15px 20px; background:#1e293b; position: sticky; top:0; z-index:500;
   }
-  #logoTitle{
-    font-size:28px;font-weight:bold;
+  #logoTitle {
+    font-size:28px; font-weight:bold;
     animation: colorChange 5s infinite;
   }
-  @keyframes colorChange{
-    0%{color:#3b82f6;}25%{color:#10b981;}50%{color:#facc15;}75%{color:#f472b6;}100%{color:#3b82f6;}
+  @keyframes colorChange {
+    0% {color:#3b82f6;} 25% {color:#10b981;} 50% {color:#facc15;}
+    75% {color:#f472b6;} 100% {color:#3b82f6;}
   }
+  .header-left, .header-right { display:flex; align-items:center; }
+  .header-left svg, .header-right svg { width:24px; height:24px; margin-right:10px; cursor:pointer; }
 
-  .header-left, .header-right{display:flex;align-items:center;}
-  .header-left svg, .header-right svg{width:24px;height:24px;margin-right:10px;cursor:pointer;}
-  .genre-sidebar{
-    position:fixed;top:0;left:-250px;width:250px;height:100%;background:#1e293b;padding:20px;transition:0.3s;overflow-y:auto;z-index:600;
+  /* Sidebar genre */
+  .genre-sidebar {
+    position: fixed; top:0; left:-260px; width:260px; height:100%; background:#1e293b; padding:20px;
+    transition: 0.3s; overflow-y:auto; z-index:600;
   }
-  .genre-sidebar.show{left:0;}
-  .genre-sidebar h3{margin-bottom:15px;}
-  .genre-item{padding:8px;cursor:pointer;border-radius:6px;}
-  .genre-item:hover{background:#334155;}
-  
+  .genre-sidebar.show { left:0; }
+  .genre-sidebar h3 { margin-bottom:15px; }
+  .genre-item { padding:8px; border-radius:6px; cursor:pointer; transition:0.3s; }
+  .genre-item:hover { background:#334155; }
+
   /* search */
-  #searchInput{
-    padding:6px 10px;border-radius:6px;border:none;width:200px;background:#0f172a;color:#fff;margin-left:5px;
+  #searchInput {
+    padding:6px 10px; border-radius:6px; border:none; width:200px; background:#0f172a; color:#fff;
   }
 
   /* popular carousel */
-  .popular-container{
-    display:flex;overflow:hidden;margin:20px 0;position:relative;
+  .popular-container {
+    display:flex; overflow:hidden; margin:20px; position:relative;
   }
-  .popular-scroll{
-    display:flex;transition: transform 0.5s ease-in-out;
+  .popular-scroll {
+    display:flex; transition: transform 0.5s ease-in-out;
   }
-  .popular-item{
-    min-width:200px;margin-right:15px;background:#1e293b;border-radius:12px;position:relative;cursor:pointer;
-    overflow:hidden;flex-shrink:0;transition:transform 0.3s;
+  .popular-item {
+    min-width:200px; margin-right:15px; background:#1e293b; border-radius:12px; position:relative;
+    overflow:hidden; flex-shrink:0; cursor:pointer; transition: transform 0.3s, box-shadow 0.3s;
   }
-  .popular-item img{
-    width:100%;height:120px;object-fit:cover;display:block;transition:transform 0.3s;
+  .popular-item:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  .popular-item img { width:100%; height:120px; object-fit:cover; display:block; transition: transform 0.3s; }
+  .popular-item:hover img { transform: scale(1.08); }
+  .popular-overlay {
+    position:absolute; bottom:0; left:0; width:100%;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8), transparent);
+    color:#fff; padding:5px 10px; opacity:0; transition: opacity 0.3s;
   }
-  .popular-item:hover img{transform:scale(1.05);}
-  .popular-overlay{
-    position:absolute;bottom:0;left:0;width:100%;
-    background:linear-gradient(0deg,rgba(0,0,0,0.8),transparent);
-    color:#fff;padding:5px 10px;box-sizing:border-box;
-    opacity:0;transition:opacity 0.3s;
+  .popular-item:hover .popular-overlay { opacity:1; }
+  .popular-overlay p { margin:0; font-size:14px; font-weight:bold; }
+
+  .carousel-btn {
+    position:absolute; top:50%; transform:translateY(-50%);
+    background: rgba(0,0,0,0.5); border:none; color:#fff; padding:5px 10px; border-radius:6px; cursor:pointer;
+    transition:0.3s;
   }
-  .popular-item:hover .popular-overlay{opacity:1;}
-  .popular-overlay p{margin:0;font-size:14px;font-weight:bold;}
-  .carousel-btn{
-    position:absolute;top:50%;transform:translateY(-50%);
-    background:rgba(0,0,0,0.5);border:none;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;
-  }
-  .carousel-btn.left{left:0;}
-  .carousel-btn.right{right:0;}
+  .carousel-btn:hover { background: rgba(0,0,0,0.7); }
+  .carousel-btn.left { left:0; }
+  .carousel-btn.right { right:0; }
 
   /* video grid */
-  .grid-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:20px;}
-  .grid-item{
-    position:relative;overflow:hidden;background:#1e293b;border-radius:12px;transition:transform 0.3s;cursor:pointer;
+  .grid-container {
+    display:grid; gap:15px; margin:20px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
-  .grid-item img{width:100%;border-radius:8px;transition:transform 0.3s;}
-  .grid-item:hover img{transform:scale(1.03);}
-  .grid-overlay{
-    position:absolute;inset:0;background:rgba(0,0,0,0.6);
-    color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;
-    opacity:0;transition:opacity 0.3s;text-align:center;padding:5px;
+  .grid-item {
+    position:relative; overflow:hidden; background:#1e293b; border-radius:12px; cursor:pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
   }
-  .grid-item:hover .grid-overlay{opacity:1;}
-  .grid-overlay p{margin:2px 0;font-size:14px;}
+  .grid-item:hover { transform: scale(1.03); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  .grid-item img { width:100%; border-radius:8px; transition: transform 0.3s; }
+  .grid-item:hover img { transform: scale(1.05); }
+  .grid-overlay {
+    position:absolute; inset:0; background: rgba(0,0,0,0.6);
+    color:#fff; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    opacity:0; transition:opacity 0.3s; text-align:center; padding:5px;
+  }
+  .grid-item:hover .grid-overlay { opacity:1; }
+  .grid-overlay p { margin:2px 0; font-size:14px; }
 
-  .pagination{display:flex;justify-content:center;margin-bottom:20px;}
-  .pagination button{margin:0 5px;padding:6px 12px;border:none;border-radius:6px;background:#3b82f6;color:#fff;cursor:pointer;}
-  .pagination button:hover{background:#2563eb;}
+  .pagination { display:flex; justify-content:center; margin:20px 0; }
+  .pagination button { margin:0 5px; padding:6px 12px; border:none; border-radius:6px; background:#3b82f6; color:#fff; cursor:pointer; transition:0.3s; }
+  .pagination button:hover { background:#2563eb; }
 
-  footer{text-align:center;padding:15px;background:#1e293b;}
+  footer { text-align:center; padding:15px; background:#1e293b; }
 </style>
 </head>
 <body>
 
-<!-- 18+ -->
-<div id="ageOverlay">
+<!-- 18+ overlay -->
+<div id="ageOverlay" class="show">
   <h2>Apakah Anda berumur 18 tahun ke atas?</h2>
   <button class="yes" onclick="confirmAge(true)">Ya</button>
   <button class="no" onclick="confirmAge(false)">Tidak</button>
@@ -119,10 +136,9 @@
   <h3>Genre</h3>
   <div id="genreListSidebar"></div>
   <h3>Follow</h3>
-  <!-- contoh svg sosial, link bisa diisi sendiri -->
-  <a href="#" target="_blank"><svg>...WA SVG...</svg></a>
-  <a href="#" target="_blank"><svg>...Telegram SVG...</svg></a>
-  <a href="#" target="_blank"><svg>...YouTube SVG...</svg></a>
+  <a href="#" target="_blank"><svg>...WA...</svg></a>
+  <a href="#" target="_blank"><svg>...Telegram...</svg></a>
+  <a href="#" target="_blank"><svg>...YouTube...</svg></a>
 </div>
 
 <!-- Header -->
@@ -161,34 +177,30 @@ let currentPage=0;
 const pageSize=10;
 let popularVideos=[];
 
-// ==== 18+ ====
+// 18+ overlay
 function confirmAge(ok){
   const overlay = document.getElementById("ageOverlay");
-  if(ok){ overlay.style.display="none"; loadVideos(); }
+  if(ok){ overlay.classList.remove("show"); loadVideos(); }
   else{ overlay.innerHTML="<h2>Anda harus berumur 18+ untuk mengakses situs ini.</h2>"; }
 }
 
-// ==== Sidebar genre toggle ====
-const menuBtn = document.getElementById("menuBtn");
-const genreSidebar = document.getElementById("genreSidebar");
-menuBtn.addEventListener("click", ()=>{ genreSidebar.classList.toggle("show"); });
+// Sidebar toggle
+document.getElementById("menuBtn").addEventListener("click", ()=>{
+  document.getElementById("genreSidebar").classList.toggle("show");
+});
 
-// ==== Load videos ====
+// Load videos
 async function loadVideos(){
   const res = await fetch(API);
   videos = await res.json();
-
-  // Popular 5 berdasarkan views
   popularVideos = [...videos].sort((a,b)=>b.views - a.views).slice(0,5);
   renderPopular();
-  
-  // Init filteredVideos
   filteredVideos = [...videos];
   renderGrid();
   renderGenresSidebar();
 }
 
-// ==== Render Popular ====
+// Render Popular
 function renderPopular(){
   const container = document.getElementById("popularScroll");
   container.innerHTML = popularVideos.map(v=>`
@@ -203,10 +215,10 @@ function renderPopular(){
 }
 function scrollPopular(dir){
   const scrollDiv = document.getElementById("popularScroll");
-  scrollDiv.scrollBy({left:dir*220,behavior:'smooth'});
+  scrollDiv.scrollBy({left: dir*220, behavior:'smooth'});
 }
 
-// ==== Render Video Grid ====
+// Render grid
 function renderGrid(){
   const container = document.getElementById("videoGrid");
   const start = currentPage*pageSize;
@@ -224,18 +236,14 @@ function renderGrid(){
   `).join('');
 }
 
-// ==== Pagination ====
-function prevPage(){
-  if(currentPage>0){ currentPage--; renderGrid(); }
-}
-function nextPage(){
-  if((currentPage+1)*pageSize < filteredVideos.length){ currentPage++; renderGrid(); }
-}
+// Pagination
+function prevPage(){ if(currentPage>0){ currentPage--; renderGrid(); } }
+function nextPage(){ if((currentPage+1)*pageSize < filteredVideos.length){ currentPage++; renderGrid(); } }
 
-// ==== Go to player ====
+// Go to player
 function goPlayer(id){ window.location.href=`player.html?id=${id}`; }
 
-// ==== Render genre sidebar ====
+// Render genres sidebar
 function renderGenresSidebar(){
   const container = document.getElementById("genreListSidebar");
   const uniqueGenres = [...new Set(videos.map(v=>v.genre))];
@@ -245,18 +253,16 @@ function filterGenre(g){
   filteredVideos = videos.filter(v=>v.genre===g);
   currentPage=0;
   renderGrid();
-  genreSidebar.classList.remove("show");
+  document.getElementById("genreSidebar").classList.remove("show");
 }
 
-// ==== Search realtime ====
-const searchInput = document.getElementById("searchInput");
-searchInput.addEventListener("input", ()=>{
-  const q = searchInput.value.toLowerCase();
+// Search realtime
+document.getElementById("searchInput").addEventListener("input", ()=>{
+  const q = document.getElementById("searchInput").value.toLowerCase();
   filteredVideos = videos.filter(v=>v.title.toLowerCase().includes(q));
   currentPage=0;
   renderGrid();
 });
 </script>
-
 </body>
 </html>
