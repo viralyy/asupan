@@ -3,31 +3,260 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Beranda</title>
+<title>Narapoi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
+
+  body{
+    font-family:'Segoe UI',sans-serif;
+    margin:0;
+    background:#0f172a;
+    color:#fff;
+    overflow-x:hidden;
+  }
+  /* 18+ overlay */
+  #ageOverlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;z-index:1000;
+    flex-direction:column;text-align:center;padding:20px;
+  }
+  #ageOverlay button{
+    margin:10px;padding:10px 20px;border:none;border-radius:8px;font-size:16px;cursor:pointer;
+  }
+  #ageOverlay button.yes{background:#3b82f6;color:#fff;}
+  #ageOverlay button.no{background:#f87171;color:#fff;}
+
+  /* header */
+  header{
+    display:flex;justify-content:space-between;align-items:center;padding:15px 20px;
+    background:#1e293b;position:sticky;top:0;z-index:500;
+  }
+  #logoTitle{
+    font-size:28px;font-weight:bold;
+    animation: colorChange 5s infinite;
+  }
+  @keyframes colorChange{
+    0%{color:#3b82f6;}25%{color:#10b981;}50%{color:#facc15;}75%{color:#f472b6;}100%{color:#3b82f6;}
+  }
+
+  .header-left, .header-right{display:flex;align-items:center;}
+  .header-left svg, .header-right svg{width:24px;height:24px;margin-right:10px;cursor:pointer;}
+  .genre-sidebar{
+    position:fixed;top:0;left:-250px;width:250px;height:100%;background:#1e293b;padding:20px;transition:0.3s;overflow-y:auto;z-index:600;
+  }
+  .genre-sidebar.show{left:0;}
+  .genre-sidebar h3{margin-bottom:15px;}
+  .genre-item{padding:8px;cursor:pointer;border-radius:6px;}
+  .genre-item:hover{background:#334155;}
+  
+  /* search */
+  #searchInput{
+    padding:6px 10px;border-radius:6px;border:none;width:200px;background:#0f172a;color:#fff;margin-left:5px;
+  }
+
+  /* popular carousel */
+  .popular-container{
+    display:flex;overflow:hidden;margin:20px 0;position:relative;
+  }
+  .popular-scroll{
+    display:flex;transition: transform 0.5s ease-in-out;
+  }
+  .popular-item{
+    min-width:200px;margin-right:15px;background:#1e293b;border-radius:12px;position:relative;cursor:pointer;
+    overflow:hidden;flex-shrink:0;transition:transform 0.3s;
+  }
+  .popular-item img{
+    width:100%;height:120px;object-fit:cover;display:block;transition:transform 0.3s;
+  }
+  .popular-item:hover img{transform:scale(1.05);}
+  .popular-overlay{
+    position:absolute;bottom:0;left:0;width:100%;
+    background:linear-gradient(0deg,rgba(0,0,0,0.8),transparent);
+    color:#fff;padding:5px 10px;box-sizing:border-box;
+    opacity:0;transition:opacity 0.3s;
+  }
+  .popular-item:hover .popular-overlay{opacity:1;}
+  .popular-overlay p{margin:0;font-size:14px;font-weight:bold;}
+  .carousel-btn{
+    position:absolute;top:50%;transform:translateY(-50%);
+    background:rgba(0,0,0,0.5);border:none;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;
+  }
+  .carousel-btn.left{left:0;}
+  .carousel-btn.right{right:0;}
+
+  /* video grid */
+  .grid-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:20px;}
+  .grid-item{
+    position:relative;overflow:hidden;background:#1e293b;border-radius:12px;transition:transform 0.3s;cursor:pointer;
+  }
+  .grid-item img{width:100%;border-radius:8px;transition:transform 0.3s;}
+  .grid-item:hover img{transform:scale(1.03);}
+  .grid-overlay{
+    position:absolute;inset:0;background:rgba(0,0,0,0.6);
+    color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    opacity:0;transition:opacity 0.3s;text-align:center;padding:5px;
+  }
+  .grid-item:hover .grid-overlay{opacity:1;}
+  .grid-overlay p{margin:2px 0;font-size:14px;}
+
+  .pagination{display:flex;justify-content:center;margin-bottom:20px;}
+  .pagination button{margin:0 5px;padding:6px 12px;border:none;border-radius:6px;background:#3b82f6;color:#fff;cursor:pointer;}
+  .pagination button:hover{background:#2563eb;}
+
+  footer{text-align:center;padding:15px;background:#1e293b;}
+</style>
 </head>
 <body>
-<h2>Daftar Video</h2>
-<div id="videos"></div>
+
+<!-- 18+ -->
+<div id="ageOverlay">
+  <h2>Apakah Anda berumur 18 tahun ke atas?</h2>
+  <button class="yes" onclick="confirmAge(true)">Ya</button>
+  <button class="no" onclick="confirmAge(false)">Tidak</button>
+</div>
+
+<!-- Sidebar genre -->
+<div class="genre-sidebar" id="genreSidebar">
+  <h3>Genre</h3>
+  <div id="genreListSidebar"></div>
+  <h3>Follow</h3>
+  <!-- contoh svg sosial, link bisa diisi sendiri -->
+  <a href="#" target="_blank"><svg>...WA SVG...</svg></a>
+  <a href="#" target="_blank"><svg>...Telegram SVG...</svg></a>
+  <a href="#" target="_blank"><svg>...YouTube SVG...</svg></a>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-left">
+    <svg id="menuBtn" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    <div id="logoTitle">Narapoi</div>
+  </div>
+  <div class="header-right">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/></svg>
+    <input type="text" id="searchInput" placeholder="Cari video...">
+  </div>
+</header>
+
+<!-- Popular -->
+<div class="popular-container">
+  <button class="carousel-btn left" onclick="scrollPopular(-1)">‹</button>
+  <div class="popular-scroll" id="popularScroll"></div>
+  <button class="carousel-btn right" onclick="scrollPopular(1)">›</button>
+</div>
+
+<!-- Video grid -->
+<div class="grid-container" id="videoGrid"></div>
+
+<div class="pagination">
+  <button onclick="prevPage()">Prev</button>
+  <button onclick="nextPage()">Next</button>
+</div>
+
+<footer>Narapoi</footer>
 
 <script>
 const API = "https://asupan.aku679093.workers.dev/api/videos";
+let videos=[], filteredVideos=[];
+let currentPage=0;
+const pageSize=10;
+let popularVideos=[];
 
-async function loadVideos() {
+// ==== 18+ ====
+function confirmAge(ok){
+  const overlay = document.getElementById("ageOverlay");
+  if(ok){ overlay.style.display="none"; loadVideos(); }
+  else{ overlay.innerHTML="<h2>Anda harus berumur 18+ untuk mengakses situs ini.</h2>"; }
+}
+
+// ==== Sidebar genre toggle ====
+const menuBtn = document.getElementById("menuBtn");
+const genreSidebar = document.getElementById("genreSidebar");
+menuBtn.addEventListener("click", ()=>{ genreSidebar.classList.toggle("show"); });
+
+// ==== Load videos ====
+async function loadVideos(){
   const res = await fetch(API);
-  const data = await res.json();
-  const container = document.getElementById("videos");
+  videos = await res.json();
 
-  container.innerHTML = data.map(video => `
-    <div style="margin-bottom:15px;">
-      <img src="${video.thumbnail}" width="200"><br>
-      <a href="player.html?id=${video.id}">${video.title}</a><br>
-      Genre: <a href="genre.html?name=${video.genre}">${video.genre}</a><br>
-      Views: ${video.views}
+  // Popular 5 berdasarkan views
+  popularVideos = [...videos].sort((a,b)=>b.views - a.views).slice(0,5);
+  renderPopular();
+  
+  // Init filteredVideos
+  filteredVideos = [...videos];
+  renderGrid();
+  renderGenresSidebar();
+}
+
+// ==== Render Popular ====
+function renderPopular(){
+  const container = document.getElementById("popularScroll");
+  container.innerHTML = popularVideos.map(v=>`
+    <div class="popular-item" onclick="goPlayer(${v.id})">
+      <img src="${v.thumbnail}">
+      <div class="popular-overlay">
+        <p>${v.title}</p>
+        <p>${v.genre}</p>
+      </div>
+    </div>
+  `).join('');
+}
+function scrollPopular(dir){
+  const scrollDiv = document.getElementById("popularScroll");
+  scrollDiv.scrollBy({left:dir*220,behavior:'smooth'});
+}
+
+// ==== Render Video Grid ====
+function renderGrid(){
+  const container = document.getElementById("videoGrid");
+  const start = currentPage*pageSize;
+  const end = start+pageSize;
+  const pageVideos = filteredVideos.slice(start,end);
+  container.innerHTML = pageVideos.map(v=>`
+    <div class="grid-item" onclick="goPlayer(${v.id})">
+      <img src="${v.thumbnail}">
+      <div class="grid-overlay">
+        <p>${v.title}</p>
+        <p>Genre: ${v.genre}</p>
+        <p>Views: ${v.views}</p>
+      </div>
     </div>
   `).join('');
 }
 
-loadVideos();
+// ==== Pagination ====
+function prevPage(){
+  if(currentPage>0){ currentPage--; renderGrid(); }
+}
+function nextPage(){
+  if((currentPage+1)*pageSize < filteredVideos.length){ currentPage++; renderGrid(); }
+}
+
+// ==== Go to player ====
+function goPlayer(id){ window.location.href=`player.html?id=${id}`; }
+
+// ==== Render genre sidebar ====
+function renderGenresSidebar(){
+  const container = document.getElementById("genreListSidebar");
+  const uniqueGenres = [...new Set(videos.map(v=>v.genre))];
+  container.innerHTML = uniqueGenres.map(g=>`<div class="genre-item" onclick="filterGenre('${g}')">${g}</div>`).join('');
+}
+function filterGenre(g){
+  filteredVideos = videos.filter(v=>v.genre===g);
+  currentPage=0;
+  renderGrid();
+  genreSidebar.classList.remove("show");
+}
+
+// ==== Search realtime ====
+const searchInput = document.getElementById("searchInput");
+searchInput.addEventListener("input", ()=>{
+  const q = searchInput.value.toLowerCase();
+  filteredVideos = videos.filter(v=>v.title.toLowerCase().includes(q));
+  currentPage=0;
+  renderGrid();
+});
 </script>
+
 </body>
 </html>
