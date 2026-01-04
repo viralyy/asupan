@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player</title>
+</head>
+<body>
+<div id="player"></div>
+
+<script>
+const API = "https://asupan.aku679093.workers.dev/api/videos";
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+async function loadVideo() {
+  const res = await fetch(API);
+  const data = await res.json();
+  const video = data.find(v => v.id == id);
+  if (!video) {
+    document.getElementById("player").innerText = "Video tidak ditemukan";
+    return;
+  }
+
+  document.getElementById("player").innerHTML = `
+    <h2>${video.title}</h2>
+    <video width="600" controls>
+      <source src="${video.video_url}" type="video/mp4">
+    </video>
+    <p>Genre: ${video.genre}</p>
+    <p>Views: ${video.views}</p>
+  `;
+}
+
+loadVideo();
+</script>
+</body>
+</html>
