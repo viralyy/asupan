@@ -74,14 +74,15 @@ function submitVideo() {
         })
       });
 
+      const text = await res.text();
+
       if (!res.ok) {
-        const text = await res.text();
         throw new Error(text);
       }
 
-      statusEl.innerText = "✅ Berhasil ditambahkan";
+      statusEl.innerText = text; // Akan tampil ✅ Berhasil ditambahkan
     } catch (err) {
-      statusEl.innerText = "❌ Error: " + err.message;
+      statusEl.innerText = err.message; // Akan tampil ❌ Error: ...
     }
   };
 
