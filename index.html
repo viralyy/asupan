@@ -5,85 +5,83 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Narapoi</title>
 <style>
-/* ================= Base & Reset ================= */
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Segoe UI', sans-serif; background:#0f172a; color:#fff; }
-a { text-decoration:none; color:inherit; }
+/* ================= Base ================= */
+* {margin:0;padding:0;box-sizing:border-box;}
+body {font-family:'Segoe UI',sans-serif;background:#0f172a;color:#fff;transition:background 0.3s,color 0.3s;}
+a {text-decoration:none;color:inherit;}
+
+/* ================= Dark/Light Toggle ================= */
+body.light {background:#f5f5f5;color:#111;}
+body.light header, body.light .genres, body.light footer {background:#e5e7eb;color:#111;}
+body.light .grid-item .info, body.light .grid-item:hover .info {background:rgba(0,0,0,0.1);color:#111;}
 
 /* ================= Popup 18+ ================= */
 #agePopup {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center;
-  z-index:9999; opacity:0; pointer-events:none; transition:0.4s ease;
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;
+  z-index:9999;opacity:0;pointer-events:none;transition:0.4s ease;
 }
-#agePopup.active { opacity:1; pointer-events:auto; }
-#agePopup div {
-  background:#1e293b; padding:30px; border-radius:12px; text-align:center;
-  max-width:320px; width:90%; animation:fadeIn 0.5s ease;
+#agePopup.active {opacity:1;pointer-events:auto;}
+#agePopup div{
+  background:#1e293b;padding:30px;border-radius:12px;text-align:center;max-width:320px;width:90%;
+  animation:fadeIn 0.5s ease;
 }
-#agePopup button {
-  margin:10px; padding:10px 20px; border:none; border-radius:6px;
-  cursor:pointer; font-weight:bold; transition:0.3s;
+#agePopup button{
+  margin:10px;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;transition:0.3s;
 }
-#agePopup button#yes { background:#2563eb; color:#fff; }
-#agePopup button#no { background:#ef4444; color:#fff; }
+#agePopup button#yes{background:#2563eb;color:#fff;}
+#agePopup button#no{background:#ef4444;color:#fff;}
 
 /* ================= Header ================= */
-header {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:15px 20px; background:#111827; position:sticky; top:0; z-index:100;
+header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:15px 20px;background:#111827;position:sticky;top:0;z-index:100;
 }
-.logo { font-size:1.8rem; font-weight:bold; color:#ec4899; }
-header input {
-  padding:8px 12px; border-radius:6px; border:none;
-  background:#1f2937; color:#fff; width:200px;
+header .logo{font-size:1.8rem;font-weight:bold;color:#ec4899;}
+header input{
+  padding:8px 12px;border-radius:6px;border:none;background:#1f2937;color:#fff;width:200px;
 }
-header input::placeholder { color:#94a3b8; }
+header input::placeholder{color:#94a3b8;}
+#toggleTheme{margin-left:15px;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;background:#2563eb;color:#fff;}
 
 /* ================= Genre Nav ================= */
-.genres {
-  display:flex; overflow-x:auto; padding:10px 20px; gap:10px; background:#111827;
-}
-.genres a {
-  padding:6px 12px; background:#1f2937; border-radius:20px; white-space:nowrap; transition:0.3s;
-}
-.genres a:hover { background:#2563eb; }
+.genres{display:flex;overflow-x:auto;padding:10px 20px;gap:10px;background:#111827;}
+.genres a{padding:6px 12px;background:#1f2937;border-radius:20px;white-space:nowrap;transition:0.3s;}
+.genres a:hover{background:#2563eb;}
+
+/* ================= Trending Horizontal ================= */
+#trending{display:flex;overflow-x:auto;gap:15px;padding:15px 20px;scroll-behavior:smooth;}
+#trending::-webkit-scrollbar{display:none;}
+.trending-item{min-width:200px;position:relative;border-radius:10px;overflow:hidden;cursor:pointer;transition:transform 0.3s;aspect-ratio:16/9;}
+.trending-item:hover{transform:scale(1.05);}
+.trending-item img{width:100%;height:100%;object-fit:cover;}
+.trending-item .overlay{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;padding:8px;font-size:14px;opacity:0;transition:0.3s;}
+.trending-item:hover .overlay{opacity:1;}
 
 /* ================= Grid Videos ================= */
-#videos {
-  display:grid; gap:20px; padding:15px 20px; grid-template-columns:repeat(2,1fr);
-}
-@media (min-width:768px){ #videos { grid-template-columns:repeat(2,1fr); } }
-@media (min-width:1024px){ #videos { grid-template-columns:repeat(4,1fr); } }
-.grid-item {
-  border-radius:8px; overflow:hidden; transition:0.3s;
-}
-.grid-item img {
-  width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; display:block;
-  border-radius:6px;
-}
-.grid-item .info {
-  margin-top:6px; font-size:14px;
-}
-.grid-item .info .title { font-weight:bold; margin-bottom:3px; }
-.grid-item .info .genre { color:#94a3b8; font-size:13px; }
+#videos{display:grid;gap:20px;padding:15px 20px;grid-template-columns:repeat(2,1fr);}
+@media(min-width:768px){#videos{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1024px){#videos{grid-template-columns:repeat(4,1fr);}}
+.grid-item{border-radius:8px;overflow:hidden;transition:0.3s;}
+.grid-item img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:6px;display:block;}
+.grid-item .info{margin-top:6px;font-size:14px;background:rgba(0,0,0,0.6);padding:4px;border-radius:4px;}
+.grid-item .info .title{font-weight:bold;margin-bottom:3px;}
+.grid-item .info .genre{color:#94a3b8;font-size:13px;}
 
 /* ================= Pagination ================= */
-.pagination { display:flex; justify-content:center; gap:10px; margin:20px 0; }
-.pagination button {
-  padding:8px 14px; border:none; border-radius:6px;
-  background:#2563eb; color:#fff; cursor:pointer; transition:0.3s;
-}
-.pagination button:hover { background:#3b82f6; }
+.pagination{display:flex;justify-content:center;gap:10px;margin:20px 0;}
+.pagination button{padding:8px 14px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;transition:0.3s;}
+.pagination button:hover{background:#3b82f6;}
 
 /* ================= Footer ================= */
-footer {
-  text-align:center; padding:15px 0; background:#111827; color:#9ca3af;
-  margin-top:20px; font-size:0.9rem;
-}
+footer{text-align:center;padding:15px 0;background:#111827;color:#9ca3af;margin-top:20px;font-size:0.9rem;}
+
+/* ================= Skeleton Loader ================= */
+.skeleton{background:#1f2937; border-radius:6px; aspect-ratio:16/9; animation:shimmer 1.5s infinite;}
+@keyframes shimmer{0%{background-position:-200px 0;}100%{background-position:200px 0;}}
 
 /* ================= Animations ================= */
-@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 </style>
 </head>
 <body>
@@ -100,11 +98,17 @@ footer {
 <!-- Header -->
 <header>
   <div class="logo">Narapoi</div>
-  <input type="text" id="search" placeholder="Cari video...">
+  <div>
+    <input type="text" id="search" placeholder="Cari video...">
+    <button id="toggleTheme">🌙</button>
+  </div>
 </header>
 
 <!-- Genre Nav -->
 <div class="genres" id="genres"></div>
+
+<!-- Trending Horizontal -->
+<div id="trending"></div>
 
 <!-- Grid Videos -->
 <div id="videos"></div>
@@ -116,39 +120,54 @@ footer {
 </div>
 
 <!-- Footer -->
-<footer>Narapoi</footer>
+<footer>Narapoi | Socials: WA | Telegram | YouTube</footer>
 
 <script>
-const API = "https://asupan.aku679093.workers.dev/api/videos";
-let videosData = [], currentPage=1, perPage=10;
+const API="https://asupan.aku679093.workers.dev/api/videos";
+let videosData=[],currentPage=1,perPage=10;
 
 // ================= Popup 18+ =================
-const agePopup = document.getElementById("agePopup");
-document.getElementById("yes").onclick = () => {
-  localStorage.setItem('ageAccepted','true'); agePopup.classList.remove('active');
-}
-document.getElementById("no").onclick = () => { alert("Harus berumur 18+"); }
+const agePopup=document.getElementById("agePopup");
+document.getElementById("yes").onclick=()=>{localStorage.setItem('ageAccepted','true');agePopup.classList.remove('active');};
+document.getElementById("no").onclick=()=>{alert("Harus berumur 18+");};
 if(localStorage.getItem('ageAccepted')) agePopup.classList.remove('active');
+
+// ================= Dark/Light Toggle =================
+const toggleTheme=document.getElementById('toggleTheme');
+toggleTheme.onclick=()=>{
+  document.body.classList.toggle('light');
+  toggleTheme.textContent=document.body.classList.contains('light')?'🌙':'☀️';
+}
 
 // ================= Load Videos =================
 async function loadVideos(){
-  const res = await fetch(API);
-  videosData = await res.json();
+  const res=await fetch(API);
+  videosData=await res.json();
 
   // Genres
-  const genres = [...new Set(videosData.map(v=>v.genre))];
-  document.getElementById('genres').innerHTML = genres.map(g=>`<a href="#" onclick="filterGenre('${g}')">${g}</a>`).join('');
+  const genres=[...new Set(videosData.map(v=>v.genre))];
+  document.getElementById('genres').innerHTML=genres.map(g=>`<a href="#" onclick="filterGenre('${g}')">${g}</a>`).join('');
+
+  // Trending 5 latest views
+  const trending=document.getElementById('trending');
+  const top= [...videosData].sort((a,b)=>b.views-a.views).slice(0,5);
+  trending.innerHTML=top.map(v=>`
+    <div class="trending-item" onclick="goPlayer('${v.id}')">
+      <img src="${v.thumbnail}" alt="${v.title}">
+      <div class="overlay">${v.title} | ${v.genre}</div>
+    </div>
+  `).join('');
 
   renderGrid();
 }
 
 // ================= Render Grid =================
 function renderGrid(genre=''){
-  let filtered = genre? videosData.filter(v=>v.genre===genre) : videosData;
-  const start = (currentPage-1)*perPage;
-  const pageData = filtered.slice(start,start+perPage);
-  const container = document.getElementById('videos');
-  container.innerHTML = pageData.map(v=>`
+  let filtered=genre?videosData.filter(v=>v.genre===genre):videosData;
+  const start=(currentPage-1)*perPage;
+  const pageData=filtered.slice(start,start+perPage);
+  const container=document.getElementById('videos');
+  container.innerHTML=pageData.map(v=>`
     <div class="grid-item" onclick="goPlayer('${v.id}')">
       <img src="${v.thumbnail}" alt="${v.title}">
       <div class="info">
@@ -160,21 +179,21 @@ function renderGrid(genre=''){
 }
 
 // ================= Pagination =================
-document.getElementById('prev').onclick = ()=>{if(currentPage>1){currentPage--; renderGrid();}}
-document.getElementById('next').onclick = ()=>{if(currentPage*perPage<videosData.length){currentPage++; renderGrid();}}
+document.getElementById('prev').onclick=()=>{if(currentPage>1){currentPage--;renderGrid();}}
+document.getElementById('next').onclick=()=>{if(currentPage*perPage<videosData.length){currentPage++;renderGrid();}}
 
 // ================= Filter Genre =================
-function filterGenre(g){ currentPage=1; renderGrid(g); }
+function filterGenre(g){currentPage=1;renderGrid(g);}
 
 // ================= Go to Player =================
-function goPlayer(id){ window.location.href='player.html?id='+id; }
+function goPlayer(id){window.location.href='player.html?id='+id;}
 
 // ================= Search =================
-document.getElementById('search').addEventListener('input', e=>{
-  const q = e.target.value.toLowerCase();
-  const filtered = videosData.filter(v=>v.title.toLowerCase().includes(q));
-  const container = document.getElementById('videos');
-  container.innerHTML = filtered.map(v=>`
+document.getElementById('search').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();
+  const filtered=videosData.filter(v=>v.title.toLowerCase().includes(q));
+  const container=document.getElementById('videos');
+  container.innerHTML=filtered.map(v=>`
     <div class="grid-item" onclick="goPlayer('${v.id}')">
       <img src="${v.thumbnail}" alt="${v.title}">
       <div class="info">
