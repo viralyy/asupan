@@ -26,6 +26,10 @@
     button:active {
       opacity: 0.7;
     }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -49,30 +53,36 @@ function submitVideo() {
   const video = document.getElementById("video").value;
   const genre = document.getElementById("genre").value;
   const file = document.getElementById("thumbnail").files[0];
+  const statusEl = document.getElementById("status");
 
   if (!title || !video || !file) {
-    status.innerText = "❌ Data belum lengkap";
+    statusEl.innerText = "❌ Data belum lengkap";
     return;
   }
 
   const reader = new FileReader();
-  reader.onload = function () {
-    fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: title,
-        thumbnail: reader.result, // BASE64
-        video_url: video,
-        genre: genre
-      })
-    })
-    .then(() => {
-      status.innerText = "✅ Berhasil ditambahkan";
-    })
-    .catch(() => {
-      status.innerText = "❌ Gagal kirim";
-    });
+  reader.onload = async function () {
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title,
+          thumbnail: reader.result,
+          video_url: video,
+          genre: genre
+        })
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+
+      statusEl.innerText = "✅ Berhasil ditambahkan";
+    } catch (err) {
+      statusEl.innerText = "❌ Error: " + err.message;
+    }
   };
 
   reader.readAsDataURL(file);
