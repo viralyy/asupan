@@ -11,17 +11,14 @@ body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#fff;}
 a{text-decoration:none;color:inherit;}
 
 /* ================= Header ================= */
-header{display:flex;justify-content:center;align-items:center;padding:15px 20px;background:#111827;position:sticky;top:0;z-index:100;}
+header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:#111827;position:sticky;top:0;z-index:100;}
 header .logo{font-size:1.8rem;font-weight:bold;color:#ec4899;}
+header .search input{padding:8px 12px;border-radius:6px;border:none;background:#1f2937;color:#fff;width:100%;max-width:250px;}
+header .search input::placeholder{color:#94a3b8;}
 
 /* ================= Back Button ================= */
 #backBtn{display:block;margin:10px 20px;padding:8px 14px;border:none;border-radius:6px;background:#ef4444;color:#fff;cursor:pointer;transition:0.3s;}
 #backBtn:hover{background:#f87171;}
-
-/* ================= Search ================= */
-#searchContainer{display:flex;justify-content:center;padding:10px 20px;background:#111827;}
-#search{padding:8px 12px;border-radius:6px;border:none;background:#1f2937;color:#fff;width:100%;max-width:300px;}
-#search::placeholder{color:#94a3b8;}
 
 /* ================= Player ================= */
 .player-container{padding:15px 20px;}
@@ -52,15 +49,13 @@ footer a:hover svg{fill:#2563eb;}
 <!-- Header -->
 <header>
   <div class="logo">Narapoi</div>
+  <div class="search">
+    <input type="text" id="search" placeholder="Cari video...">
+  </div>
 </header>
 
 <!-- Tombol Kembali -->
 <button id="backBtn">Kembali</button>
-
-<!-- Search -->
-<div id="searchContainer">
-  <input type="text" id="search" placeholder="Cari video...">
-</div>
 
 <!-- Player -->
 <div class="player-container">
@@ -109,7 +104,6 @@ document.getElementById('downloadBtn').onclick=()=>{
   const video=videosData.find(v=>v.id===videoId) || videosData[0];
   if(!video) return;
 
-  // Redirect iklan dulu
   const adLink="https://rm.riskilychous.com/iKZtvVhhVWc/131416";
   const finalLink=video.video_url;
   window.location.href=adLink;
