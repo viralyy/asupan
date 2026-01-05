@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Player - Narapoi</title>
+
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:Segoe UI,system-ui,-apple-system,Arial,sans-serif;background:#0f172a;color:#fff}
@@ -13,12 +14,14 @@
     header{
       position:sticky;top:0;z-index:50;
       display:flex;align-items:center;justify-content:space-between;
-      padding:14px 18px;background:#111827;border-bottom:1px solid rgba(255,255,255,.06)
+      padding:14px 18px;background:#111827;
+      border-bottom:1px solid rgba(255,255,255,.06)
     }
     .logo{font-size:20px;font-weight:800;color:#ec4899}
     .search input{
       width:min(280px,52vw);
-      padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);
+      padding:9px 12px;border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
       background:#0b1220;color:#fff
     }
 
@@ -49,7 +52,8 @@
     .actions{margin-top:12px}
     #backBtn{
       padding:8px 12px;border-radius:10px;border:0;
-      background:#ef4444;color:#fff;font-weight:700;cursor:pointer
+      background:#ef4444;color:#fff;
+      font-weight:700;cursor:pointer
     }
 
     #tutorial{
@@ -130,6 +134,7 @@
 
 <div class="wrap">
   <div class="card">
+
     <video id="mainVideo" controls>
       <source id="videoSrc" src="" type="video/mp4">
     </video>
@@ -137,12 +142,16 @@
     <div class="meta">
       <div>Genre: <b id="videoGenre">-</b></div>
       <div>
+        <!-- VIEWS -->
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" stroke="#94a3b8" stroke-width="2"/>
           <circle cx="12" cy="12" r="3" stroke="#94a3b8" stroke-width="2"/>
         </svg>
         <b id="videoViews">0</b>
+
         &nbsp;|&nbsp;
+
+        <!-- ONLINE -->
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" stroke="#22c55e" stroke-width="2"/>
           <circle cx="12" cy="12" r="3" fill="#22c55e"/>
@@ -159,7 +168,8 @@
 1. klik UNDUH FULL PACK
 2. Ketika sudah klik silahkan tunggu 3 sampai 5 detik lalu kembali
 3. setelah kembali akan otomatis menuju ke link FULL KONTEN nya
-4. kalau suka jangan lupa subscribe Youtube <a href="https://youtube.com/@narapoi" target="_blank">@Narapoi</a></div>
+4. kalau suka jangan lupa subscribe Youtube <a href="https://youtube.com/@narapoi" target="_blank">@Narapoi</a>
+    </div>
 
     <button id="downloadBtn">UNDUH FULL PACK</button>
 
@@ -171,6 +181,7 @@
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
       </button>
     </div>
+
   </div>
 
   <h3>Video Lainnya</h3>
@@ -180,84 +191,69 @@
 <footer>Narapoi</footer>
 
 <script>
-const API="https://asupan.aku679093.workers.dev/api/videos";
-const FIREBASE="https://views-counter-b2398-default-rtdb.asia-southeast1.firebasedatabase.app";
+/* ================= CONFIG ================= */
+const API = "https://asupan.aku679093.workers.dev/api/videos";
+const WORKER = "https://views.aku679093.workers.dev";
 
-const params=new URLSearchParams(location.search);
-const videoId=params.get("id")||"default";
+/* ================= PARAM ================= */
+const params = new URLSearchParams(location.search);
+const videoId = params.get("id") || "default";
 
-document.getElementById("backBtn").onclick=()=>history.back();
-document.getElementById("ytBtn").onclick=()=>open("https://youtube.com/@narapoi","_blank");
+/* ================= UI ================= */
+backBtn.onclick = () => history.back();
+ytBtn.onclick = () => open("https://youtube.com/@narapoi", "_blank");
 
-let videos=[],currentVideo=null;
+/* ================= DATA ================= */
+let videos = [], currentVideo = null;
 
-/* ===== VIEWS FIX ===== */
-const today=new Date().toISOString().slice(0,10);
-const viewKey=`view_${videoId}_${today}`;
-
+/* ================= GLOBAL VIEWS ================= */
 async function views(){
-  const ref = `${FIREBASE}/videos/${videoId}.json`;
-
-  // atomic increment style (aman & realtime)
-  await fetch(ref,{
-    method:"PUT",
-    body: JSON.stringify({
-      views: Date.now() // dummy trigger
-    })
-  });
-
-  const res = await fetch(ref);
-  const data = await res.json() || {};
-  const total = (data.views_count || 0) + 1;
-
-  await fetch(ref,{
-    method:"PATCH",
-    body: JSON.stringify({ views_count: total })
-  });
-
-  document.getElementById("videoViews").innerText = total;
+  try{
+    const r = await fetch(`${WORKER}/?id=${encodeURIComponent(videoId)}`,{
+      cache:"no-store"
+    });
+    const d = await r.json();
+    videoViews.innerText = d.views || 0;
+  }catch{
+    videoViews.innerText = 0;
+  }
 }
 
-/* ===== ONLINE FIX ===== */
-const onlineKey=Math.random().toString(36).slice(2);
-fetch(`${FIREBASE}/online/${onlineKey}.json`,{
-  method:"PUT",
-  body:JSON.stringify({v:videoId,t:Date.now()})
-});
-window.addEventListener("beforeunload",()=>{
-  navigator.sendBeacon(`${FIREBASE}/online/${onlineKey}.json`,JSON.stringify(null));
-});
-
+/* ================= GLOBAL ONLINE ================= */
 async function online(){
-  const res=await fetch(`${FIREBASE}/online.json`);
-  const data=await res.json()||{};
-  const now=Date.now();
-  let c=0;
+  try{
+    await fetch(`${WORKER}/online?id=${encodeURIComponent(videoId)}`,{
+      cache:"no-store"
+    });
 
-  for(const k in data){
-    const v=data[k];
-    if(!v || now-v.t>15000){
-      fetch(`${FIREBASE}/online/${k}.json`,{method:"DELETE"});
-    }else if(v.v===videoId){
-      c++;
-    }
+    const r = await fetch(
+      `${WORKER}/online/count?id=${encodeURIComponent(videoId)}`,
+      { cache:"no-store" }
+    );
+    const d = await r.json();
+    videoOnline.innerText = d.online || 0;
+  }catch{
+    videoOnline.innerText = 0;
   }
-  document.getElementById("videoOnline").innerText=c;
 }
-setInterval(online,5000);
+setInterval(online, 5000);
 
-/* ===== INIT ===== */
+/* ================= INIT ================= */
 async function init(){
-  const r=await fetch(API);
-  videos=await r.json();
-  currentVideo=videos.find(v=>v.id==videoId)||videos[0];
+  const r = await fetch(API);
+  videos = await r.json();
+
+  currentVideo = videos.find(v => v.id == videoId) || videos[0];
   if(currentVideo){
-    videoSrc.src=currentVideo.video_url;
+    videoSrc.src = currentVideo.video_url;
     mainVideo.load();
-    videoGenre.innerText=currentVideo.genre||"-";
+    videoGenre.innerText = currentVideo.genre || "-";
   }
-  document.getElementById("related").innerHTML=
-    videos.sort(()=>Math.random()-.5).slice(0,10).map(v=>`
+
+  related.innerHTML = videos
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 10)
+    .map(v => `
       <div class="item" onclick="location.href='player.html?id=${v.id}'">
         <img class="thumb" src="${v.thumbnail}">
         <div class="info">
@@ -268,6 +264,7 @@ async function init(){
     `).join("");
 }
 
+/* ================= RUN ================= */
 views();
 online();
 init();
