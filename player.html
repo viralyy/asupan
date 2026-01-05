@@ -25,7 +25,12 @@ header .search input::placeholder{color:#94a3b8;}
 video{width:100%;aspect-ratio:16/9;border-radius:8px;background:#000;display:block;}
 .video-info{display:flex;justify-content:space-between;padding:10px 0;font-size:14px;}
 .video-info div{display:flex;gap:5px;align-items:center;}
-#downloadBtn{padding:10px 15px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;margin-top:10px;transition:0.3s;}
+
+/* ================= Tutorial + UNDUH FULL PACK ================= */
+#downloadContainer{margin-top:15px;opacity:0;transform:translateY(20px);transition:0.6s ease;}
+#downloadContainer.show{opacity:1;transform:translateY(0);}
+#tutorial{text-align:left;font-size:14px;margin-bottom:8px;color:#e5e7eb;line-height:1.4;}
+#downloadBtn{padding:10px 15px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;transition:0.3s;display:block;width:100%;}
 #downloadBtn:hover{background:#3b82f6;}
 
 /* ================= Related Videos ================= */
@@ -34,7 +39,8 @@ video{width:100%;aspect-ratio:16/9;border-radius:8px;background:#000;display:blo
 @media(min-width:1024px){#related{grid-template-columns:repeat(4,1fr);}}
 .grid-item{border-radius:8px;overflow:hidden;transition:0.3s;cursor:pointer;}
 .grid-item img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:6px;display:block;}
-.grid-item .info{margin-top:6px;font-size:14px;background:rgba(0,0,0,0.6);padding:4px;border-radius:4px;}
+.grid-item .info{margin-top:6px;font-size:14px;background:rgba(0,0,0,0.6);padding:4px;border-radius:4px;opacity:0;transform:translateY(10px);transition:0.5s;}
+.grid-item:hover .info{opacity:1;transform:translateY(0);}
 .grid-item .info .title{font-weight:bold;margin-bottom:3px;}
 .grid-item .info .genre{color:#94a3b8;font-size:13px;}
 
@@ -69,7 +75,16 @@ footer a:hover svg{fill:#2563eb;}
     <div>Views: <span id="videoViews">12345</span> | Online: <span id="videoOnline">67</span></div>
   </div>
 
-  <button id="downloadBtn">UNDUK FULL PACK</button>
+  <!-- Tutorial + tombol UNDUH FULL PACK -->
+  <div id="downloadContainer">
+    <div id="tutorial">
+      <strong>Tutorial Download:</strong><br>
+      1. Klik tombol "UNDUH FULL PACK"<br>
+      2. Ikuti redirect iklan<br>
+      3. Setelah iklan selesai, video akan otomatis siap diunduh
+    </div>
+    <button id="downloadBtn">UNDUH FULL PACK</button>
+  </div>
 </div>
 
 <!-- Related Videos -->
@@ -97,6 +112,10 @@ async function loadVideo(){
   document.getElementById('videoSrc').src=video.video_url;
   document.getElementById('mainVideo').load();
   document.getElementById('videoGenre').innerText=video.genre;
+
+  // tampilkan tutorial + tombol dengan animasi fade-in slide-up
+  const downloadContainer=document.getElementById('downloadContainer');
+  setTimeout(()=>{downloadContainer.classList.add('show');},400);
 }
 
 // ================= Download Button =================
