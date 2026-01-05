@@ -10,21 +10,18 @@
     a{color:#60a5fa;text-decoration:none}
     a:hover{text-decoration:underline}
 
-    /* Header */
     header{
       position:sticky;top:0;z-index:50;
       display:flex;align-items:center;justify-content:space-between;
       padding:14px 18px;background:#111827;border-bottom:1px solid rgba(255,255,255,.06)
     }
-    .logo{font-size:20px;font-weight:800;color:#ec4899;letter-spacing:.2px}
+    .logo{font-size:20px;font-weight:800;color:#ec4899}
     .search input{
       width:min(280px,52vw);
       padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);
-      background:#0b1220;color:#fff;outline:none
+      background:#0b1220;color:#fff
     }
-    .search input::placeholder{color:#94a3b8}
 
-    /* Layout */
     .wrap{padding:16px 18px;max-width:1100px;margin:0 auto}
     .card{
       background:rgba(17,24,39,.6);
@@ -33,7 +30,6 @@
       padding:14px;
     }
 
-    /* Player */
     video{
       width:100%;
       aspect-ratio:16/9;
@@ -44,48 +40,40 @@
 
     .meta{
       margin-top:12px;
-      display:flex;justify-content:space-between;gap:12px;
+      display:flex;justify-content:space-between;
       font-size:14px;color:#cbd5e1
     }
-    .meta b{color:#fff;font-weight:700}
+    .meta b{color:#fff}
 
-    .actions{
-      margin-top:12px;
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center
-    }
+    .actions{margin-top:12px}
     #backBtn{
       padding:8px 12px;border-radius:10px;border:0;
-      background:#ef4444;color:#fff;cursor:pointer;font-weight:700
+      background:#ef4444;color:#fff;font-weight:700;cursor:pointer
     }
 
-    /* Tutorial */
     #tutorial{
       margin-top:12px;
       padding:12px;
       border-radius:12px;
       background:rgba(2,6,23,.55);
       border:1px solid rgba(255,255,255,.06);
-      color:#e5e7eb;
-      line-height:1.55;
       white-space:pre-wrap;
-      text-align:left;
-      font-weight:400;
       font-size:14px;
+      line-height:1.55;
     }
 
-    /* Download */
     #downloadBtn{
       width:100%;
       margin-top:12px;
-      padding:14px 16px;
-      border:0;border-radius:12px;
-      background:#2563eb;color:#fff;
-      font-weight:900;font-size:15px;
+      padding:14px;
+      border-radius:12px;
+      border:0;
+      background:#2563eb;
+      color:#fff;
+      font-weight:900;
       cursor:pointer
     }
-    #downloadBtn:hover{filter:brightness(1.07)}
 
-    /* Social icons */
     .social{
       margin-top:12px;
       display:flex;justify-content:center;gap:14px
@@ -97,36 +85,28 @@
       display:flex;align-items:center;justify-content:center;
       cursor:pointer
     }
-    .iconBtn:hover{filter:brightness(1.08)}
-    .iconBtn img{width:26px;height:26px;display:block}
+    .iconBtn img{width:26px;height:26px}
 
-    /* Related */
-    h3{margin:18px 2px 10px;font-size:16px;color:#e5e7eb}
+    h3{margin:18px 2px 10px}
     #related{
       display:grid;
       grid-template-columns:repeat(2,1fr);
       gap:12px;
     }
-    @media (min-width: 1024px){
+    @media(min-width:1024px){
       #related{grid-template-columns:repeat(4,1fr)}
     }
     .item{
-      cursor:pointer;
+      background:rgba(17,24,39,.55);
       border-radius:14px;
       overflow:hidden;
-      background:rgba(17,24,39,.55);
-      border:1px solid rgba(255,255,255,.06);
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.06)
     }
-    .thumb{
-      width:100%;
-      aspect-ratio:16/9;
-      object-fit:cover;
-      display:block;
-      background:#000;
-    }
+    .thumb{width:100%;aspect-ratio:16/9;object-fit:cover}
     .info{padding:10px}
-    .title{font-weight:800;font-size:14px;color:#fff;line-height:1.25}
-    .genre{margin-top:4px;font-size:12px;color:#94a3b8}
+    .title{font-weight:800}
+    .genre{font-size:12px;color:#94a3b8}
 
     footer{
       margin-top:18px;
@@ -136,6 +116,21 @@
       border-top:1px solid rgba(255,255,255,.06);
       background:#111827
     }
+
+    /* ONLINE DOT */
+    #onlineDot{
+      display:inline-block;
+      width:8px;height:8px;
+      margin-left:6px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 6px #22c55e;
+      animation:blink 1.2s infinite;
+    }
+    @keyframes blink{
+      0%,100%{opacity:1}
+      50%{opacity:.3}
+    }
   </style>
 </head>
 <body>
@@ -143,129 +138,118 @@
 <header>
   <div class="logo">Narapoi</div>
   <div class="search">
-    <input id="search" type="text" placeholder="Cari video..." />
+    <input id="search" placeholder="Cari video...">
   </div>
 </header>
 
 <div class="wrap">
-
   <div class="card">
     <video id="mainVideo" controls>
-      <source id="videoSrc" src="" type="video/mp4" />
-      Browsermu tidak mendukung video.
+      <source id="videoSrc" src="" type="video/mp4">
     </video>
 
     <div class="meta">
       <div>Genre: <b id="videoGenre">-</b></div>
-      <div>Views: <b id="videoViews">12345</b> | Online: <b id="videoOnline">67</b></div>
+      <div>
+        Views: <b id="videoViews">0</b> |
+        Online: <b id="videoOnline">0</b><span id="onlineDot"></span>
+      </div>
     </div>
 
     <div class="actions">
       <button id="backBtn">Kembali</button>
     </div>
 
-    <!-- Tutorial: DITULIS LANGSUNG DI HTML BIAR 100% MUNCUL -->
     <div id="tutorial">TUTORIAL DOWNLOAD FULL?
 1. klik UNDUH FULL PACK
 2. Ketika sudah klik silahkan tunggu 3 sampai 5 detik lalu kembali
 3. setelah kembali akan otomatis menuju ke link FULL KONTEN nya
-4. kalau suka jangan lupa subscribe Youtube <a href="https://youtube.com/@narapoi" target="_blank" rel="noopener"> @Narapoi</a></div>
+4. kalau suka jangan lupa subscribe Youtube <a href="https://youtube.com/@narapoi" target="_blank">@Narapoi</a></div>
 
     <button id="downloadBtn">UNDUH FULL PACK</button>
 
     <div class="social">
-      <button class="iconBtn" id="waBtn" title="WhatsApp">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WA">
-      </button>
-      <button class="iconBtn" id="ytBtn" title="YouTube">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YT">
-      </button>
+      <button class="iconBtn" id="waBtn"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg"></button>
+      <button class="iconBtn" id="ytBtn"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"></button>
     </div>
   </div>
 
   <h3>Video Lainnya</h3>
   <div id="related"></div>
-
 </div>
 
 <footer>Narapoi</footer>
 
 <script>
-  const API = "https://asupan.aku679093.workers.dev/api/videos";
-  const params = new URLSearchParams(location.search);
-  const videoId = params.get("id"); // bisa null
-  let videos = [];
-  let currentVideo = null;
+const API="https://asupan.aku679093.workers.dev/api/videos";
+const FIREBASE="https://views-counter-610fa-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-  // tombol kembali
-  document.getElementById("backBtn").addEventListener("click", () => history.back());
+const params=new URLSearchParams(location.search);
+const videoId=params.get("id")||"default";
 
-  // sosial (isi link sendiri nanti)
-  document.getElementById("waBtn").addEventListener("click", () => window.open("#", "_blank"));
-  document.getElementById("ytBtn").addEventListener("click", () => window.open("https://youtube.com/@narapoi", "_blank"));
+document.getElementById("backBtn").onclick=()=>history.back();
+document.getElementById("ytBtn").onclick=()=>open("https://youtube.com/@narapoi","_blank");
 
-  // download flow: iklan -> (user balik) -> full konten
-  // NOTE: sesuai request awal kamu: redirect ke iklan dulu, lalu setelah beberapa detik ke link tujuan.
-  // Kalau kamu mau versi "balik dulu baru ke full konten", bilang aja nanti biar gue ubah pakai localStorage.
-  document.getElementById("downloadBtn").addEventListener("click", () => {
-    if (!currentVideo) return;
-    const adLink = "https://rm.riskilychous.com/iKZtvVhhVWc/131416";
-    const finalLink = currentVideo.video_url;
-    window.location.href = adLink;
-    setTimeout(() => { window.location.href = finalLink; }, 1200);
+let videos=[],currentVideo=null;
+
+/* ===== VIEW 1x / HARI ===== */
+const today=new Date().toISOString().slice(0,10);
+const viewKey=`view_${videoId}_${today}`;
+
+async function views(){
+  const ref=`${FIREBASE}/videos/${videoId}.json`;
+  const res=await fetch(ref);
+  const data=await res.json()||{};
+  if(!localStorage.getItem(viewKey)){
+    await fetch(ref,{method:"PATCH",body:JSON.stringify({views:(data.views||0)+1})});
+    localStorage.setItem(viewKey,1);
+  }
+  document.getElementById("videoViews").innerText=data.views||0;
+}
+
+/* ===== ONLINE ===== */
+const onlineKey=Math.random().toString(36).slice(2);
+fetch(`${FIREBASE}/online/${onlineKey}.json`,{
+  method:"PUT",
+  body:JSON.stringify({v:videoId,t:Date.now()})
+});
+window.addEventListener("beforeunload",()=>{
+  navigator.sendBeacon(`${FIREBASE}/online/${onlineKey}.json`,JSON.stringify(null));
+});
+
+async function online(){
+  const res=await fetch(`${FIREBASE}/online.json`);
+  const data=await res.json()||{};
+  let c=0;
+  Object.values(data).forEach(v=>{
+    if(v.v===videoId&&Date.now()-v.t<15000)c++;
   });
+  document.getElementById("videoOnline").innerText=c;
+}
+setInterval(online,5000);
 
-  // render related
-  function renderRelated(list) {
-    const container = document.getElementById("related");
-    container.innerHTML = (list || []).slice(0, 10).map(v => `
-      <div class="item" onclick="location.href='player.html?id=${encodeURIComponent(v.id)}'">
-        <img class="thumb" src="${v.thumbnail}" alt="${(v.title||'').replace(/"/g,'&quot;')}" loading="lazy">
+/* ===== INIT ===== */
+async function init(){
+  const r=await fetch(API);
+  videos=await r.json();
+  currentVideo=videos.find(v=>v.id==videoId)||videos[0];
+  if(currentVideo){
+    videoSrc.src=currentVideo.video_url;
+    mainVideo.load();
+    videoGenre.innerText=currentVideo.genre||"-";
+  }
+  document.getElementById("related").innerHTML=
+    videos.sort(()=>Math.random()-.5).slice(0,10).map(v=>`
+      <div class="item" onclick="location.href='player.html?id=${v.id}'">
+        <img class="thumb" src="${v.thumbnail}">
         <div class="info">
-          <div class="title">${v.title || "Untitled"}</div>
-          <div class="genre">${v.genre || "-"}</div>
+          <div class="title">${v.title}</div>
+          <div class="genre">${v.genre}</div>
         </div>
       </div>
     `).join("");
-  }
-
-  // search realtime (filter di related)
-  document.getElementById("search").addEventListener("input", (e) => {
-    const q = e.target.value.toLowerCase().trim();
-    const filtered = !q ? videos : videos.filter(v =>
-      (v.title || "").toLowerCase().includes(q) ||
-      (v.genre || "").toLowerCase().includes(q)
-    );
-    renderRelated(filtered);
-  });
-
-  async function init() {
-    try {
-      const res = await fetch(API);
-      videos = await res.json();
-
-      // pilih video: kalau ga ada id, pakai video pertama
-      currentVideo = videoId ? videos.find(v => String(v.id) === String(videoId)) : videos[0];
-
-      // set video kalau ada
-      if (currentVideo) {
-        document.getElementById("videoSrc").src = currentVideo.video_url || "";
-        document.getElementById("mainVideo").load();
-        document.getElementById("videoGenre").textContent = currentVideo.genre || "-";
-      }
-
-      // related: random 10 (biar ga monoton)
-      const shuffled = [...videos].sort(() => Math.random() - 0.5);
-      renderRelated(shuffled);
-
-    } catch (err) {
-      console.error(err);
-      // related tetap kosong kalau API error, tapi tutorial & tombol tetap tampil
-      document.getElementById("videoGenre").textContent = "-";
-    }
-  }
-
-  init();
+}
+views();online();init();
 </script>
 
 </body>
