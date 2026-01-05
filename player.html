@@ -28,15 +28,16 @@ video{width:100%;aspect-ratio:16/9;border-radius:8px;background:#000;display:blo
 #backBtn:hover{background:#f87171;}
 
 /* Tutorial + UNDUH FULL PACK */
-#downloadContainer{margin-top:10px;}
+#downloadContainer{margin-top:10px;text-align:center;}
 #tutorial{font-weight:bold;color:#e5e7eb;font-size:15px;margin-bottom:8px;min-height:50px;white-space:pre-wrap;line-height:1.4;}
-#downloadBtn{padding:10px 15px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;transition:0.3s;display:block;width:100%;}
+#downloadBtn{padding:10px 15px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;transition:0.3s;display:inline-block;margin-bottom:10px;}
 #downloadBtn:hover{background:#3b82f6;}
 
-/* Sosial SVG */
-#socials{display:flex;gap:10px;margin-top:10px;}
-#socials a svg{width:28px;height:28px;fill:#fff;transition:0.3s;}
-#socials a:hover svg{fill:#2563eb;}
+/* Tombol Sosial di bawah UNDUH */
+.social-btns{display:flex;justify-content:center;gap:15px;margin-top:10px;}
+.social-btns button{background:#1f2937;border:none;padding:8px 10px;border-radius:6px;cursor:pointer;transition:0.3s;display:flex;align-items:center;gap:5px;color:#fff;}
+.social-btns button:hover{background:#2563eb;}
+.social-btns svg{width:24px;height:24px;}
 
 /* ================= Related Videos ================= */
 #related{display:grid;gap:15px;margin-top:20px;grid-template-columns:repeat(2,1fr);}
@@ -85,14 +86,20 @@ footer a:hover svg{fill:#2563eb;}
     <div id="tutorial"></div>
     <button id="downloadBtn">UNDUH FULL PACK</button>
 
-    <!-- Sosial SVG WA & YouTube -->
-    <div id="socials">
-      <a href="#" target="_blank" title="WhatsApp">
-        <svg viewBox="0 0 24 24"><path d="M12 0C5.372 0 0 5.373 0 12c0 2.11.554 4.08 1.514 5.816L0 24l6.242-1.602C8.922 23.444 10.95 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm6.29 17.29c-.247.693-1.423 1.32-1.978 1.408-.529.082-1.172.116-5.147-2.543-4.183-2.69-4.008-2.507-4.662-2.802-.655-.293-1.137-.928-1.313-1.69-.178-.762-.1-1.66.555-2.33.657-.67.981-.76 1.313-.76.33 0 .635.024.913.024.277 0 .647-.083.99.627.343.71 1.166 2.46 1.27 2.635.103.176.171.384.035.618-.136.233-.2.36-.392.58-.196.22-.416.492-.593.66-.176.167-.358.37-.152.729.205.36.91 1.49 1.95 2.41 1.343 1.193 2.46 1.56 2.812 1.738.352.177.556.147.76-.088.203-.236.912-1.052 1.154-1.412.243-.36.486-.296.818-.177.33.12 2.09.985 2.452 1.164.361.177.603.264.69.414.086.15.086.866-.16 1.558z"/></svg>
-      </a>
-      <a href="#" target="_blank" title="YouTube">
-        <svg viewBox="0 0 24 24"><path d="M23.498 6.186a2.993 2.993 0 0 0-2.114-2.123C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.384.563A2.993 2.993 0 0 0 .502 6.186 31.22 31.22 0 0 0 0 12a31.22 31.22 0 0 0 .502 5.814 2.993 2.993 0 0 0 2.114 2.123C4.4 20.5 12 20.5 12 20.5s7.6 0 9.384-.563a2.993 2.993 0 0 0 2.114-2.123A31.22 31.22 0 0 0 24 12a31.22 31.22 0 0 0-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-      </a>
+    <!-- Tombol Sosial & Salin Link -->
+    <div class="social-btns">
+      <button id="waBtn">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" width="24" height="24">
+        WA
+      </button>
+      <button id="ytBtn">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" width="24" height="24">
+        YouTube
+      </button>
+      <button id="copyBtn">
+        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19,21H5c-1.1,0-2-0.9-2-2V7h2v12h14V21z M16,1H4c-1.1,0-2,0.9-2,2v14h2V3h12V1z"/></svg>
+        Salin Link
+      </button>
     </div>
   </div>
 </div>
@@ -126,6 +133,7 @@ async function loadVideo(){
   // Tutorial typing animation
   const tutorialEl=document.getElementById('tutorial');
   const text="TUTORIAL DOWNLOAD:\n1. Klik tombol 'UNDUH FULL PACK'\n2. Ikuti redirect iklan\n3. Setelah iklan selesai, video akan otomatis siap diunduh";
+  tutorialEl.innerHTML='';
   typeWriter(tutorialEl,text,0);
 }
 
@@ -147,6 +155,14 @@ document.getElementById('downloadBtn').onclick=()=>{
   const finalLink=video.video_url;
   window.location.href=adLink;
   setTimeout(()=>{window.location.href=finalLink;},1000);
+}
+
+// ================= Tombol Sosial =================
+document.getElementById('waBtn').onclick=()=>{window.open("#","_blank");}
+document.getElementById('ytBtn').onclick=()=>{window.open("#","_blank");}
+document.getElementById('copyBtn').onclick=()=>{
+  navigator.clipboard.writeText(window.location.href);
+  alert("Link disalin!");
 }
 
 // ================= Related Videos =================
