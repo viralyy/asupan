@@ -16,20 +16,19 @@ header .logo{font-size:1.8rem;font-weight:bold;color:#ec4899;}
 header .search input{padding:8px 12px;border-radius:6px;border:none;background:#1f2937;color:#fff;width:100%;max-width:250px;}
 header .search input::placeholder{color:#94a3b8;}
 
-/* ================= Back Button ================= */
-#backBtn{display:block;margin:10px 20px;padding:8px 14px;border:none;border-radius:6px;background:#ef4444;color:#fff;cursor:pointer;transition:0.3s;}
-#backBtn:hover{background:#f87171;}
-
 /* ================= Player ================= */
 .player-container{padding:15px 20px;}
 video{width:100%;aspect-ratio:16/9;border-radius:8px;background:#000;display:block;}
 .video-info{display:flex;justify-content:space-between;padding:10px 0;font-size:14px;}
 .video-info div{display:flex;gap:5px;align-items:center;}
 
+/* ================= Back Button ================= */
+#backBtn{display:inline-block;margin-top:10px;padding:6px 12px;border:none;border-radius:6px;background:#ef4444;color:#fff;cursor:pointer;transition:0.3s;font-size:14px;}
+#backBtn:hover{background:#f87171;}
+
 /* ================= Tutorial + UNDUH FULL PACK ================= */
-#downloadContainer{margin-top:15px;opacity:0;transform:translateY(20px);transition:0.6s ease;}
-#downloadContainer.show{opacity:1;transform:translateY(0);}
-#tutorial{text-align:left;font-size:14px;margin-bottom:8px;color:#e5e7eb;line-height:1.4;}
+#downloadContainer{margin-top:10px;}
+#tutorial{font-weight:bold;color:#e5e7eb;font-size:15px;margin-bottom:8px;min-height:50px;white-space:pre-wrap;line-height:1.4;}
 #downloadBtn{padding:10px 15px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer;transition:0.3s;display:block;width:100%;}
 #downloadBtn:hover{background:#3b82f6;}
 
@@ -60,9 +59,6 @@ footer a:hover svg{fill:#2563eb;}
   </div>
 </header>
 
-<!-- Tombol Kembali -->
-<button id="backBtn">Kembali</button>
-
 <!-- Player -->
 <div class="player-container">
   <video id="mainVideo" controls>
@@ -75,14 +71,12 @@ footer a:hover svg{fill:#2563eb;}
     <div>Views: <span id="videoViews">12345</span> | Online: <span id="videoOnline">67</span></div>
   </div>
 
+  <!-- Tombol Kembali di bawah genre -->
+  <button id="backBtn">Kembali</button>
+
   <!-- Tutorial + tombol UNDUH FULL PACK -->
   <div id="downloadContainer">
-    <div id="tutorial">
-      <strong>Tutorial Download:</strong><br>
-      1. Klik tombol "UNDUH FULL PACK"<br>
-      2. Ikuti redirect iklan<br>
-      3. Setelah iklan selesai, video akan otomatis siap diunduh
-    </div>
+    <div id="tutorial"></div>
     <button id="downloadBtn">UNDUH FULL PACK</button>
   </div>
 </div>
@@ -113,9 +107,19 @@ async function loadVideo(){
   document.getElementById('mainVideo').load();
   document.getElementById('videoGenre').innerText=video.genre;
 
-  // tampilkan tutorial + tombol dengan animasi fade-in slide-up
-  const downloadContainer=document.getElementById('downloadContainer');
-  setTimeout(()=>{downloadContainer.classList.add('show');},400);
+  // Tampilkan tutorial dengan typing animation
+  const tutorialEl=document.getElementById('tutorial');
+  const text="TUTORIAL DOWNLOAD:\n1. Klik tombol 'UNDUH FULL PACK'\n2. Ikuti redirect iklan\n3. Setelah iklan selesai, video akan otomatis siap diunduh";
+  typeWriter(tutorialEl,text,0);
+}
+
+// ================= Typing Animation =================
+function typeWriter(el,text,i){
+  if(i<text.length){
+    el.innerHTML+=text.charAt(i);
+    i++;
+    setTimeout(()=>typeWriter(el,text,i),30);
+  }
 }
 
 // ================= Download Button =================
