@@ -1,154 +1,180 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Player - Narapoi</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Player - Narapoi</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Segoe UI,system-ui,-apple-system,Arial,sans-serif;background:#0f172a;color:#fff}
+    a{color:#60a5fa;text-decoration:none}
+    a:hover{text-decoration:underline}
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Segoe UI,system-ui;background:#0f172a;color:#fff}
-a{color:#60a5fa;text-decoration:none}
+    header{
+      position:sticky;top:0;z-index:50;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 18px;background:#111827;border-bottom:1px solid rgba(255,255,255,.06)
+    }
+    .logo{font-size:20px;font-weight:800;color:#ec4899}
+    .search input{
+      width:min(280px,52vw);
+      padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);
+      background:#0b1220;color:#fff
+    }
 
-header{
-  position:sticky;top:0;z-index:50;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:14px 18px;background:#111827;
-  border-bottom:1px solid rgba(255,255,255,.06)
-}
-.logo{font-size:20px;font-weight:800;color:#ec4899}
-.search input{
-  padding:9px 12px;border-radius:10px;
-  background:#0b1220;border:1px solid rgba(255,255,255,.08);
-  color:#fff
-}
+    .wrap{padding:16px 18px;max-width:1100px;margin:0 auto}
+    .card{
+      background:rgba(17,24,39,.6);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:14px;
+    }
 
-.wrap{max-width:1100px;margin:auto;padding:16px}
-.card{
-  background:rgba(17,24,39,.6);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:14px;padding:14px
-}
+    video{
+      width:100%;
+      aspect-ratio:16/9;
+      background:#000;
+      border-radius:12px;
+      display:block;
+    }
 
-video{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px}
+    .meta{
+      margin-top:12px;
+      display:flex;justify-content:space-between;
+      font-size:14px;color:#cbd5e1
+    }
+    .meta b{color:#fff}
+    .meta svg{vertical-align:-3px;margin-right:4px}
 
-.meta{
-  margin-top:12px;
-  display:flex;justify-content:space-between;
-  font-size:14px;color:#cbd5e1
-}
-.meta span{display:flex;align-items:center;gap:6px}
-.meta svg{width:16px;height:16px;fill:#94a3b8}
+    .actions{margin-top:12px}
+    #backBtn{
+      padding:8px 12px;border-radius:10px;border:0;
+      background:#ef4444;color:#fff;font-weight:700;cursor:pointer
+    }
 
-#onlineDot{
-  width:8px;height:8px;border-radius:50%;
-  background:#22c55e;
-  box-shadow:0 0 6px #22c55e;
-  animation:blink 1.2s infinite
-}
-@keyframes blink{50%{opacity:.3}}
+    #tutorial{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      background:rgba(2,6,23,.55);
+      border:1px solid rgba(255,255,255,.06);
+      white-space:pre-wrap;
+      font-size:14px;
+      line-height:1.55;
+    }
 
-#backBtn{
-  margin-top:12px;
-  padding:8px 12px;border-radius:10px;
-  background:#ef4444;border:0;color:#fff;
-  font-weight:700;cursor:pointer
-}
+    #downloadBtn{
+      width:100%;
+      margin-top:12px;
+      padding:14px;
+      border-radius:12px;
+      border:0;
+      background:#2563eb;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer
+    }
 
-#tutorial{
-  margin-top:12px;
-  padding:12px;
-  border-radius:12px;
-  background:rgba(2,6,23,.55);
-  border:1px solid rgba(255,255,255,.06);
-  font-size:14px;line-height:1.55;white-space:pre-wrap
-}
+    .social{
+      margin-top:12px;
+      display:flex;justify-content:center;gap:14px
+    }
+    .iconBtn{
+      width:48px;height:48px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:#0b1220;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer
+    }
+    .iconBtn img{width:26px;height:26px}
 
-#downloadBtn{
-  width:100%;margin-top:12px;
-  padding:14px;border-radius:12px;
-  background:#2563eb;border:0;
-  color:#fff;font-weight:900;cursor:pointer
-}
+    h3{margin:18px 2px 10px}
+    #related{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    @media(min-width:1024px){
+      #related{grid-template-columns:repeat(4,1fr)}
+    }
+    .item{
+      background:rgba(17,24,39,.55);
+      border-radius:14px;
+      overflow:hidden;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.06)
+    }
+    .thumb{width:100%;aspect-ratio:16/9;object-fit:cover}
+    .info{padding:10px}
+    .title{font-weight:800}
+    .genre{font-size:12px;color:#94a3b8}
 
-.social{
-  margin-top:12px;
-  display:flex;justify-content:center;gap:14px
-}
-.iconBtn{
-  width:48px;height:48px;border-radius:12px;
-  background:#0b1220;border:1px solid rgba(255,255,255,.08);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer
-}
-.iconBtn svg{width:26px;height:26px}
-
-#related{
-  margin-top:16px;
-  display:grid;grid-template-columns:repeat(2,1fr);gap:12px
-}
-@media(min-width:1024px){
-  #related{grid-template-columns:repeat(4,1fr)}
-}
-.item{
-  background:rgba(17,24,39,.55);
-  border-radius:14px;overflow:hidden;
-  border:1px solid rgba(255,255,255,.06);
-  cursor:pointer
-}
-.thumb{width:100%;aspect-ratio:16/9;object-fit:cover}
-.info{padding:10px}
-.title{font-weight:800}
-.genre{font-size:12px;color:#94a3b8}
-
-footer{
-  margin-top:18px;padding:18px;
-  text-align:center;color:#94a3b8;
-  background:#111827;border-top:1px solid rgba(255,255,255,.06)
-}
-</style>
+    footer{
+      margin-top:18px;
+      padding:18px 0;
+      text-align:center;
+      color:#94a3b8;
+      border-top:1px solid rgba(255,255,255,.06);
+      background:#111827
+    }
+  </style>
 </head>
 <body>
 
 <header>
   <div class="logo">Narapoi</div>
-  <div class="search"><input placeholder="Cari video..."></div>
+  <div class="search">
+    <input id="search" placeholder="Cari video...">
+  </div>
 </header>
 
 <div class="wrap">
-<div class="card">
+  <div class="card">
+    <video id="mainVideo" controls>
+      <source id="videoSrc" src="" type="video/mp4">
+    </video>
 
-<video id="mainVideo" controls></video>
+    <div class="meta">
+      <div>Genre: <b id="videoGenre">-</b></div>
+      <div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" stroke="#94a3b8" stroke-width="2"/>
+          <circle cx="12" cy="12" r="3" stroke="#94a3b8" stroke-width="2"/>
+        </svg>
+        <b id="videoViews">0</b>
+        &nbsp;|&nbsp;
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="8" stroke="#22c55e" stroke-width="2"/>
+          <circle cx="12" cy="12" r="3" fill="#22c55e"/>
+        </svg>
+        <b id="videoOnline">0</b>
+      </div>
+    </div>
 
-<div class="meta">
-  <span>
-    <!-- eye -->
-    <svg viewBox="0 0 24 24"><path d="M12 5C5 5 1 12 1 12s4 7 11 7 11-7 11-7-4-7-11-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/></svg>
-    <b id="videoViews">0</b>
-  </span>
+    <div class="actions">
+      <button id="backBtn">Kembali</button>
+    </div>
 
-  <span>
-    <!-- user -->
-    <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5Z"/></svg>
-    <b id="videoOnline">0</b>
-    <span id="onlineDot"></span>
-  </span>
-</div>
-
-<button id="backBtn">Kembali</button>
-
-<div id="tutorial">TUTORIAL DOWNLOAD FULL?
+    <div id="tutorial">TUTORIAL DOWNLOAD FULL?
 1. klik UNDUH FULL PACK
-2. tunggu 3–5 detik lalu kembali
-3. otomatis masuk link FULL
-4. subscribe Youtube <a href="https://youtube.com/@narapoi" target="_blank">@Narapoi</a></div>
+2. Ketika sudah klik silahkan tunggu 3 sampai 5 detik lalu kembali
+3. setelah kembali akan otomatis menuju ke link FULL KONTEN nya
+4. kalau suka jangan lupa subscribe Youtube <a href="https://youtube.com/@narapoi" target="_blank">@Narapoi</a></div>
 
-<button id="downloadBtn">UNDUH FULL PACK</button>
+    <button id="downloadBtn">UNDUH FULL PACK</button>
 
-</div>
+    <div class="social">
+      <button class="iconBtn" id="waBtn">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
+      </button>
+      <button class="iconBtn" id="ytBtn">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
+      </button>
+    </div>
+  </div>
 
-<h3 style="margin:16px 0">Video Lainnya</h3>
-<div id="related"></div>
+  <h3>Video Lainnya</h3>
+  <div id="related"></div>
 </div>
 
 <footer>Narapoi</footer>
@@ -157,59 +183,87 @@ footer{
 const API="https://asupan.aku679093.workers.dev/api/videos";
 const FIREBASE="https://views-counter-b2398-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-const id=new URLSearchParams(location.search).get("id")||"default";
-const today=new Date().toISOString().slice(0,10);
-const viewKey=`view_${id}_${today}`;
+const params=new URLSearchParams(location.search);
+const videoId=params.get("id")||"default";
 
-async function addView(){
-  const ref=`${FIREBASE}/videos/${id}.json`;
-  let data=await (await fetch(ref)).json()||{views:0};
+document.getElementById("backBtn").onclick=()=>history.back();
+document.getElementById("ytBtn").onclick=()=>open("https://youtube.com/@narapoi","_blank");
+
+let videos=[],currentVideo=null;
+
+/* ===== VIEWS FIX ===== */
+const today=new Date().toISOString().slice(0,10);
+const viewKey=`view_${videoId}_${today}`;
+
+async function views(){
+  const ref=`${FIREBASE}/videos/${videoId}.json`;
+  const res=await fetch(ref);
+  let data=await res.json()||{views:0};
 
   if(!localStorage.getItem(viewKey)){
     data.views++;
     await fetch(ref,{
       method:"PUT",
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
+      body:JSON.stringify({views:data.views})
     });
     localStorage.setItem(viewKey,1);
   }
   document.getElementById("videoViews").innerText=data.views;
 }
 
+/* ===== ONLINE FIX ===== */
 const onlineKey=Math.random().toString(36).slice(2);
 fetch(`${FIREBASE}/online/${onlineKey}.json`,{
   method:"PUT",
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify({id,t:Date.now()})
+  body:JSON.stringify({v:videoId,t:Date.now()})
 });
-
 window.addEventListener("beforeunload",()=>{
-  fetch(`${FIREBASE}/online/${onlineKey}.json`,{method:"DELETE"});
+  navigator.sendBeacon(`${FIREBASE}/online/${onlineKey}.json`,JSON.stringify(null));
 });
 
 async function online(){
-  const data=await (await fetch(`${FIREBASE}/online.json`)).json()||{};
+  const res=await fetch(`${FIREBASE}/online.json`);
+  const data=await res.json()||{};
+  const now=Date.now();
   let c=0;
-  Object.values(data).forEach(v=>{
-    if(v.id===id && Date.now()-v.t<15000) c++;
-  });
+
+  for(const k in data){
+    const v=data[k];
+    if(!v || now-v.t>15000){
+      fetch(`${FIREBASE}/online/${k}.json`,{method:"DELETE"});
+    }else if(v.v===videoId){
+      c++;
+    }
+  }
   document.getElementById("videoOnline").innerText=c;
 }
 setInterval(online,5000);
 
+/* ===== INIT ===== */
 async function init(){
-  const vids=await (await fetch(API)).json();
-  const v=vids.find(x=>x.id==id)||vids[0];
-  mainVideo.src=v.video_url;
-  related.innerHTML=vids.sort(()=>Math.random()-.5).slice(0,10).map(v=>`
-    <div class="item" onclick="location.href='player.html?id=${v.id}'">
-      <img class="thumb" src="${v.thumbnail}">
-      <div class="info"><div class="title">${v.title}</div><div class="genre">${v.genre}</div></div>
-    </div>`).join("");
+  const r=await fetch(API);
+  videos=await r.json();
+  currentVideo=videos.find(v=>v.id==videoId)||videos[0];
+  if(currentVideo){
+    videoSrc.src=currentVideo.video_url;
+    mainVideo.load();
+    videoGenre.innerText=currentVideo.genre||"-";
+  }
+  document.getElementById("related").innerHTML=
+    videos.sort(()=>Math.random()-.5).slice(0,10).map(v=>`
+      <div class="item" onclick="location.href='player.html?id=${v.id}'">
+        <img class="thumb" src="${v.thumbnail}">
+        <div class="info">
+          <div class="title">${v.title}</div>
+          <div class="genre">${v.genre}</div>
+        </div>
+      </div>
+    `).join("");
 }
 
-addView(); online(); init();
+views();
+online();
+init();
 </script>
 
 </body>
