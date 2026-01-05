@@ -117,7 +117,6 @@
       background:#111827
     }
 
-    /* ONLINE DOT */
     #onlineDot{
       display:inline-block;
       width:8px;height:8px;
@@ -169,8 +168,12 @@
     <button id="downloadBtn">UNDUH FULL PACK</button>
 
     <div class="social">
-      <button class="iconBtn" id="waBtn"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg"></button>
-      <button class="iconBtn" id="ytBtn"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"></button>
+      <button class="iconBtn" id="waBtn">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
+      </button>
+      <button class="iconBtn" id="ytBtn">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
+      </button>
     </div>
   </div>
 
@@ -182,7 +185,7 @@
 
 <script>
 const API="https://asupan.aku679093.workers.dev/api/videos";
-const FIREBASE="https://views-counter-610fa-default-rtdb.asia-southeast1.firebasedatabase.app";
+const FIREBASE="https://views-counter-b2398-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 const params=new URLSearchParams(location.search);
 const videoId=params.get("id")||"default";
@@ -192,7 +195,6 @@ document.getElementById("ytBtn").onclick=()=>open("https://youtube.com/@narapoi"
 
 let videos=[],currentVideo=null;
 
-/* ===== VIEW 1x / HARI ===== */
 const today=new Date().toISOString().slice(0,10);
 const viewKey=`view_${videoId}_${today}`;
 
@@ -207,7 +209,6 @@ async function views(){
   document.getElementById("videoViews").innerText=data.views||0;
 }
 
-/* ===== ONLINE ===== */
 const onlineKey=Math.random().toString(36).slice(2);
 fetch(`${FIREBASE}/online/${onlineKey}.json`,{
   method:"PUT",
@@ -228,7 +229,6 @@ async function online(){
 }
 setInterval(online,5000);
 
-/* ===== INIT ===== */
 async function init(){
   const r=await fetch(API);
   videos=await r.json();
