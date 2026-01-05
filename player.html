@@ -43,11 +43,10 @@
 
     .meta{
       margin-top:12px;
-      display:flex;justify-content:space-between;
-      font-size:14px;color:#cbd5e1
+      font-size:14px;
+      color:#cbd5e1
     }
     .meta b{color:#fff}
-    .meta svg{vertical-align:-3px;margin-right:4px}
 
     .actions{margin-top:12px}
     #backBtn{
@@ -128,7 +127,7 @@
 <header>
   <div class="logo">Narapoi</div>
   <div class="search">
-    <input id="search" placeholder="Cari video...">
+    <input placeholder="Cari video...">
   </div>
 </header>
 
@@ -140,24 +139,7 @@
     </video>
 
     <div class="meta">
-      <div>Genre: <b id="videoGenre">-</b></div>
-      <div>
-        <!-- VIEWS -->
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" stroke="#94a3b8" stroke-width="2"/>
-          <circle cx="12" cy="12" r="3" stroke="#94a3b8" stroke-width="2"/>
-        </svg>
-        <b id="videoViews">0</b>
-
-        &nbsp;|&nbsp;
-
-        <!-- ONLINE -->
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="8" stroke="#22c55e" stroke-width="2"/>
-          <circle cx="12" cy="12" r="3" fill="#22c55e"/>
-        </svg>
-        <b id="videoOnline">0</b>
-      </div>
+      Genre: <b id="videoGenre">-</b>
     </div>
 
     <div class="actions">
@@ -174,10 +156,10 @@
     <button id="downloadBtn">UNDUH FULL PACK</button>
 
     <div class="social">
-      <button class="iconBtn" id="waBtn">
+      <button class="iconBtn" onclick="open('https://wa.me/', '_blank')">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
       </button>
-      <button class="iconBtn" id="ytBtn">
+      <button class="iconBtn" onclick="open('https://youtube.com/@narapoi', '_blank')">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
       </button>
     </div>
@@ -191,63 +173,21 @@
 <footer>Narapoi</footer>
 
 <script>
-/* ================= CONFIG ================= */
 const API = "https://asupan.aku679093.workers.dev/api/videos";
-const WORKER = "https://views.aku679093.workers.dev";
-
-/* ================= PARAM ================= */
 const params = new URLSearchParams(location.search);
-const videoId = params.get("id") || "default";
+const videoId = params.get("id");
 
-/* ================= UI ================= */
 backBtn.onclick = () => history.back();
-ytBtn.onclick = () => open("https://youtube.com/@narapoi", "_blank");
 
-/* ================= DATA ================= */
-let videos = [], currentVideo = null;
-
-/* ================= GLOBAL VIEWS ================= */
-async function views(){
-  try{
-    const r = await fetch(`${WORKER}/?id=${encodeURIComponent(videoId)}`,{
-      cache:"no-store"
-    });
-    const d = await r.json();
-    videoViews.innerText = d.views || 0;
-  }catch{
-    videoViews.innerText = 0;
-  }
-}
-
-/* ================= GLOBAL ONLINE ================= */
-async function online(){
-  try{
-    await fetch(`${WORKER}/online?id=${encodeURIComponent(videoId)}`,{
-      cache:"no-store"
-    });
-
-    const r = await fetch(
-      `${WORKER}/online/count?id=${encodeURIComponent(videoId)}`,
-      { cache:"no-store" }
-    );
-    const d = await r.json();
-    videoOnline.innerText = d.online || 0;
-  }catch{
-    videoOnline.innerText = 0;
-  }
-}
-setInterval(online, 5000);
-
-/* ================= INIT ================= */
 async function init(){
   const r = await fetch(API);
-  videos = await r.json();
+  const videos = await r.json();
 
-  currentVideo = videos.find(v => v.id == videoId) || videos[0];
-  if(currentVideo){
-    videoSrc.src = currentVideo.video_url;
+  const current = videos.find(v => v.id == videoId) || videos[0];
+  if(current){
+    videoSrc.src = current.video_url;
     mainVideo.load();
-    videoGenre.innerText = currentVideo.genre || "-";
+    videoGenre.innerText = current.genre || "-";
   }
 
   related.innerHTML = videos
@@ -264,9 +204,6 @@ async function init(){
     `).join("");
 }
 
-/* ================= RUN ================= */
-views();
-online();
 init();
 </script>
 
