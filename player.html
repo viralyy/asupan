@@ -63,10 +63,8 @@ video{
   background:#ef4444;
   color:#fff;
   cursor:pointer;
-  transition:0.3s;
   font-size:14px;
 }
-#backBtn:hover{background:#f87171;}
 
 /* Download Container */
 #downloadContainer{
@@ -86,9 +84,6 @@ video{
   min-height:60px;
   white-space:pre-wrap;
   line-height:1.4;
-  opacity:0;
-  transform:translateY(-10px);
-  transition:opacity 0.6s, transform 0.6s;
 }
 
 /* Tombol UNDUH FULL PACK */
@@ -103,11 +98,7 @@ video{
   font-size:16px;
   font-weight:bold;
   cursor:pointer;
-  transition:0.3s;
-  opacity:0;
-  transform:translateY(20px);
 }
-#downloadBtn:hover{background:#3b82f6;}
 
 /* Tombol Sosial (Logo Only) */
 .social-btns{
@@ -115,9 +106,6 @@ video{
   justify-content:center;
   gap:20px;
   margin-top:10px;
-  opacity:0;
-  transform:translateY(10px);
-  transition:0.5s;
 }
 .social-btns button{
   width:50px;
@@ -129,9 +117,7 @@ video{
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  transition:0.3s;
 }
-.social-btns button:hover{background:#2563eb;}
 .social-btns img{width:28px;height:28px;}
 
 /* Related Videos */
@@ -143,7 +129,7 @@ video{
 }
 @media(min-width:768px){#related{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:1024px){#related{grid-template-columns:repeat(4,1fr);}}
-.grid-item{border-radius:8px;overflow:hidden;transition:0.3s;cursor:pointer;position:relative;}
+.grid-item{border-radius:8px;overflow:hidden;cursor:pointer;position:relative;}
 .grid-item img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:6px;display:block;}
 .grid-item .info{
   position:absolute;
@@ -152,11 +138,7 @@ video{
   right:0;
   background:rgba(0,0,0,0.6);
   padding:6px;
-  opacity:0;
-  transform:translateY(10px);
-  transition:0.4s;
 }
-.grid-item:hover .info{opacity:1;transform:translateY(0);}
 .grid-item .info .title{font-weight:bold;color:#fff;}
 .grid-item .info .genre{color:#94a3b8;font-size:13px;}
 
@@ -168,11 +150,6 @@ footer{
   color:#9ca3af;
   margin-top:20px;
   font-size:0.9rem;
-}
-
-/* Animations */
-@keyframes fadeInUp{
-  to{opacity:1;transform:translateY(0);}
 }
 </style>
 </head>
@@ -242,35 +219,17 @@ async function loadVideo(){
     document.getElementById('mainVideo').load();
     document.getElementById('videoGenre').innerText=video.genre;
 
-    // Tutorial typing effect muncul fade-in
+    // Tutorial selalu muncul
     const tutorialEl=document.getElementById('tutorial');
-    tutorialEl.style.opacity='1';
-    tutorialEl.style.transform='translateY(0)';
-    const text="TUTORIAL DOWNLOAD:\n1. Klik tombol 'UNDUH FULL PACK'\n2. Ikuti redirect iklan\n3. Setelah iklan selesai, video akan otomatis siap diunduh";
-    tutorialEl.innerHTML='';
-    typeWriter(tutorialEl,text,0);
+    tutorialEl.innerHTML="TUTORIAL DOWNLOAD:\n1. Klik tombol 'UNDUH FULL PACK'\n2. Ikuti redirect iklan\n3. Setelah iklan selesai, video akan otomatis siap diunduh";
 
-    // Tombol download muncul fade + slide
-    const downloadBtn=document.getElementById('downloadBtn');
-    setTimeout(()=>{
-      downloadBtn.style.opacity='1';
-      downloadBtn.style.transform='translateY(0)';
-    },500);
+    // Tombol download langsung muncul
+    document.getElementById('downloadBtn').style.display='block';
 
-    // Tombol sosial muncul staggered
-    const social=document.querySelector('.social-btns');
-    setTimeout(()=>{social.style.opacity='1';social.style.transform='translateY(0)';},800);
+    // Tombol sosial langsung muncul
+    document.querySelector('.social-btns').style.display='flex';
   }catch(err){
     console.error("Error load video:",err);
-  }
-}
-
-// Typing Animation
-function typeWriter(el,text,i){
-  if(i<text.length){
-    el.innerHTML+=text.charAt(i);
-    i++;
-    setTimeout(()=>typeWriter(el,text,i),30);
   }
 }
 
@@ -308,11 +267,8 @@ function renderRelated(){
 document.getElementById('search').addEventListener('input',e=>{
   const q=e.target.value.toLowerCase();
   const filtered=videosData.filter(v=>v.title.toLowerCase().includes(q));
-  renderFiltered(filtered);
-});
-function renderFiltered(arr){
   const container=document.getElementById('related');
-  container.innerHTML=arr.map(v=>`
+  container.innerHTML=filtered.map(v=>`
     <div class="grid-item" onclick="window.location.href='player.html?id=${v.id}'">
       <img src="${v.thumbnail}" alt="${v.title}">
       <div class="info">
@@ -321,7 +277,7 @@ function renderFiltered(arr){
       </div>
     </div>
   `).join('');
-}
+});
 
 // Init
 loadVideo();
