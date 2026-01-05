@@ -126,7 +126,7 @@ video{
   transition:0.3s;
 }
 .social-btns button:hover{background:#2563eb;}
-.social-btns img, .social-btns svg{width:28px;height:28px;}
+.social-btns img{width:28px;height:28px;}
 
 /* Related Videos */
 #related{
@@ -205,9 +205,6 @@ footer{
     <div class="social-btns">
       <button id="waBtn"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WA"></button>
       <button id="ytBtn"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YT"></button>
-      <button id="copyBtn">
-        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19,21H5c-1.1,0-2-0.9-2-2V7h2v12h14V21z M16,1H4c-1.1,0-2,0.9-2,2v14h2V3h12V1z"/></svg>
-      </button>
     </div>
   </div>
 </div>
@@ -267,10 +264,6 @@ document.getElementById('downloadBtn').onclick=()=>{
 // Sosial Buttons
 document.getElementById('waBtn').onclick=()=>{window.open("#","_blank");}
 document.getElementById('ytBtn').onclick=()=>{window.open("#","_blank");}
-document.getElementById('copyBtn').onclick=()=>{
-  navigator.clipboard.writeText(window.location.href);
-  alert("Link disalin!");
-}
 
 // Related Videos
 function renderRelated(){
