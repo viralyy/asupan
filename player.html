@@ -199,75 +199,101 @@
 <footer>Narapoi</footer>
 
 <script>
-const API="https://asupan.aku679093.workers.dev/api/videos";
-const params=new URLSearchParams(location.search);
-const videoId=params.get("id");
-let currentVideo=null;
+const API = "https://asupan.aku679093.workers.dev/api/videos";
+const params = new URLSearchParams(location.search);
+const videoId = params.get("id");
+let currentVideo = null;
 
-backBtn.onclick=()=>history.back();
+backBtn.onclick = () => history.back();
 
+/* ===== INIT ===== */
 async function init(){
-  const r=await fetch(API);
-  const videos=await r.json();
-  currentVideo=videos.find(v=>v.id==videoId)||videos[0];
+  const r = await fetch(API);
+  const videos = await r.json();
+
+  currentVideo = videos.find(v => v.id == videoId) || videos[0];
+
   if(currentVideo){
-    videoSrc.src=currentVideo.video_url;
+    videoSrc.src = currentVideo.video_url;
     mainVideo.load();
-    videoGenre.innerText=currentVideo.genre||"-";
+    videoGenre.innerText = currentVideo.genre || "-";
   }
-  related.innerHTML=videos.sort(()=>Math.random()-.5).slice(0,10).map(v=>`
-    <div class="item" onclick="location.href='player.html?id=${v.id}'">
-      <img class="thumb" src="${v.thumbnail}">
-      <div class="info">
-        <div class="title">${v.title}</div>
-        <div class="genre">${v.genre}</div>
+
+  related.innerHTML = videos
+    .sort(() => Math.random() - .5)
+    .slice(0,10)
+    .map(v => `
+      <div class="item" onclick="location.href='player.html?id=${v.id}'">
+        <img class="thumb" src="${v.thumbnail}">
+        <div class="info">
+          <div class="title">${v.title}</div>
+          <div class="genre">${v.genre}</div>
+        </div>
       </div>
-    </div>`).join("");
+    `).join("");
 }
 init();
 
-/* ===== FULL PACK FIX ===== */
-downloadBtn.onclick=()=>{
-  if(!currentVideo) return;
-  downloadBtn.disabled=true;
-  downloadBtn.innerText="MEMPROSES...";
-  setTimeout(()=>{
-    const url=currentVideo.full_url||currentVideo.download_url||"https://youtube.com/@narapoi";
-    open(url,"_blank");
-    downloadBtn.innerText="UNDUH FULL PACK";
-    downloadBtn.disabled=false;
-  },3000);
+/* ===== FULL PACK FIX (BENAR) ===== */
+downloadBtn.onclick = () => {
+  if(!currentVideo){
+    alert("Video belum siap");
+    return;
+  }
+
+  const fullLink =
+    currentVideo.full_pack ||
+    currentVideo.full_url ||
+    currentVideo.download_url ||
+    currentVideo.link;
+
+  if(!fullLink){
+    alert("Link FULL PACK belum tersedia");
+    return;
+  }
+
+  downloadBtn.disabled = true;
+  downloadBtn.innerText = "TUNGGU 3 DETIK...";
+
+  setTimeout(() => {
+    location.href = fullLink;
+    downloadBtn.innerText = "UNDUH FULL PACK";
+    downloadBtn.disabled = false;
+  }, 3000);
 };
 
-/* ===== ANTI ADBLOCK ===== */
+/* ===== SOSIAL FIX (ANTI BLANK) ===== */
+document.querySelectorAll(".iconBtn")[0].onclick = () => {
+  location.href = "https://wa.me/6281234567890"; // GANTI NOMOR LU
+};
+
+document.querySelectorAll(".iconBtn")[1].onclick = () => {
+  location.href = "https://youtube.com/@narapoi";
+};
+
+/* ===== ANTI ADBLOCK (AMAN) ===== */
 (function(){
   function lock(reason){
     mainVideo.pause();
-    const o=document.createElement("div");
-    o.id="ab-overlay";
-    o.innerHTML=`
+    const o = document.createElement("div");
+    o.id = "ab-overlay";
+    o.innerHTML = `
       <div id="ab-box">
         <h2>Dukung Narapoi ❤️</h2>
-        <p>Nonaktifkan <b>Adblock / DNS / VPN</b><br>untuk membuka FULL PACK</p>
+        <p>Matikan <b>Adblock / DNS / VPN</b><br>untuk melanjutkan</p>
         <button id="ab-btn">Saya Sudah Mematikan</button>
         <div class="ab-note">${reason}</div>
       </div>`;
     document.body.appendChild(o);
-    document.getElementById("ab-btn").onclick=()=>location.reload();
+    document.getElementById("ab-btn").onclick = () => location.reload();
   }
 
-  const bait=document.createElement("script");
-  bait.src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
-  bait.onerror=()=>lock("Adblock terdeteksi");
+  const bait = document.createElement("script");
+  bait.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+  bait.onerror = () => lock("Adblock terdeteksi");
   document.head.appendChild(bait);
-
-  const ad=document.createElement("div");
-  ad.className="adsbox";
-  ad.style.height="1px";
-  document.body.appendChild(ad);
-  setTimeout(()=>{ if(ad.offsetHeight===0) lock("Ad element diblokir"); ad.remove(); },300);
 })();
-</script>
+  </script>
 
 </body>
 </html>
