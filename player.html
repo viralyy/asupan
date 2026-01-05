@@ -196,19 +196,26 @@ const today=new Date().toISOString().slice(0,10);
 const viewKey=`view_${videoId}_${today}`;
 
 async function views(){
-  const ref=`${FIREBASE}/videos/${videoId}.json`;
-  const res=await fetch(ref);
-  let data=await res.json()||{views:0};
+  const ref = `${FIREBASE}/videos/${videoId}.json`;
 
-  if(!localStorage.getItem(viewKey)){
-    data.views++;
-    await fetch(ref,{
-      method:"PUT",
-      body:JSON.stringify({views:data.views})
-    });
-    localStorage.setItem(viewKey,1);
-  }
-  document.getElementById("videoViews").innerText=data.views;
+  // atomic increment style (aman & realtime)
+  await fetch(ref,{
+    method:"PUT",
+    body: JSON.stringify({
+      views: Date.now() // dummy trigger
+    })
+  });
+
+  const res = await fetch(ref);
+  const data = await res.json() || {};
+  const total = (data.views_count || 0) + 1;
+
+  await fetch(ref,{
+    method:"PATCH",
+    body: JSON.stringify({ views_count: total })
+  });
+
+  document.getElementById("videoViews").innerText = total;
 }
 
 /* ===== ONLINE FIX ===== */
