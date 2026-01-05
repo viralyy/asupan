@@ -225,20 +225,30 @@ document.getElementById('backBtn').onclick=()=>{window.history.back();}
 
 // Load Video
 async function loadVideo(){
-  const res=await fetch(API);
-  videosData=await res.json();
-  const video=videosData.find(v=>v.id===videoId) || videosData[0];
-  if(!video) return;
+  try{
+    const res=await fetch(API);
+    videosData=await res.json();
 
-  document.getElementById('videoSrc').src=video.video_url;
-  document.getElementById('mainVideo').load();
-  document.getElementById('videoGenre').innerText=video.genre;
+    // Jika id tidak ada, ambil video pertama
+    const video=videoId ? videosData.find(v=>v.id===videoId) : videosData[0];
+    if(!video) return;
 
-  // Tutorial typing animation
-  const tutorialEl=document.getElementById('tutorial');
-  const text="TUTORIAL DOWNLOAD:\n1. Klik tombol 'UNDUH FULL PACK'\n2. Ikuti redirect iklan\n3. Setelah iklan selesai, video akan otomatis siap diunduh";
-  tutorialEl.innerHTML='';
-  typeWriter(tutorialEl,text,0);
+    document.getElementById('videoSrc').src=video.video_url;
+    document.getElementById('mainVideo').load();
+    document.getElementById('videoGenre').innerText=video.genre;
+
+    // Tutorial muncul selalu
+    const tutorialEl=document.getElementById('tutorial');
+    const text="TUTORIAL DOWNLOAD:\n1. Klik tombol 'UNDUH FULL PACK'\n2. Ikuti redirect iklan\n3. Setelah iklan selesai, video akan otomatis siap diunduh";
+    tutorialEl.innerHTML='';
+    typeWriter(tutorialEl,text,0);
+
+    // Tombol download muncul fade-in
+    const downloadBtn=document.getElementById('downloadBtn');
+    downloadBtn.style.opacity='1';
+  }catch(err){
+    console.error("Error load video:",err);
+  }
 }
 
 // Typing Animation
@@ -252,7 +262,7 @@ function typeWriter(el,text,i){
 
 // Tombol UNDUH FULL PACK
 document.getElementById('downloadBtn').onclick=()=>{
-  const video=videosData.find(v=>v.id===videoId) || videosData[0];
+  const video=videoId ? videosData.find(v=>v.id===videoId) : videosData[0];
   if(!video) return;
 
   const adLink="https://rm.riskilychous.com/iKZtvVhhVWc/131416";
