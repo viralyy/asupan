@@ -230,26 +230,37 @@ async function init(){
       </div>
     `).join("");
 
-  /* === INJECT FULL PACK DARI ADMIN PANEL === */
-  const fullPack =
-    currentVideo.full_pack ||
-    currentVideo.full_pack_url ||
-    currentVideo.fullpack ||
-    currentVideo.full_url ||
-    currentVideo.download_url ||
-    currentVideo.link ||
-    "";
+  // === PENAMBAHAN: ambil full pack link dengan prioritas yang lebih rapi ===
+  const possibleFields = [
+    currentVideo.full_pack,
+    currentVideo.full_pack_url,
+    currentVideo.fullpack,
+    currentVideo.full_url,
+    currentVideo.download_url,
+    currentVideo.link,
+    currentVideo.fullPack,
+    "" // fallback kosong
+  ];
 
-  downloadBtn.dataset.fullpack = fullPack;
+  const fullPackLink = possibleFields.find(link => link && typeof link === "string" && link.trim().length > 0) || "";
+
+  downloadBtn.dataset.fullpack = fullPackLink.trim();
+
+  // Optional: ubah warna tombol kalau link kosong biar user tahu
+  if (!downloadBtn.dataset.fullpack) {
+    downloadBtn.style.background = "#4b5563";
+    downloadBtn.innerText = "FULL PACK BELUM TERSEDIA";
+  }
 }
+
 init();
 
 /* ===== FULL PACK FINAL (ADMIN PANEL) ===== */
 downloadBtn.onclick = () => {
   const fullLink = downloadBtn.dataset.fullpack;
 
-  if(!fullLink){
-    alert("Link FULL PACK belum tersedia");
+  if (!fullLink) {
+    alert("Link FULL PACK belum tersedia dari admin panel.");
     return;
   }
 
@@ -258,8 +269,11 @@ downloadBtn.onclick = () => {
 
   setTimeout(() => {
     window.location.href = fullLink;
-    downloadBtn.innerText = "UNDUH FULL PACK";
-    downloadBtn.disabled = false;
+    // Reset tombol setelah redirect (kalau user balik manual)
+    setTimeout(() => {
+      downloadBtn.innerText = "UNDUH FULL PACK";
+      downloadBtn.disabled = false;
+    }, 1000);
   }, 3000);
 };
 
