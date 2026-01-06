@@ -2,181 +2,126 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Panel</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Panel - Narapoi</title>
 <style>
-body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#fff;margin:0;padding:0;}
-.container{max-width:600px;margin:40px auto;padding:20px 30px;background:#1e293b;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.5);}
-h2{text-align:center;margin-bottom:20px;}
-input, select, button{width:100%;margin-bottom:15px;padding:12px 15px;border-radius:8px;border:none;font-size:16px;box-sizing:border-box;}
-input, select{background:#0f172a;color:#fff;border:1px solid #334155;}
-input:focus, select:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 5px #3b82f6;}
-button{background:#3b82f6;color:#fff;font-weight:bold;cursor:pointer;transition:0.3s;}
-button:hover{background:#2563eb;}
-#status{text-align:center;font-weight:bold;margin-bottom:10px;}
-#history{margin-top:20px;max-height:300px;overflow-y:auto;border-top:1px solid #334155;padding-top:10px;}
-.history-item{padding:8px 10px;background:#1e293b;margin-bottom:5px;border-radius:6px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
-.history-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%;}
-.history-item button{background:#10b981;color:#fff;border:none;padding:5px 8px;border-radius:6px;font-size:12px;cursor:pointer;}
-.history-item button:hover{background:#059669;}
-.history-nav{display:flex;justify-content:space-between;margin-bottom:10px;}
-.history-nav button{width:48%;background:#64748b;}
-.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:1000;}
-.login-box{background:#1e293b;padding:30px;border-radius:12px;width:300px;box-shadow:0 8px 20px rgba(0,0,0,0.5);}
-.login-box h3{text-align:center;margin-bottom:20px;}
-#genreList{background:#0f172a;border:1px solid #334155;border-radius:6px;display:none;position:absolute;z-index:10;max-height:100px;overflow-y:auto;}
-#genreList div{padding:5px;cursor:pointer;}
-#genreList div:hover{background:#334155;}
+body{font-family:Segoe UI,system-ui,-apple-system,Arial,sans-serif;background:#0f172a;color:#fff;margin:0;padding:0}
+header{padding:16px;background:#111827;text-align:center;font-size:22px;font-weight:800;color:#ec4899}
+.wrap{padding:16px;max-width:1100px;margin:0 auto}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
+th{background:#1e293b}
+input,button{padding:8px 12px;border-radius:8px;border:none;font-size:14px}
+input{width:100%;margin-bottom:6px}
+button{cursor:pointer}
+.addForm{background:#111827;padding:12px;border-radius:12px;margin-top:12px}
+button.update{background:#2563eb;color:#fff;margin-right:6px}
+button.delete{background:#ef4444;color:#fff}
 </style>
 </head>
 <body>
 
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
-    <h3>Admin Login</h3>
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="loginStatus" style="color:#f87171;text-align:center;margin-top:10px;"></p>
-  </div>
+<header>Admin Panel - Narapoi</header>
+<div class="wrap">
+
+<h3>Tambah Video Baru</h3>
+<div class="addForm">
+  <input id="newTitle" placeholder="Judul Video">
+  <input id="newGenre" placeholder="Genre">
+  <input id="newVideoUrl" placeholder="URL Video">
+  <input id="newFullPack" placeholder="URL FULL PACK">
+  <button id="addBtn">Tambah Video</button>
 </div>
 
-<div class="container" id="adminPanel" style="display:none;">
-  <h2>Admin Panel</h2>
-  <div id="status"></div>
+<h3>Daftar Video</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Judul</th>
+      <th>Genre</th>
+      <th>Video URL</th>
+      <th>FULL PACK URL</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody id="videoTable"></tbody>
+</table>
 
-  <input id="title" placeholder="Judul video">
-  <input id="thumbnail" placeholder="URL Thumbnail">
-  <input id="video" placeholder="URL Video">
-  <input id="genre" placeholder="Genre (ketik untuk autocomplete)">
-  <input id="fullContent" placeholder="Full Konten URL">
-
-  <div id="genreList"></div>
-
-  <button onclick="submitVideo()">Submit</button>
-
-  <div id="history">
-    <div class="history-nav">
-      <button onclick="prevHistory()">Prev</button>
-      <button onclick="nextHistory()">Next</button>
-    </div>
-    <div id="historyItems"></div>
-  </div>
 </div>
 
 <script>
-const API = "https://asupan.aku679093.workers.dev/api/admin/add";
-const loginCreds = { username:"admin", password:"Wwwaaa123" };
+const WORKER_API = "https://worker-narapoi.example.workers.dev/api/videos";
 
-let genres = JSON.parse(localStorage.getItem("genres")||"[]");
-let history = JSON.parse(localStorage.getItem("history")||"[]");
-let historyIndex = 0;
-
-// ==== LOGIN ====
-function login(){
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-  const status = document.getElementById("loginStatus");
-
-  if(user === loginCreds.username && pass === loginCreds.password){
-    document.getElementById("loginOverlay").style.display = "none";
-    document.getElementById("adminPanel").style.display = "block";
-    loadHistory();
-  } else {
-    status.innerText = "❌ Username / Password salah";
-  }
-}
-
-// ==== AUTOCOMPLETE GENRE ====
-const genreInput = document.getElementById("genre");
-const genreList = document.getElementById("genreList");
-
-genreInput.addEventListener("input", ()=>{
-  const val = genreInput.value.toLowerCase();
-  const matches = genres.filter(g=>g.toLowerCase().includes(val));
-  if(matches.length){
-    genreList.style.display = "block";
-    genreList.innerHTML = matches.map(g=>`<div onclick="selectGenre('${g}')">${g}</div>`).join("");
-  } else {
-    genreList.style.display = "none";
-  }
-});
-
-function selectGenre(g){
-  genreInput.value = g;
-  genreList.style.display = "none";
-}
-
-// ==== HISTORY ====
-function loadHistory(){
-  const container = document.getElementById("historyItems");
-  container.innerHTML = history.slice(historyIndex, historyIndex+10).map((item,i)=>`
-    <div class="history-item">
-      <span>${item.title} - ${item.genre}</span>
-      <button onclick="window.open('${item.fullContent}','_blank')">Download FULL KONTEN</button>
-    </div>
+async function loadVideos(){
+  const r = await fetch(WORKER_API);
+  const videos = await r.json();
+  const tbody = document.getElementById("videoTable");
+  tbody.innerHTML = videos.map(v => `
+    <tr>
+      <td><input value="${v.title}" data-id="${v.id}" data-field="title"></td>
+      <td><input value="${v.genre}" data-id="${v.id}" data-field="genre"></td>
+      <td><input value="${v.video_url}" data-id="${v.id}" data-field="video_url"></td>
+      <td><input value="${v.full_pack||''}" data-id="${v.id}" data-field="full_pack"></td>
+      <td>
+        <button class="update" data-id="${v.id}">Update</button>
+        <button class="delete" data-id="${v.id}">Hapus</button>
+      </td>
+    </tr>
   `).join("");
+  
+  document.querySelectorAll(".update").forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.id;
+      const rowInputs = document.querySelectorAll(`input[data-id="${id}"]`);
+      const payload = {};
+      rowInputs.forEach(i => payload[i.dataset.field] = i.value);
+      try{
+        await fetch(`${WORKER_API}/${id}`, {
+          method: "PUT",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+        alert("Video diupdate!");
+        loadVideos();
+      }catch(e){alert("Gagal update")}
+    }
+  });
+
+  document.querySelectorAll(".delete").forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.id;
+      if(!confirm("Yakin hapus video ini?")) return;
+      try{
+        await fetch(`${WORKER_API}/${id}`, {method:"DELETE"});
+        alert("Video dihapus!");
+        loadVideos();
+      }catch(e){alert("Gagal hapus")}
+    }
+  });
 }
 
-function prevHistory(){
-  if(historyIndex>0){
-    historyIndex -= 1;
-    loadHistory();
-  }
-}
-
-function nextHistory(){
-  if(historyIndex+10 < history.length){
-    historyIndex += 1;
-    loadHistory();
-  }
-}
-
-// ==== SUBMIT VIDEO ====
-async function submitVideo(){
-  const title = document.getElementById("title").value;
-  const video = document.getElementById("video").value;
-  const genre = document.getElementById("genre").value;
-  const thumbnail = document.getElementById("thumbnail").value;
-  const fullContent = document.getElementById("fullContent").value;
-  const statusEl = document.getElementById("status");
-
-  if(!title || !video || !genre || !thumbnail || !fullContent){
-    statusEl.innerText = "❌ Data belum lengkap";
-    return;
-  }
-
-  try {
-    const res = await fetch(API,{
+document.getElementById("addBtn").onclick = async () => {
+  const title = document.getElementById("newTitle").value;
+  const genre = document.getElementById("newGenre").value;
+  const video_url = document.getElementById("newVideoUrl").value;
+  const full_pack = document.getElementById("newFullPack").value;
+  if(!title||!video_url) return alert("Judul dan URL Video wajib diisi");
+  try{
+    await fetch(WORKER_API, {
       method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ title, video_url: video, genre, thumbnail, fullContent })
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({title,genre,video_url,full_pack})
     });
-    const text = await res.text();
-
-    alert(text); // pop-up berhasil/error
-
-    // update genres & history
-    if(!genres.includes(genre)) genres.push(genre);
-    localStorage.setItem("genres", JSON.stringify(genres));
-
-    history.unshift({title, video, genre, thumbnail, fullContent});
-    if(history.length>100) history.pop();
-    localStorage.setItem("history", JSON.stringify(history));
-    historyIndex = 0;
-    loadHistory();
-
-    // reset form
-    document.getElementById("title").value="";
-    document.getElementById("video").value="";
-    document.getElementById("genre").value="";
-    document.getElementById("thumbnail").value="";
-    document.getElementById("fullContent").value="";
-
-  } catch(err){
-    alert("❌ Error: "+err.message);
-  }
+    alert("Video ditambahkan!");
+    document.getElementById("newTitle").value="";
+    document.getElementById("newGenre").value="";
+    document.getElementById("newVideoUrl").value="";
+    document.getElementById("newFullPack").value="";
+    loadVideos();
+  }catch(e){alert("Gagal tambah video")}
 }
+
+loadVideos();
 </script>
 
 </body>
