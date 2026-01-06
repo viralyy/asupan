@@ -120,6 +120,31 @@
       border-top:1px solid rgba(255,255,255,.06);
       background:#111827
     }
+
+    #ab-overlay{
+      position:fixed;inset:0;z-index:99999;
+      background:rgba(2,6,23,.96);
+      backdrop-filter:blur(6px);
+      display:flex;align-items:center;justify-content:center;
+      padding:24px;
+    }
+    #ab-box{
+      max-width:420px;
+      background:#0b1220;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:26px;
+      text-align:center;
+    }
+    #ab-box h2{margin-bottom:10px}
+    #ab-box p{font-size:14px;color:#cbd5e1;line-height:1.6}
+    #ab-btn{
+      margin-top:16px;width:100%;
+      padding:14px;border-radius:14px;
+      border:0;background:#2563eb;
+      color:#fff;font-weight:900;cursor:pointer
+    }
+    .ab-note{margin-top:10px;font-size:12px;color:#94a3b8}
   </style>
 </head>
 <body>
@@ -156,10 +181,10 @@
     <button id="downloadBtn">UNDUH FULL PACK</button>
 
     <div class="social">
-      <button class="iconBtn" onclick="open('https://wa.me/', '_blank')">
+      <button class="iconBtn">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
       </button>
-      <button class="iconBtn" onclick="open('https://youtube.com/@narapoi', '_blank')">
+      <button class="iconBtn">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
       </button>
     </div>
@@ -176,33 +201,25 @@
 const API = "https://asupan.aku679093.workers.dev/api/videos";
 const params = new URLSearchParams(location.search);
 const videoId = params.get("id");
+let currentVideo = null;
 
 backBtn.onclick = () => history.back();
-
-let fullPackUrl = "";
 
 async function init(){
   const r = await fetch(API);
   const videos = await r.json();
 
-  const current = videos.find(v => v.id == videoId) || videos[0];
-  if(current){
-    videoSrc.src = current.video_url;
-    mainVideo.load();
-    videoGenre.innerText = current.genre || "-";
+  currentVideo = videos.find(v => v.id == videoId) || videos[0];
 
-    // 🔥 AMBIL LINK FULL PACK DARI API
-    fullPackUrl =
-      current.full_pack ||
-      current.full_pack_url ||
-      current.download ||
-      current.download_url ||
-      "";
+  if(currentVideo){
+    videoSrc.src = currentVideo.video_url;
+    mainVideo.load();
+    videoGenre.innerText = currentVideo.genre || "-";
   }
 
   related.innerHTML = videos
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 10)
+    .sort(() => Math.random() - .5)
+    .slice(0,10)
     .map(v => `
       <div class="item" onclick="location.href='player.html?id=${v.id}'">
         <img class="thumb" src="${v.thumbnail}">
@@ -212,18 +229,70 @@ async function init(){
         </div>
       </div>
     `).join("");
-}
 
-// ✅ TOMBOL UNDUH FULL PACK FIX
+  /* === INJECT FULL PACK DARI ADMIN PANEL === */
+  const fullPack =
+    currentVideo.full_pack ||
+    currentVideo.full_pack_url ||
+    currentVideo.fullpack ||
+    currentVideo.full_url ||
+    currentVideo.download_url ||
+    currentVideo.link ||
+    "";
+
+  downloadBtn.dataset.fullpack = fullPack;
+}
+init();
+
+/* ===== FULL PACK FINAL (ADMIN PANEL) ===== */
 downloadBtn.onclick = () => {
-  if(!fullPackUrl){
+  const fullLink = downloadBtn.dataset.fullpack;
+
+  if(!fullLink){
     alert("Link FULL PACK belum tersedia");
     return;
   }
-  window.open(fullPackUrl, "_blank");
+
+  downloadBtn.disabled = true;
+  downloadBtn.innerText = "TUNGGU 3 DETIK...";
+
+  setTimeout(() => {
+    window.location.href = fullLink;
+    downloadBtn.innerText = "UNDUH FULL PACK";
+    downloadBtn.disabled = false;
+  }, 3000);
 };
 
-init();
+/* ===== SOSIAL FIX ===== */
+document.querySelectorAll(".iconBtn")[0].onclick = () => {
+  location.href = "https://wa.me/6281234567890";
+};
+document.querySelectorAll(".iconBtn")[1].onclick = () => {
+  location.href = "https://youtube.com/@narapoi";
+};
+
+/* ===== ANTI ADBLOCK ===== */
+(function(){
+  function lock(reason){
+    mainVideo.pause();
+    const o = document.createElement("div");
+    o.id = "ab-overlay";
+    o.innerHTML = `
+      <div id="ab-box">
+        <h2>Dukung Narapoi ❤️</h2>
+        <p>Matikan <b>Adblock / DNS / VPN</b><br>untuk melanjutkan</p>
+        <button id="ab-btn">Saya Sudah Mematikan</button>
+        <div class="ab-note">${reason}</div>
+      </div>`;
+    document.body.appendChild(o);
+    document.getElementById("ab-btn").onclick = () => location.reload();
+  }
+
+  const bait = document.createElement("script");
+  bait.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+  bait.onerror = () => lock("Adblock terdeteksi");
+  document.head.appendChild(bait);
+})();
 </script>
 
 </body>
