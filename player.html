@@ -1,272 +1,128 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Player - Narapoi</title>
-
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:Segoe UI,system-ui,-apple-system,Arial,sans-serif;background:#0f172a;color:#fff}
-    a{color:#60a5fa;text-decoration:none}
-    a:hover{text-decoration:underline}
-
-    header{
-      position:sticky;top:0;z-index:50;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:14px 18px;background:#111827;
-      border-bottom:1px solid rgba(255,255,255,.06)
-    }
-    .logo{font-size:20px;font-weight:800;color:#ec4899}
-    .search input{
-      width:min(280px,52vw);
-      padding:9px 12px;border-radius:10px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#0b1220;color:#fff
-    }
-
-    .wrap{padding:16px 18px;max-width:1100px;margin:0 auto}
-    .card{
-      background:rgba(17,24,39,.6);
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:14px;
-      padding:14px;
-    }
-
-    video{
-      width:100%;
-      aspect-ratio:16/9;
-      background:#000;
-      border-radius:12px;
-      display:block;
-    }
-
-    .meta{
-      margin-top:12px;
-      font-size:14px;
-      color:#cbd5e1
-    }
-    .meta b{color:#fff}
-
-    .actions{margin-top:12px}
-    #backBtn{
-      padding:8px 12px;border-radius:10px;border:0;
-      background:#ef4444;color:#fff;
-      font-weight:700;cursor:pointer
-    }
-
-    #tutorial{
-      margin-top:12px;
-      padding:12px;
-      border-radius:12px;
-      background:rgba(2,6,23,.55);
-      border:1px solid rgba(255,255,255,.06);
-      white-space:pre-wrap;
-      font-size:14px;
-      line-height:1.55;
-    }
-
-    #downloadBtn{
-      width:100%;
-      margin-top:12px;
-      padding:14px;
-      border-radius:12px;
-      border:0;
-      background:#2563eb;
-      color:#fff;
-      font-weight:900;
-      cursor:pointer
-    }
-
-    .social{
-      margin-top:12px;
-      display:flex;justify-content:center;gap:14px
-    }
-    .iconBtn{
-      width:48px;height:48px;border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#0b1220;
-      display:flex;align-items:center;justify-content:center;
-      cursor:pointer
-    }
-    .iconBtn img{width:26px;height:26px}
-
-    h3{margin:18px 2px 10px}
-    #related{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-    }
-    @media(min-width:1024px){
-      #related{grid-template-columns:repeat(4,1fr)}
-    }
-    .item{
-      background:rgba(17,24,39,.55);
-      border-radius:14px;
-      overflow:hidden;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.06)
-    }
-    .thumb{width:100%;aspect-ratio:16/9;object-fit:cover}
-    .info{padding:10px}
-    .title{font-weight:800}
-    .genre{font-size:12px;color:#94a3b8}
-
-    footer{
-      margin-top:18px;
-      padding:18px 0;
-      text-align:center;
-      color:#94a3b8;
-      border-top:1px solid rgba(255,255,255,.06);
-      background:#111827
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Panel - Narapoi</title>
+<style>
+body{font-family:Segoe UI,system-ui,-apple-system,Arial,sans-serif;background:#0f172a;color:#fff;margin:0;padding:0}
+header{padding:16px;background:#111827;text-align:center;font-size:22px;font-weight:800;color:#ec4899}
+.wrap{padding:16px;max-width:1100px;margin:0 auto}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
+th{background:#1e293b}
+input,button{padding:8px 12px;border-radius:8px;border:none;font-size:14px}
+input{width:100%;margin-bottom:6px}
+button{cursor:pointer}
+.addForm{background:#111827;padding:12px;border-radius:12px;margin-top:12px}
+button.update{background:#2563eb;color:#fff;margin-right:6px}
+button.delete{background:#ef4444;color:#fff}
+</style>
 </head>
 <body>
 
-<header>
-  <div class="logo">Narapoi</div>
-  <div class="search">
-    <input placeholder="Cari video...">
-  </div>
-</header>
-
+<header>Admin Panel - Narapoi</header>
 <div class="wrap">
-  <div class="card">
 
-    <video id="mainVideo" controls>
-      <source id="videoSrc" src="" type="video/mp4">
-    </video>
-
-    <div class="meta">
-      Genre: <b id="videoGenre">-</b>
-    </div>
-
-    <div class="actions">
-      <button id="backBtn">Kembali</button>
-    </div>
-
-    <div id="tutorial">TUTORIAL DOWNLOAD FULL?
-1. klik UNDUH FULL PACK
-2. Ketika sudah klik silahkan tunggu 3 sampai 5 detik lalu kembali
-3. setelah kembali akan otomatis menuju ke link FULL KONTEN nya
-4. kalau suka jangan lupa subscribe Youtube <a href="https://youtube.com/@narapoi" target="_blank">@Narapoi</a>
-    </div>
-
-    <button id="downloadBtn">UNDUH FULL PACK</button>
-
-    <div class="social">
-      <button class="iconBtn">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg">
-      </button>
-      <button class="iconBtn">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg">
-      </button>
-    </div>
-
-  </div>
-
-  <h3>Video Lainnya</h3>
-  <div id="related"></div>
+<h3>Tambah Video Baru</h3>
+<div class="addForm">
+  <input id="newTitle" placeholder="Judul Video">
+  <input id="newGenre" placeholder="Genre">
+  <input id="newVideoUrl" placeholder="URL Video">
+  <input id="newFullPack" placeholder="URL FULL PACK">
+  <button id="addBtn">Tambah Video</button>
 </div>
 
-<footer>Narapoi</footer>
+<h3>Daftar Video</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Judul</th>
+      <th>Genre</th>
+      <th>Video URL</th>
+      <th>FULL PACK URL</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody id="videoTable"></tbody>
+</table>
+
+</div>
 
 <script>
-const API = "https://asupan.aku679093.workers.dev/api/videos";
-const params = new URLSearchParams(location.search);
-const videoId = params.get("id");
-let currentVideo = null;
+const WORKER_API = "https://worker-narapoi.example.workers.dev/api/videos";
 
-backBtn.onclick = () => history.back();
-
-async function init(){
-  const r = await fetch(API);
+async function loadVideos(){
+  const r = await fetch(WORKER_API);
   const videos = await r.json();
-
-  currentVideo = videos.find(v => v.id == videoId) || videos[0];
-
-  if(currentVideo){
-    videoSrc.src = currentVideo.video_url;
-    mainVideo.load();
-    videoGenre.innerText = currentVideo.genre || "-";
-  }
-
-  related.innerHTML = videos
-    .sort(() => Math.random() - .5)
-    .slice(0,10)
-    .map(v => `
-      <div class="item" onclick="location.href='player.html?id=${v.id}'">
-        <img class="thumb" src="${v.thumbnail}">
-        <div class="info">
-          <div class="title">${v.title}</div>
-          <div class="genre">${v.genre}</div>
-        </div>
-      </div>
-    `).join("");
-
-  /* ===== FIX FINAL FULL PACK (DATABASE FRIENDLY) ===== */
-  function getFullPack(video){
-    if(!video) return "";
-
-    if(typeof video.full_pack === "string") return video.full_pack;
-    if(typeof video.full_pack_url === "string") return video.full_pack_url;
-    if(typeof video.fullpack === "string") return video.fullpack;
-    if(typeof video.full_url === "string") return video.full_url;
-    if(typeof video.download_url === "string") return video.download_url;
-    if(typeof video.link === "string") return video.link;
-
-    if(video.extra){
-      if(typeof video.extra.full_pack === "string") return video.extra.full_pack;
-      if(typeof video.extra.full_url === "string") return video.extra.full_url;
+  const tbody = document.getElementById("videoTable");
+  tbody.innerHTML = videos.map(v => `
+    <tr>
+      <td><input value="${v.title}" data-id="${v.id}" data-field="title"></td>
+      <td><input value="${v.genre}" data-id="${v.id}" data-field="genre"></td>
+      <td><input value="${v.video_url}" data-id="${v.id}" data-field="video_url"></td>
+      <td><input value="${v.full_pack||''}" data-id="${v.id}" data-field="full_pack"></td>
+      <td>
+        <button class="update" data-id="${v.id}">Update</button>
+        <button class="delete" data-id="${v.id}">Hapus</button>
+      </td>
+    </tr>
+  `).join("");
+  
+  document.querySelectorAll(".update").forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.id;
+      const rowInputs = document.querySelectorAll(`input[data-id="${id}"]`);
+      const payload = {};
+      rowInputs.forEach(i => payload[i.dataset.field] = i.value);
+      try{
+        await fetch(`${WORKER_API}/${id}`, {
+          method: "PUT",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+        alert("Video diupdate!");
+        loadVideos();
+      }catch(e){alert("Gagal update")}
     }
+  });
 
-    if(video.links){
-      if(typeof video.links.full_pack === "string") return video.links.full_pack;
-      if(typeof video.links.download === "string") return video.links.download;
+  document.querySelectorAll(".delete").forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.id;
+      if(!confirm("Yakin hapus video ini?")) return;
+      try{
+        await fetch(`${WORKER_API}/${id}`, {method:"DELETE"});
+        alert("Video dihapus!");
+        loadVideos();
+      }catch(e){alert("Gagal hapus")}
     }
-
-    return "";
-  }
-
-  const fullPackLink = getFullPack(currentVideo).trim();
-  downloadBtn.dataset.fullpack = fullPackLink;
-
-  if(!fullPackLink){
-    downloadBtn.style.background = "#4b5563";
-    downloadBtn.innerText = "FULL PACK BELUM TERSEDIA";
-  }
+  });
 }
 
-init();
+document.getElementById("addBtn").onclick = async () => {
+  const title = document.getElementById("newTitle").value;
+  const genre = document.getElementById("newGenre").value;
+  const video_url = document.getElementById("newVideoUrl").value;
+  const full_pack = document.getElementById("newFullPack").value;
+  if(!title||!video_url) return alert("Judul dan URL Video wajib diisi");
+  try{
+    await fetch(WORKER_API, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({title,genre,video_url,full_pack})
+    });
+    alert("Video ditambahkan!");
+    document.getElementById("newTitle").value="";
+    document.getElementById("newGenre").value="";
+    document.getElementById("newVideoUrl").value="";
+    document.getElementById("newFullPack").value="";
+    loadVideos();
+  }catch(e){alert("Gagal tambah video")}
+}
 
-/* ===== TOMBOL UNDUH FULL PACK ===== */
-downloadBtn.onclick = () => {
-  const fullLink = downloadBtn.dataset.fullpack;
-
-  if(!fullLink){
-    alert("Link FULL PACK belum tersedia dari database.");
-    return;
-  }
-
-  downloadBtn.disabled = true;
-  downloadBtn.innerText = "TUNGGU 3 DETIK...";
-
-  setTimeout(() => {
-    window.location.href = fullLink;
-    downloadBtn.disabled = false;
-    downloadBtn.innerText = "UNDUH FULL PACK";
-  }, 3000);
-};
-
-/* ===== SOSIAL ===== */
-document.querySelectorAll(".iconBtn")[0].onclick = () => {
-  location.href = "https://wa.me/6281234567890";
-};
-document.querySelectorAll(".iconBtn")[1].onclick = () => {
-  location.href = "https://youtube.com/@narapoi";
-};
+loadVideos();
 </script>
 
 </body>
-  </html>
+</html>
