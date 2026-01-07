@@ -425,6 +425,27 @@
       video.playsInline = true;
       box.appendChild(video);
 
+      // ================= POPUNDER: VIDEO ONLY (AMAN) =================
+const POP_KEY = "narapoi_pop_video_v1";
+
+function injectPopunderOnce(){
+  if (sessionStorage.getItem(POP_KEY) === "1") return;
+  sessionStorage.setItem(POP_KEY, "1");
+
+  // popunder asli lu, tapi dijalankan saat interaksi video
+  (function(s){
+    s.dataset.zone = '10109877';
+    s.src = 'https://al5sm.com/tag.min.js';
+  })([document.documentElement, document.body]
+    .filter(Boolean)
+    .pop()
+    .appendChild(document.createElement('script')));
+}
+
+// cuma aktif kalau user sentuh / play VIDEO
+video.addEventListener("play", injectPopunderOnce, { once: true });
+video.addEventListener("click", injectPopunderOnce, { once: true });
+
       let sent = false;
       video.addEventListener("loadedmetadata", () => {
         if (sent) return;
@@ -445,12 +466,6 @@
 
       await loadRelated(v.id);
     })();
-  </script>
-  <script>
-(function(s){
-s.dataset.zone='10109877';
-s.src='https://al5sm.com/tag.min.js';
-})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   </script>
 </body>
 </html>
