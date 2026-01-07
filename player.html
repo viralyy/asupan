@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Player</title>
+  <style>
+    body { font-family: system-ui; padding: 16px; max-width: 980px; margin: auto; }
+    video, iframe { width:100%; border-radius:14px; background:#000; }
+    .box { margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <a href="index.html">← balik</a>
+  <h1 id="title">Loading...</h1>
+  <div id="box" class="box"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const API = "https://asupanmu.aku679093.workers.dev";
+    const id = new URLSearchParams(location.search).get("id");
+
+    function ytEmbed(url){
+      try {
+        const u = new URL(url);
+        if (u.hostname.includes("youtu.be")) return u.pathname.slice(1);
+        if (u.searchParams.get("v")) return u.searchParams.get("v");
+      } catch {}
+      return null;
+    }
+
+    (async () => {
+      const res = await fetch(API + "/api/videos/" + encodeURIComponent(id));
+      const data = await res.json();
+      if (!data.ok) {
+        document.getElementById("title").textContent = "Video tidak ketemu";
+        return;
+      }
+
+      const v = data.video;
+      document.getElementById("title").textContent = v.title || "Video";
+
+      const box = document.getElementById("box");
+
+      if (v.kind === "youtube") {
+        const vid = ytEmbed(v.video_url);
+        box.innerHTML = `
+          <iframe height="520" frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            src="https://www.youtube.com/embed/${vid}">
+          </iframe>`;
+        return;
+      }
+
+      const video = document.createElement("video");
+      video.controls = true;
+      video.playsInline = true;
+      box.appendChild(video);
+
+      if (v.kind === "hls" && window.Hls && Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(v.video_url);
+        hls.attachMedia(video);
+      } else {
+        video.src = v.video_url;
+      }
+    })();
+  </script>
+</body>
+</html>
