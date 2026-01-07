@@ -33,7 +33,7 @@
   <div class="wrap">
     <div class="top">
       <a class="btn" href="index.html">← Balik</a>
-      <a class="btn" href="player.html?id=" onclick="return false">Player</a>
+      <a class="btn" href="index.html" onclick="location.href='index.html';return false;">Home</a>
     </div>
 
     <h1>Admin</h1>
@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <div class="hint">Genre boleh kosong. Kalau isi “genre baru”, itu yang dipakai.</div>
+      <div class="hint">Kalau isi “genre baru”, itu yang dipakai. Kalau kosong semua = tanpa genre.</div>
 
       <button class="primary" id="add">Tambah</button>
 
@@ -82,11 +82,8 @@
         const genres = [...new Set(vids.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
 
         const sel = document.getElementById("genre_pick");
-        // reset to default
         sel.innerHTML = `<option value="">(kosong)</option>` + genres.map(g => `<option value="${g}">${g}</option>`).join("");
-      } catch (e){
-        // kalau gagal, yaudah
-      }
+      } catch {}
     }
 
     document.getElementById("add").onclick = async () => {
@@ -115,6 +112,7 @@
       document.getElementById("thumb_url").value = "";
       document.getElementById("genre_new").value = "";
       document.getElementById("genre_pick").value = "";
+
       await loadGenres();
     };
 
