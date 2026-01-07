@@ -13,6 +13,7 @@
     body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
     a{color:inherit;text-decoration:none}
     .wrap{max-width:1100px;margin:0 auto;padding:12px}
+
     .topbar{
       position:sticky;top:0;z-index:10;
       background:linear-gradient(to bottom, rgba(11,13,16,.95), rgba(11,13,16,.65));
@@ -64,7 +65,6 @@
       pointer-events: none;
       user-select: none;
     }
-
     .age-overlay{
       position: fixed;
       inset: 0;
@@ -75,11 +75,7 @@
       padding: 18px;
       background: rgba(0,0,0,.55);
     }
-
-    body.age-locked .age-overlay{
-      display: flex;
-    }
-
+    body.age-locked .age-overlay{display:flex}
     .age-modal{
       width: 100%;
       max-width: 520px;
@@ -89,44 +85,17 @@
       box-shadow: var(--shadow);
       padding: 16px;
     }
-
-    .age-title{
-      font-weight: 900;
-      font-size: 18px;
-      margin: 0 0 6px;
-    }
-
-    .age-text{
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-      margin: 0 0 12px;
-    }
-
-    .age-actions{
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
+    .age-title{font-weight: 900;font-size: 18px;margin: 0 0 6px}
+    .age-text{color: var(--muted);font-size: 13px;line-height: 1.45;margin: 0 0 12px}
+    .age-actions{display:flex;gap:10px;margin-top:10px}
     .age-actions button{
-      flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(18,22,28,.9);
-      color: var(--text);
-      font-weight: 800;
-      cursor: pointer;
+      flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.10);
+      background: rgba(18,22,28,.9);color:var(--text);font-weight:800;cursor:pointer
     }
-
-    .age-actions .primary{
-      background: var(--accent);
-      border: 0;
-    }
+    .age-actions .primary{background: var(--accent);border:0}
 
     /* =========================
-       Popular slider (kecil & ramping) + Gradient fade (ADDED)
+       Popular slider (kecil & ramping)
        ========================= */
     .sectionHead{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -135,87 +104,40 @@
     .sectionTitle{
       font-weight:900;letter-spacing:.2px;font-size:14px;margin:0;
     }
-    .sectionNote{
-      color:var(--muted);font-size:12px
-    }
+    .sectionNote{color:var(--muted);font-size:12px}
 
-    .popWrap{
-      position:relative;
-      margin-bottom:10px;
-    }
-
+    .popWrap{position:relative;margin-bottom:10px}
     .popRow{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
-      padding-bottom:4px;
-      scrollbar-width:thin;
+      display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:thin;
     }
     .popRow::-webkit-scrollbar{height:8px}
-    .popRow::-webkit-scrollbar-thumb{
-      background:rgba(255,255,255,.12);
-      border-radius:999px;
-    }
+    .popRow::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:999px}
 
-    /* gradient fade kiri/kanan */
     .popFade{
-      position:absolute;
-      top:0;bottom:0;
-      width:52px;
-      pointer-events:none;
-      z-index:4;
+      position:absolute;top:0;bottom:0;width:52px;pointer-events:none;z-index:4;opacity:0;
+      transition:opacity .15s ease;
     }
-    .popFade.left{
-      left:0;
-      background:linear-gradient(to right, rgba(11,13,16,1), rgba(11,13,16,0));
-    }
-    .popFade.right{
-      right:0;
-      background:linear-gradient(to left, rgba(11,13,16,1), rgba(11,13,16,0));
-    }
-    .popFade.left{padding-left:40px}
-    .popFade.right{padding-right:40px}
-
-    .popCard{
-      flex:0 0 auto;
-      width:160px;
-      border-radius:12px;
-      scroll-snap-align:start;
-    }
-    @media (min-width:860px){
-      .popCard{width:190px}
-    }
+    .popFade.left{left:0;background:linear-gradient(to right, rgba(11,13,16,1), rgba(11,13,16,0))}
+    .popFade.right{right:0;background:linear-gradient(to left, rgba(11,13,16,1), rgba(11,13,16,0))}
+    .popCard{flex:0 0 auto;width:160px;border-radius:12px;scroll-snap-align:start}
+    @media (min-width:860px){ .popCard{width:190px} }
     .popCard .thumb{aspect-ratio:16/10}
     .popCard .body{padding:8px}
     .popCard .title{font-size:12px;-webkit-line-clamp:2;margin:0 0 6px}
     .popCard .meta{font-size:11px}
 
     .popNav{
-      position:absolute;
-      top:50%;
-      transform:translateY(-50%);
-      z-index:5;
-      width:34px;height:34px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(18,22,28,.85);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      box-shadow: var(--shadow);
-      user-select:none;
+      position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+      width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(18,22,28,.85);color:var(--text);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;box-shadow: var(--shadow);user-select:none
     }
     .popNav:hover{border-color:rgba(255,77,109,.35)}
     .popPrev{left:-6px}
     .popNext{right:-6px}
-    @media (max-width:420px){
-      .popPrev{left:0}
-      .popNext{right:0}
-    }
+    @media (max-width:420px){ .popPrev{left:0} .popNext{right:0} }
     .popNav.hide{display:none}
 
     /* anim “web gede” (tanpa delay) */
@@ -225,15 +147,12 @@
       transition: opacity .35s ease, transform .35s ease, border-color .15s ease;
       will-change: opacity, transform;
     }
-    .card.anim.show{
-      opacity:1;
-      transform: translateY(0);
-    }
+    .card.anim.show{opacity:1;transform: translateY(0)}
 
     /* pager */
     .pager{
       margin-top:14px;
-      display:flex;
+      display:none;
       gap:10px;
       align-items:center;
       justify-content:center;
@@ -248,71 +167,106 @@
       border-radius:999px;
       background:rgba(18,22,28,.55);
     }
-    .pager .btn:disabled{
-      opacity:.5;
-      cursor:not-allowed;
-    }
+    .pager .btn:disabled{opacity:.5;cursor:not-allowed}
 
     /* =========================
-       ADDED: Views (home/update/dukungan/profil) + Bottom menu
+       Views (home/update/support/profile)
        ========================= */
     .view{display:none}
-    .view.active{display:block}
+    .view.show{display:block}
 
-    .panelCard{
-      background:linear-gradient(180deg, rgba(18,22,28,.9), rgba(15,19,24,.9));
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:var(--r);
-      box-shadow: var(--shadow);
-      padding:12px;
-      margin-top:12px;
-    }
-    .panelTitle{
-      font-weight:950;
-      margin:0 0 6px;
-      letter-spacing:.2px;
-    }
-    .panelText{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.55;
-    }
-
-    /* bottom nav fixed */
-    .bottomNavSpace{height:72px;} /* biar konten ga ketutup nav */
+    /* =========================
+       Bottom Menu (SVG + text)
+       ========================= */
+    .bottomNavSpace{height:78px}
     .bottomNav{
-      position:fixed;
-      left:0;right:0;bottom:0;
-      z-index:50;
+      position:fixed;left:0;right:0;bottom:0;z-index:50;
       border-top:1px solid rgba(255,255,255,.06);
-      background:linear-gradient(to top, rgba(11,13,16,.96), rgba(11,13,16,.78));
+      background:linear-gradient(to top, rgba(11,13,16,.98), rgba(11,13,16,.70));
       backdrop-filter: blur(10px);
     }
     .bottomNav .wrap{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+      padding:10px 12px;
+      align-items:center;
+    }
+    .navItem{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      padding:8px 6px;
+      border-radius:14px;
+      cursor:pointer;
+      user-select:none;
+      border:1px solid transparent;
+      color:rgba(232,237,242,.85);
+    }
+    .navItem svg{
+      width:22px;height:22px;
+      stroke:currentColor;
+      fill:none;
+      stroke-width:2;
+      opacity:.92;
+    }
+    .navText{font-size:11px;color:rgba(154,164,175,.9)}
+    .navItem.active{
+      background:rgba(255,77,109,.10);
+      border-color:rgba(255,77,109,.25);
+      color:var(--text);
+    }
+    .navItem.active .navText{color:#ffd6de}
+
+    /* Update icon: wifi muter */
+    .wifiSpin{transform-origin:50% 50%}
+    .navItem.active .wifiSpin{animation:wifiSpin 1.2s linear infinite}
+    @keyframes wifiSpin{to{transform:rotate(360deg)}}
+
+    /* Profile cards list */
+    .miniList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:12px;
+    }
+    .miniItem{
       display:flex;
       gap:10px;
       align-items:center;
-      justify-content:space-between;
-      padding:10px 12px;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(18,22,28,.65);
+      box-shadow: var(--shadow);
     }
-    .navBtn{
-      flex:1;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(18,22,28,.85);
-      color:var(--muted);
-      border-radius:999px;
-      padding:10px 10px;
+    .miniThumb{
+      width:88px;
+      aspect-ratio:16/9;
+      border-radius:12px;
+      background:#0f1318;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .miniThumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .miniTitle{
+      font-weight:800;
       font-size:12px;
-      font-weight:900;
-      cursor:pointer;
-      text-align:center;
-      user-select:none;
+      line-height:1.25;
+      margin:0 0 6px;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
     }
-    .navBtn.active{
-      color:var(--text);
-      border-color:rgba(255,77,109,.35);
-      background:rgba(255,77,109,.10);
+    .miniMeta{font-size:12px;color:var(--muted)}
+    .pillTiny{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.7);
+      color:var(--muted);
+      font-size:11px;
     }
   </style>
 </head>
@@ -351,14 +305,14 @@
   <div class="wrap">
 
     <!-- =========================
-         HOME VIEW (default)
+         HOME VIEW
          ========================= -->
-    <div class="view active" id="viewHome">
+    <div class="view show" id="viewHome">
 
       <!-- Popular -->
       <div class="sectionHead" id="popularHead" style="display:none;">
         <h2 class="sectionTitle">Popular posts</h2>
-        <div class="sectionNote">Top by views (min 1000)</div>
+        <div class="sectionNote">Top by views</div>
       </div>
 
       <div class="popWrap" id="popWrap" style="display:none;">
@@ -369,14 +323,14 @@
         <div id="popularRow" class="popRow"></div>
       </div>
 
-      <!-- GENRE chips di bawah popular -->
+      <!-- GENRE chips -->
       <div class="chips" id="chips"></div>
 
       <!-- daftar video (paginasi) -->
       <div id="grid" class="grid"></div>
 
       <!-- pager -->
-      <div class="pager" id="pager" style="display:none;">
+      <div class="pager" id="pager">
         <button class="btn" id="prevBtn">Prev</button>
         <div class="pagerInfo" id="pagerInfo">Page 1</div>
         <button class="btn" id="nextBtn">Next</button>
@@ -386,143 +340,123 @@
     </div>
 
     <!-- =========================
-         UPDATE VIEW (ADDED)
+         UPDATE VIEW
          ========================= -->
     <div class="view" id="viewUpdate">
-      <div class="panelCard">
-        <h3 class="panelTitle">Update terbaru</h3>
-        <p class="panelText">
-          Di sini kamu bisa lihat konten yang baru di-upload + info jadwal update.
-        </p>
+      <div class="chips" style="margin-top:12px;">
+        <span class="chip active">Update</span>
       </div>
+      <div id="updateGrid" class="grid"></div>
+      <div id="updateEmpty" class="empty" style="display:none;">Belum ada update.</div>
+    </div>
 
-      <div class="panelCard">
-        <h3 class="panelTitle">Jadwal update</h3>
-        <p class="panelText">
-          • Senin–Jumat: 1–3 upload<br>
-          • Weekend: random (kalau admin semangat 😄)
-        </p>
+    <!-- =========================
+         DUKUNGAN VIEW
+         ========================= -->
+    <div class="view" id="viewSupport">
+      <div class="chips" style="margin-top:12px;">
+        <span class="chip active">Dukungan</span>
       </div>
-
-      <div class="panelCard">
-        <h3 class="panelTitle">Baru ditambahkan</h3>
-        <div id="updateList" class="grid" style="margin-top:10px;"></div>
-        <div id="updateEmpty" class="empty" style="display:none;margin-top:10px;">Belum ada update.</div>
+      <div class="empty" style="display:block;">
+        <button class="btn" id="btnReport" style="width:100%;margin-top:10px;cursor:pointer">Email</button>
       </div>
     </div>
 
     <!-- =========================
-         DUKUNGAN VIEW (ADDED)
+         PROFIL VIEW
          ========================= -->
-    <div class="view" id="viewDukungan">
-      <div class="panelCard">
-        <h3 class="panelTitle">Dukungan</h3>
-        <p class="panelText">
-          Kalau ada video error / thumbnail rusak / request fitur, laporin di sini.
-          (Form ini masih versi ringan, belum perlu backend.)
-        </p>
+    <div class="view" id="viewProfile">
+      <div class="chips" style="margin-top:12px;">
+        <span class="chip active">Profil</span>
+        <span class="pillTiny" id="anonIdPill"></span>
       </div>
-
-      <div class="panelCard">
-        <h3 class="panelTitle">Laporkan masalah</h3>
-        <p class="panelText" style="margin-bottom:10px;">
-          Klik tombol di bawah buat kirim laporan via email/chat (ganti sesuai kontak lu).
-        </p>
-        <button class="btn" id="reportBtn" style="width:100%;">Kirim laporan</button>
-      </div>
-
-      <div class="panelCard">
-        <h3 class="panelTitle">Donate / VIP</h3>
-        <p class="panelText">
-          • Donate: (isi link saweria/dll)<br>
-          • VIP: (isi benefit + cara join)<br>
-        </p>
-      </div>
+      <div id="profileList" class="miniList"></div>
+      <div id="profileEmpty" class="empty" style="display:none;">Belum ada riwayat.</div>
     </div>
 
-    <!-- =========================
-         PROFIL VIEW (ADDED)
-         ========================= -->
-    <div class="view" id="viewProfil">
-      <div class="panelCard">
-        <h3 class="panelTitle">Profil (Anonim)</h3>
-        <p class="panelText">
-          Profil ini anonim (tanpa login). Riwayat bisa muncul kalau player nyimpen history ke localStorage.
-        </p>
-      </div>
-
-      <div class="panelCard">
-        <h3 class="panelTitle">Riwayat tontonan</h3>
-        <div id="historyList" class="grid" style="margin-top:10px;"></div>
-        <div id="historyEmpty" class="empty" style="display:none;margin-top:10px;">Belum ada riwayat tontonan.</div>
-        <div class="panelText" style="margin-top:10px;">
-          (Nanti gue bisa bantu tambah 3 baris script di player biar history otomatis keisi.)
-        </div>
-      </div>
-    </div>
-
-    <div class="bottomNavSpace"></div>
     <div class="footer">Narapoi Punya</div>
+    <div class="bottomNavSpace"></div>
   </div>
 
-  <!-- =========================
-       ADDED: Bottom menu (Home/Update/Dukungan/Profil)
-       ========================= -->
+  <!-- Bottom Menu -->
   <div class="bottomNav">
     <div class="wrap">
-      <div class="navBtn active" id="navHome">Home</div>
-      <div class="navBtn" id="navUpdate">Update</div>
-      <div class="navBtn" id="navDukungan">Dukungan</div>
-      <div class="navBtn" id="navProfil">Profil</div>
+      <div class="navItem active" id="navHome">
+        <!-- house -->
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg>
+        <div class="navText">Beranda</div>
+      </div>
+
+      <div class="navItem" id="navUpdate">
+        <!-- wifi + spin ring -->
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <g class="wifiSpin">
+            <path d="M2 8.5a16 16 0 0 1 20 0"></path>
+            <path d="M5 12a11 11 0 0 1 14 0"></path>
+            <path d="M8.5 15.5a6 6 0 0 1 7 0"></path>
+            <path d="M12 19h0"></path>
+          </g>
+        </svg>
+        <div class="navText">Update</div>
+      </div>
+
+      <div class="navItem" id="navSupport">
+        <!-- email -->
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="M4 7l8 6 8-6"></path></svg>
+        <div class="navText">Dukungan</div>
+      </div>
+
+      <div class="navItem" id="navProfile">
+        <!-- user -->
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"></path><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"></path></svg>
+        <div class="navText">Profil</div>
+      </div>
     </div>
   </div>
 
   <script>
     const API = "https://asupanmu.aku679093.workers.dev";
     let all = [];
-    let activeGenre = ""; // "" = all
-
-    // pagination
+    let activeGenre = "";
     const PER_PAGE = 10;
     let page = 1;
 
-    // popular rules
     const POP_MIN_VIEWS = 1000;
     const POP_MAX = 10;
 
-    // ===== 18+ Gate (added) =====
+    // ===== 18+ Gate =====
     const AGE_KEY = "narapoi_age_ok_v1";
-
     function lockAgeGate(){
       document.body.classList.add("age-locked");
-      const ov = document.getElementById("ageOverlay");
-      ov.setAttribute("aria-hidden", "false");
+      document.getElementById("ageOverlay").setAttribute("aria-hidden","false");
     }
-
     function unlockAgeGate(){
       document.body.classList.remove("age-locked");
-      const ov = document.getElementById("ageOverlay");
-      ov.setAttribute("aria-hidden", "true");
+      document.getElementById("ageOverlay").setAttribute("aria-hidden","true");
     }
-
     (function initAgeGate(){
       const ok = localStorage.getItem(AGE_KEY) === "1";
       if (!ok) lockAgeGate();
-
-      document.getElementById("ageYes").onclick = () => {
-        localStorage.setItem(AGE_KEY, "1");
-        unlockAgeGate();
-      };
-
-      document.getElementById("ageNo").onclick = () => {
-        location.href = "about:blank";
-      };
+      document.getElementById("ageYes").onclick = () => { localStorage.setItem(AGE_KEY,"1"); unlockAgeGate(); };
+      document.getElementById("ageNo").onclick = () => { location.href="about:blank"; };
     })();
 
+    // ===== anon id =====
+    const ANON_ID_KEY = "narapoi_anon_id_v1";
+    function ensureAnonId(){
+      let id = localStorage.getItem(ANON_ID_KEY);
+      if (!id){
+        id = "u-" + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 6);
+        localStorage.setItem(ANON_ID_KEY, id);
+      }
+      document.getElementById("anonIdPill").textContent = id;
+      return id;
+    }
+
+    // ===== helpers =====
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
     }
-
     function fmtDuration(sec){
       const n = Number(sec);
       if (!Number.isFinite(n) || n <= 0) return "--:--";
@@ -530,7 +464,14 @@
       const s = Math.floor(n % 60).toString().padStart(2,"0");
       return `${m}:${s}`;
     }
-
+    function shuffle(arr){
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
     function cardHTML(v){
       const kind = (v.kind || "link").toUpperCase();
       const created = v.created_at ? new Date(v.created_at).toLocaleDateString() : "";
@@ -558,7 +499,7 @@
       `;
     }
 
-    // ===== Popular slider (min 1000 views) =====
+    // ===== Popular slider =====
     function renderPopular(){
       const popHead = document.getElementById("popularHead");
       const popWrap = document.getElementById("popWrap");
@@ -567,62 +508,52 @@
       row.innerHTML = "";
 
       const eligible = all.filter(v => Number(v.views || 0) >= POP_MIN_VIEWS);
-
-      const top = eligible
-        .slice()
-        .sort((a,b) => (Number(b.views||0) - Number(a.views||0)))
-        .slice(0, POP_MAX);
+      const top = eligible.slice().sort((a,b) => (Number(b.views||0)-Number(a.views||0))).slice(0, POP_MAX);
 
       if (!top.length){
         popHead.style.display = "none";
         popWrap.style.display = "none";
         return;
       }
-
       popHead.style.display = "flex";
       popWrap.style.display = "block";
 
-      top.forEach(v => {
+      top.forEach(v=>{
         const a = document.createElement("a");
         a.className = "card anim popCard";
         a.href = "player.html?id=" + encodeURIComponent(v.id);
         a.innerHTML = cardHTML(v);
         row.appendChild(a);
-        requestAnimationFrame(() => a.classList.add("show"));
+        requestAnimationFrame(()=>a.classList.add("show"));
       });
 
       const prev = document.getElementById("popPrev");
       const next = document.getElementById("popNext");
+      const fadeL = document.getElementById("popFadeL");
+      const fadeR = document.getElementById("popFadeR");
 
       const scrollByOne = (dir) => {
         const first = row.querySelector(".popCard");
         const w = first ? first.getBoundingClientRect().width : 180;
         row.scrollBy({ left: dir * (w + 10), behavior: "smooth" });
       };
-
       prev.onclick = () => scrollByOne(-1);
       next.onclick = () => scrollByOne(1);
-
-      const fadeL = document.getElementById("popFadeL");
-      const fadeR = document.getElementById("popFadeR");
 
       function updateFades(){
         const maxScroll = row.scrollWidth - row.clientWidth;
         const x = row.scrollLeft;
-
-        fadeL.style.opacity = (x > 2) ? "1" : "0";
-        fadeR.style.opacity = (x < maxScroll - 2) ? "1" : "0";
-
         const canScroll = row.scrollWidth > row.clientWidth + 5;
+
         prev.classList.toggle("hide", !canScroll);
         next.classList.toggle("hide", !canScroll);
-        fadeL.style.display = canScroll ? "block" : "none";
-        fadeR.style.display = canScroll ? "block" : "none";
-      }
 
+        fadeL.style.opacity = (canScroll && x > 2) ? "1" : "0";
+        fadeR.style.opacity = (canScroll && x < maxScroll - 2) ? "1" : "0";
+      }
       updateFades();
-      row.addEventListener("scroll", () => updateFades(), { passive:true });
-      window.addEventListener("resize", () => updateFades());
+      row.addEventListener("scroll", updateFades, { passive:true });
+      window.addEventListener("resize", updateFades);
     }
 
     // ===== Genre chips =====
@@ -647,19 +578,16 @@
       genres.forEach(g => el.appendChild(mk(g, g)));
     }
 
-    // ===== Pager =====
+    // ===== Pager (fix biar pasti muncul kalau totalPages > 1) =====
     function renderPager(totalPages){
       const pager = document.getElementById("pager");
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
       const info = document.getElementById("pagerInfo");
 
-      if (totalPages <= 1){
-        pager.style.display = "none";
-        return;
-      }
+      if (totalPages > 1) pager.style.display = "flex";
+      else pager.style.display = "none";
 
-      pager.style.display = "flex";
       info.textContent = `Page ${page} / ${totalPages}`;
       prevBtn.disabled = page <= 1;
       nextBtn.disabled = page >= totalPages;
@@ -680,25 +608,25 @@
     }
 
     // ===== Render main list =====
-    function render(list, totalPages){
+    function renderList(pageList, totalPages){
       const grid = document.getElementById("grid");
       const empty = document.getElementById("empty");
       grid.innerHTML = "";
 
-      if (!list.length) {
-        empty.style.display="block";
-        document.getElementById("pager").style.display = "none";
+      if (!pageList.length){
+        empty.style.display = "block";
+        renderPager(1);
         return;
       }
-      empty.style.display="none";
+      empty.style.display = "none";
 
-      list.forEach(v=>{
+      pageList.forEach(v=>{
         const a = document.createElement("a");
         a.className = "card anim";
         a.href = "player.html?id=" + encodeURIComponent(v.id);
         a.innerHTML = cardHTML(v);
         grid.appendChild(a);
-        requestAnimationFrame(() => a.classList.add("show"));
+        requestAnimationFrame(()=>a.classList.add("show"));
       });
 
       renderPager(totalPages);
@@ -717,58 +645,58 @@
 
       const start = (page - 1) * PER_PAGE;
       const pageList = list.slice(start, start + PER_PAGE);
-
-      render(pageList, totalPages);
+      renderList(pageList, totalPages);
     }
 
-    /* =========================
-       ADDED: Update view render
-       ========================= */
-    function renderUpdateView(){
-      const box = document.getElementById("updateList");
+    // ===== Update view =====
+    function renderUpdate(){
+      const grid = document.getElementById("updateGrid");
       const empty = document.getElementById("updateEmpty");
-      box.innerHTML = "";
+      grid.innerHTML = "";
 
+      // sort created_at desc (kalau kosong, dorong ke bawah)
       const sorted = all.slice().sort((a,b)=>{
         const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
         const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
         return tb - ta;
       });
 
-      const latest = sorted.slice(0, 12);
-      if (!latest.length){
+      const pick = sorted.slice(0, 12);
+      if (!pick.length){
         empty.style.display = "block";
         return;
       }
       empty.style.display = "none";
 
-      latest.forEach(v=>{
+      pick.forEach(v=>{
         const a = document.createElement("a");
         a.className = "card anim";
         a.href = "player.html?id=" + encodeURIComponent(v.id);
         a.innerHTML = cardHTML(v);
-        box.appendChild(a);
-        requestAnimationFrame(() => a.classList.add("show"));
+        grid.appendChild(a);
+        requestAnimationFrame(()=>a.classList.add("show"));
       });
     }
 
-    /* =========================
-       ADDED: Profil view (history) - baca localStorage
-       Player bisa isi key ini nanti:
-       LS_HISTORY = "narapoi_watch_history_v1"
-       item: {id,title,thumb_url,ts}
-       ========================= */
-    const LS_HISTORY = "narapoi_watch_history_v1";
-    function renderProfileView(){
-      const box = document.getElementById("historyList");
-      const empty = document.getElementById("historyEmpty");
-      box.innerHTML = "";
+    // ===== Profile view (history max 50) =====
+    const HIST_KEY = "narapoi_watch_history_v1";
+    function safeParse(s, fallback){
+      try { return JSON.parse(s); } catch { return fallback; }
+    }
+    function loadHistory(){
+      const arr = safeParse(localStorage.getItem(HIST_KEY) || "[]", []);
+      // pastiin max 50
+      const sliced = arr.slice(0, 50);
+      if (sliced.length !== arr.length) localStorage.setItem(HIST_KEY, JSON.stringify(sliced));
+      return sliced;
+    }
+    function renderProfile(){
+      ensureAnonId();
+      const list = document.getElementById("profileList");
+      const empty = document.getElementById("profileEmpty");
+      list.innerHTML = "";
 
-      let hist = [];
-      try { hist = JSON.parse(localStorage.getItem(LS_HISTORY) || "[]"); } catch { hist = []; }
-      hist = Array.isArray(hist) ? hist : [];
-      hist = hist.slice().sort((a,b)=> (Number(b.ts||0) - Number(a.ts||0))).slice(0, 12);
-
+      const hist = loadHistory();
       if (!hist.length){
         empty.style.display = "block";
         return;
@@ -776,105 +704,88 @@
       empty.style.display = "none";
 
       hist.forEach(it=>{
-        // cari data video dari "all" kalau ada (biar views/duration ikut)
-        const v = all.find(x => x.id === it.id) || it;
-
         const a = document.createElement("a");
-        a.className = "card anim";
+        a.className = "miniItem";
         a.href = "player.html?id=" + encodeURIComponent(it.id);
-        a.innerHTML = cardHTML(v);
-        box.appendChild(a);
-        requestAnimationFrame(() => a.classList.add("show"));
+
+        a.innerHTML = `
+          <div class="miniThumb">
+            ${it.thumb_url ? `<img loading="lazy" src="${it.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
+          </div>
+          <div style="min-width:0;flex:1">
+            <p class="miniTitle">${escapeHtml(it.title || "Untitled")}</p>
+            <div class="miniMeta">${it.ts ? new Date(it.ts).toLocaleString() : ""}</div>
+          </div>
+        `;
+        list.appendChild(a);
       });
     }
 
-    /* =========================
-       ADDED: View switcher + bottom nav
-       ========================= */
-    function setActiveNav(id){
-      ["navHome","navUpdate","navDukungan","navProfil"].forEach(k=>{
-        document.getElementById(k).classList.toggle("active", k===id);
-      });
-    }
-    function showView(viewId){
-      ["viewHome","viewUpdate","viewDukungan","viewProfil"].forEach(v=>{
-        document.getElementById(v).classList.toggle("active", v===viewId);
-      });
-
-      // setiap pindah view, render section yg perlu
-      if (viewId === "viewHome"){
-        renderPopular();
-        apply(); // biar grid tetap hidup + anim
-      }
-      if (viewId === "viewUpdate"){
-        renderUpdateView();
-      }
-      if (viewId === "viewProfil"){
-        renderProfileView();
-      }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    document.getElementById("navHome").onclick = () => { setActiveNav("navHome"); showView("viewHome"); };
-    document.getElementById("navUpdate").onclick = () => { setActiveNav("navUpdate"); showView("viewUpdate"); };
-    document.getElementById("navDukungan").onclick = () => { setActiveNav("navDukungan"); showView("viewDukungan"); };
-    document.getElementById("navProfil").onclick = () => { setActiveNav("navProfil"); showView("viewProfil"); };
-
-    // dukungan button
-    document.getElementById("reportBtn").onclick = () => {
-      const text = encodeURIComponent("Halo admin, saya mau lapor masalah di Narapoi:\n\n- Judul video:\n- Link halaman:\n- Masalah:\n\nTerima kasih.");
-      // ganti email lu kalau ada:
-      location.href = "mailto:admin@example.com?subject=Laporan%20Masalah%20Narapoi&body=" + text;
+    // ===== Views switch =====
+    const views = {
+      home: document.getElementById("viewHome"),
+      update: document.getElementById("viewUpdate"),
+      support: document.getElementById("viewSupport"),
+      profile: document.getElementById("viewProfile"),
+    };
+    const navs = {
+      home: document.getElementById("navHome"),
+      update: document.getElementById("navUpdate"),
+      support: document.getElementById("navSupport"),
+      profile: document.getElementById("navProfile"),
     };
 
+    function setActiveView(name){
+      Object.keys(views).forEach(k => views[k].classList.toggle("show", k === name));
+      Object.keys(navs).forEach(k => navs[k].classList.toggle("active", k === name));
+
+      // render on enter
+      if (name === "home") { apply(); }
+      if (name === "update") { renderUpdate(); }
+      if (name === "profile") { renderProfile(); }
+    }
+
+    navs.home.onclick = () => setActiveView("home");
+    navs.update.onclick = () => setActiveView("update");
+    navs.support.onclick = () => setActiveView("support");
+    navs.profile.onclick = () => setActiveView("profile");
+
+    // support email (simple)
+    document.getElementById("btnReport").onclick = () => {
+      location.href = "mailto:admin@example.com?subject=Narapoi%20Support";
+    };
+
+    // ===== load data =====
     async function load(){
-      // FIX: anti blank karena cache / fetch fail
-      const url = API + "/api/videos?ts=" + Date.now();
-      try{
-        const res = await fetch(url, { cache: "no-store" });
-        const data = await res.json();
-        all = data.videos || [];
+      const res = await fetch(API + "/api/videos", { cache: "no-store" });
+      const data = await res.json();
+      all = data.videos || [];
 
-        // render home pieces
-        renderPopular();
+      // Popular + Chips + Home list
+      renderPopular();
+      const genres = [...new Set(all.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
+      renderChips(genres);
 
-        const genres = [...new Set(all.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
-        renderChips(genres);
+      // refresh current view content
+      const current =
+        navs.update.classList.contains("active") ? "update" :
+        navs.support.classList.contains("active") ? "support" :
+        navs.profile.classList.contains("active") ? "profile" : "home";
 
-        // reset page kalau kebablasan
-        if (page < 1) page = 1;
-
-        apply();
-
-        // kalau sedang bukan home, tetap refresh kontennya juga
-        if (document.getElementById("viewUpdate").classList.contains("active")) renderUpdateView();
-        if (document.getElementById("viewProfil").classList.contains("active")) renderProfileView();
-
-      }catch(e){
-        // kalau gagal, jangan bikin all jadi undefined → tampil empty
-        all = [];
-        document.getElementById("popularHead").style.display = "none";
-        document.getElementById("popWrap").style.display = "none";
-        document.getElementById("chips").innerHTML = "";
-        document.getElementById("grid").innerHTML = "";
-        document.getElementById("pager").style.display = "none";
-        document.getElementById("empty").style.display = "block";
-        document.getElementById("empty").textContent = "Gagal load video. Coba Reload lagi.";
-      }
+      if (current === "home") apply();
+      if (current === "update") renderUpdate();
+      if (current === "profile") renderProfile();
     }
 
-    // reload button: pastiin selalu works
-    document.getElementById("reload").onclick = () => {
-      // biar aman: tetap page 1 kalau user pengen
-      page = 1;
-      load();
-    };
+    // reload button (fix: bener2 reload data dan rerender)
+    document.getElementById("reload").onclick = () => load();
 
     document.getElementById("q").addEventListener("input", () => {
       page = 1;
-      apply();
+      if (navs.home.classList.contains("active")) apply();
     });
 
+    ensureAnonId();
     load();
   </script>
 </body>
