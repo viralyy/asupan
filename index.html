@@ -56,9 +56,98 @@
     .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
     .empty{padding:18px;margin-top:10px;border:1px dashed rgba(255,255,255,.12);border-radius:var(--r);color:var(--muted)}
     .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
+
+    /* ===== 18+ Gate (added) ===== */
+    body.age-locked .wrap,
+    body.age-locked .topbar {
+      filter: blur(10px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .age-overlay{
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0,0,0,.55);
+    }
+
+    body.age-locked .age-overlay{
+      display: flex;
+    }
+
+    .age-modal{
+      width: 100%;
+      max-width: 520px;
+      border-radius: var(--r);
+      background: rgba(18,22,28,.95);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .age-title{
+      font-weight: 900;
+      font-size: 18px;
+      margin: 0 0 6px;
+    }
+
+    .age-text{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 0 0 12px;
+    }
+
+    .age-actions{
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .age-actions button{
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(18,22,28,.9);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .age-actions .primary{
+      background: var(--accent);
+      border: 0;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ===== 18+ Gate (added) ===== -->
+  <div class="age-overlay" id="ageOverlay" aria-hidden="true">
+    <div class="age-modal" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
+      <div class="age-title" id="ageTitle">Peringatan 18+</div>
+      <p class="age-text">
+        Konten di situs ini hanya untuk pengunjung berusia <b>18 tahun ke atas</b>.
+        Dengan melanjutkan, kamu menyatakan bahwa kamu sudah 18+ dan setuju melihat konten dewasa.
+      </p>
+
+      <div class="age-actions">
+        <button class="primary" id="ageYes">Saya 18+</button>
+        <button id="ageNo">Keluar</button>
+      </div>
+
+      <p class="age-text" style="margin-top:10px;font-size:12px;">
+        Pilihan kamu disimpan di browser (localStorage), jadi setelah refresh tidak akan muncul lagi.
+      </p>
+    </div>
+  </div>
+
   <div class="topbar">
     <div class="wrap">
       <div class="brand"><span class="dot"></span><span>Narapoi</span></div>
@@ -83,6 +172,35 @@
     const API = "https://asupanmu.aku679093.workers.dev";
     let all = [];
     let activeGenre = ""; // "" = all
+
+    // ===== 18+ Gate (added) =====
+    const AGE_KEY = "narapoi_age_ok_v1";
+
+    function lockAgeGate(){
+      document.body.classList.add("age-locked");
+      const ov = document.getElementById("ageOverlay");
+      ov.setAttribute("aria-hidden", "false");
+    }
+
+    function unlockAgeGate(){
+      document.body.classList.remove("age-locked");
+      const ov = document.getElementById("ageOverlay");
+      ov.setAttribute("aria-hidden", "true");
+    }
+
+    (function initAgeGate(){
+      const ok = localStorage.getItem(AGE_KEY) === "1";
+      if (!ok) lockAgeGate();
+
+      document.getElementById("ageYes").onclick = () => {
+        localStorage.setItem(AGE_KEY, "1");
+        unlockAgeGate();
+      };
+
+      document.getElementById("ageNo").onclick = () => {
+        location.href = "about:blank";
+      };
+    })();
 
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
