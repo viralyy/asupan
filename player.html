@@ -108,7 +108,7 @@
     .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
 
     /* =========================
-       Download button + tutorial
+       ADDED: Download button + tutorial
        ========================= */
     .dlWrap{margin-top:12px}
     .dlBtn{
@@ -136,129 +136,10 @@
     }
     .dlHint b{color:var(--text)}
     .dlHint a{color:#ffd6de;text-decoration:underline}
-
-    /* =========================
-       Download Popup (bottom sheet) + Petasan anim
-       ========================= */
-    .sheetOverlay{
-      position:fixed;inset:0;z-index:9999;
-      background:rgba(0,0,0,.55);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      padding:14px;
-    }
-    .sheetOverlay.show{display:flex}
-    .sheet{
-      width:100%;
-      max-width:560px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(18,22,28,.96);
-      box-shadow: var(--shadow);
-      transform: translateY(22px);
-      opacity:0;
-      transition: transform 2s ease, opacity 2s ease; /* 2 detik */
-      overflow:hidden;
-      position:relative;
-    }
-    .sheetOverlay.show .sheet{
-      transform: translateY(0);
-      opacity:1;
-    }
-    .sheetTop{
-      padding:12px 14px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .sheetTitle{
-      font-weight:900;
-      letter-spacing:.2px;
-    }
-    .sheetClose{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(18,22,28,.9);
-      color:var(--text);
-      border-radius:999px;
-      padding:8px 10px;
-      cursor:pointer;
-      font-weight:800;
-    }
-    .sheetBody{padding:14px}
-    .sheetText{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.45;
-      margin:0 0 12px;
-    }
-    .sheetActions{display:flex;gap:10px}
-    .sheetPrimary{
-      flex:1;
-      border:0;
-      border-radius:14px;
-      padding:12px 12px;
-      background:linear-gradient(135deg, #ff4d6d, #ff6b81);
-      color:#fff;
-      font-weight:900;
-      cursor:pointer;
-    }
-    .sheetGhost{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(18,22,28,.9);
-      color:var(--text);
-      border-radius:14px;
-      padding:12px 12px;
-      cursor:pointer;
-      font-weight:900;
-      flex:1;
-    }
-
-    /* Petasan (sparkles) */
-    .sparkWrap{
-      position:absolute;
-      left:0;right:0;
-      top:-40px;
-      height:40px;
-      pointer-events:none;
-      opacity:0;
-      transition: opacity .25s ease;
-      overflow:visible;
-    }
-    .sheetOverlay.show .sparkWrap{opacity:1}
-    .spark{
-      position:absolute;
-      top:18px;
-      width:6px;height:6px;border-radius:999px;
-      background:rgba(255,77,109,.95);
-      box-shadow:0 0 14px rgba(255,77,109,.65);
-      animation: pop 900ms ease-out infinite;
-    }
-    .spark:nth-child(2){left:20%;animation-delay:120ms;background:rgba(255,214,222,.95);box-shadow:0 0 14px rgba(255,214,222,.65)}
-    .spark:nth-child(3){left:40%;animation-delay:260ms}
-    .spark:nth-child(4){left:60%;animation-delay:380ms;background:rgba(255,214,222,.95);box-shadow:0 0 14px rgba(255,214,222,.65)}
-    .spark:nth-child(5){left:80%;animation-delay:520ms}
-    .spark:nth-child(1){left:10%}
-    @keyframes pop{
-      0%{transform: translateY(10px) scale(.6);opacity:.15}
-      40%{opacity:1}
-      100%{transform: translateY(-18px) scale(1.2);opacity:0}
-    }
-
-    /* Related animation */
-    .relAnim{
-      opacity:0;
-      transform: translateY(8px);
-      animation: relIn 520ms ease forwards;
-    }
-    @keyframes relIn{
-      to{opacity:1; transform: translateY(0)}
-    }
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <div class="topbar">
     <div class="wrap">
       <a class="brand" href="index.html"><span class="dot"></span><span>Narapoi</span></a>
@@ -266,33 +147,6 @@
         <input id="q" placeholder="Cari video..." />
       </div>
       <button class="btn" id="reload">Reload</button>
-    </div>
-  </div>
-
-  <!-- Download Popup -->
-  <div class="sheetOverlay" id="dlSheetOverlay" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true">
-      <div class="sparkWrap" aria-hidden="true">
-        <span class="spark"></span>
-        <span class="spark"></span>
-        <span class="spark"></span>
-        <span class="spark"></span>
-        <span class="spark"></span>
-      </div>
-
-      <div class="sheetTop">
-        <div class="sheetTitle">Download Full</div>
-        <button class="sheetClose" id="dlSheetClose">Tutup</button>
-      </div>
-      <div class="sheetBody">
-        <p class="sheetText">
-          Kamu akan diarahkan ke halaman iklan dulu. Setelah itu tunggu 5 detik, lalu kembali agar otomatis menuju link download.
-        </p>
-        <div class="sheetActions">
-          <button class="sheetPrimary" id="dlSheetGo">LANJUT DOWNLOAD</button>
-          <button class="sheetGhost" id="dlSheetCancel">BATAL</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -304,15 +158,23 @@
       <div class="info" id="meta" style="display:none;"></div>
     </div>
 
+    <!-- =========================
+         ADDED: DOWNLOAD FULL button (di atas tombol kembali)
+         (auto-hide kalau download_url kosong)
+         ========================= -->
     <div class="dlWrap" id="dlWrap" style="display:none;">
       <button class="dlBtn" id="downloadFullBtn">DOWNLOAD FULL</button>
     </div>
 
+    <!-- tombol kembali di bawah player -->
     <div class="belowActions">
       <a class="btn" href="index.html">← Balik ke Home</a>
       <a class="btn" href="admin.html" style="display:none" id="adminHidden">Admin</a>
     </div>
 
+    <!-- =========================
+         ADDED: Tutorial text (di bawah tombol kembali)
+         ========================= -->
     <div class="dlHint" id="dlHint" style="display:none;">
       <b>CARA DOWNLOAD FULL NYA?</b><br>
       1. Klik tombol <b>DOWNLOAD FULL</b><br>
@@ -351,6 +213,7 @@
       } catch {}
       return null;
     }
+
     function shuffle(arr){
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--){
@@ -380,16 +243,16 @@
         const data = await res.json();
         let vids = (data.videos || []).filter(v => v.id !== current);
 
+        // kalau genre ada, prioritas genre sama (biar lebih nyambung), tapi tetap random
         const sameGenre = vids.filter(v => (v.genre || "") && (v.genre === (window.__CURRENT_GENRE__ || "")));
         const others = vids.filter(v => v.genre !== (window.__CURRENT_GENRE__ || ""));
 
         let picked = shuffle(sameGenre).concat(shuffle(others));
         picked = picked.slice(0, 10);
 
-        picked.forEach((v, idx)=>{
+        picked.forEach(v=>{
           const a = document.createElement("a");
-          a.className = "card relAnim";
-          a.style.animationDelay = (idx * 55) + "ms";
+          a.className = "card";
           a.href = "player.html?id=" + encodeURIComponent(v.id);
 
           const kind = (v.kind || "link").toUpperCase();
@@ -419,9 +282,12 @@
           relGrid.appendChild(a);
         });
 
-      }catch(e){}
+      }catch(e){
+        // kalau gagal fetch, biarin kosong
+      }
     }
 
+    // Header search: enter => redirect ke index dengan query q (biar "feel" sama)
     const qEl = document.getElementById("q");
     qEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -432,29 +298,13 @@
 
     document.getElementById("reload").onclick = () => location.reload();
 
-    // Popup handlers
-    const dlSheetOverlay = document.getElementById("dlSheetOverlay");
-    const dlSheetClose = document.getElementById("dlSheetClose");
-    const dlSheetCancel = document.getElementById("dlSheetCancel");
-    const dlSheetGo = document.getElementById("dlSheetGo");
-
-    function openSheet(){
-      dlSheetOverlay.classList.add("show");
-      dlSheetOverlay.setAttribute("aria-hidden", "false");
-    }
-    function closeSheet(){
-      dlSheetOverlay.classList.remove("show");
-      dlSheetOverlay.setAttribute("aria-hidden", "true");
-    }
-    dlSheetClose.onclick = closeSheet;
-    dlSheetCancel.onclick = closeSheet;
-    dlSheetOverlay.addEventListener("click", (e) => {
-      if (e.target === dlSheetOverlay) closeSheet();
-    });
-
-    // Download flow: direct link -> back -> auto to download
+    /* =========================
+       ADDED: Download redirect flow
+       - Klik DOWNLOAD -> redirect ke iklan
+       - Setelah user back, auto redirect ke link download
+       ========================= */
     const AD_URL = "https://lt.wetterdefames.com/iQDHyQUDulo0R9YZ/131416";
-    const DL_PENDING_KEY = "narapoi_dl_pending_v1";
+    const DL_PENDING_KEY = "narapoi_dl_pending_v1"; // sessionStorage
     function setPendingDownload(url){
       const payload = { url, startedAt: Date.now() };
       sessionStorage.setItem(DL_PENDING_KEY, JSON.stringify(payload));
@@ -479,6 +329,7 @@
         return;
       }
 
+      // kalau user balik sebelum 5 detik, tunggu sisa detiknya lalu auto ke download
       setTimeout(() => {
         const again = getPendingDownload();
         if (!again || !again.url) return;
@@ -488,6 +339,7 @@
       }, wait);
     }
 
+    // pageshow kepake buat kasus "back" dari iklan (bfcache)
     window.addEventListener("pageshow", () => {
       maybeAutoGoDownload();
     });
@@ -495,6 +347,7 @@
     (async () => {
       if (!id) {
         document.getElementById("title").textContent = "ID kosong";
+        // ADDED: kalau id kosong, pastiin download/tutor hidden
         document.getElementById("dlWrap").style.display = "none";
         document.getElementById("dlHint").style.display = "none";
         return;
@@ -505,6 +358,7 @@
 
       if (!data.ok) {
         document.getElementById("title").textContent = "Video tidak ketemu";
+        // ADDED: hide download/tutor kalau ga ketemu
         document.getElementById("dlWrap").style.display = "none";
         document.getElementById("dlHint").style.display = "none";
         return;
@@ -526,19 +380,21 @@
 
       bumpView();
 
+      /* =========================
+         ADDED: show/hide DOWNLOAD FULL
+         - muncul kalau ada v.download_url (diisi dari admin)
+         ========================= */
       const dlWrap = document.getElementById("dlWrap");
       const dlHint = document.getElementById("dlHint");
       const dlBtn = document.getElementById("downloadFullBtn");
 
-      const downloadUrl = (v.download_url || "").trim();
+      const downloadUrl = (v.download_url || "").trim(); // harus ada dari API
       if (downloadUrl){
         dlWrap.style.display = "block";
         dlHint.style.display = "block";
 
-        dlBtn.onclick = () => openSheet();
-
-        dlSheetGo.onclick = () => {
-          closeSheet();
+        dlBtn.onclick = () => {
+          // set pending then redirect ke iklan
           setPendingDownload(downloadUrl);
           location.href = AD_URL;
         };
@@ -549,6 +405,7 @@
 
       const box = document.getElementById("box");
 
+      // Youtube (iframe 16:9 locked by playerBox)
       if ((v.kind || "") === "youtube") {
         const vid = ytEmbed(v.video_url);
         box.innerHTML = `
@@ -562,6 +419,7 @@
         return;
       }
 
+      // mp4 / hls (video 16:9 locked)
       const video = document.createElement("video");
       video.controls = true;
       video.playsInline = true;
