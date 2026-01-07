@@ -170,7 +170,7 @@
     .pager .btn:disabled{opacity:.5;cursor:not-allowed}
 
     /* =========================
-       Views (home/update/support/profile)
+       Views (home/support/profile)
        ========================= */
     .view{display:none}
     .view.show{display:block}
@@ -187,7 +187,7 @@
     }
     .bottomNav .wrap{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
+      grid-template-columns:repeat(3,1fr);
       gap:6px;
       padding:10px 12px;
       align-items:center;
@@ -219,11 +219,6 @@
       color:var(--text);
     }
     .navItem.active .navText{color:#ffd6de}
-
-    /* Update icon: wifi muter */
-    .wifiSpin{transform-origin:50% 50%}
-    .navItem.active .wifiSpin{animation:wifiSpin 1.2s linear infinite}
-    @keyframes wifiSpin{to{transform:rotate(360deg)}}
 
     /* Profile cards list */
     .miniList{
@@ -340,25 +335,38 @@
     </div>
 
     <!-- =========================
-         UPDATE VIEW
-         ========================= -->
-    <div class="view" id="viewUpdate">
-      <div class="chips" style="margin-top:12px;">
-        <span class="chip active">Update</span>
-      </div>
-      <div id="updateGrid" class="grid"></div>
-      <div id="updateEmpty" class="empty" style="display:none;">Belum ada update.</div>
-    </div>
-
-    <!-- =========================
-         DUKUNGAN VIEW
+         DUKUNGAN VIEW (UPDATED ISI)
          ========================= -->
     <div class="view" id="viewSupport">
       <div class="chips" style="margin-top:12px;">
         <span class="chip active">Dukungan</span>
       </div>
+
       <div class="empty" style="display:block;">
-        <button class="btn" id="btnReport" style="width:100%;margin-top:10px;cursor:pointer">Email</button>
+        <button class="btn" id="btnReport" style="width:100%;margin-top:10px;cursor:pointer">Kirim Laporan</button>
+        <button class="btn" id="btnDonate" style="width:100%;margin-top:10px;cursor:pointer">Donate</button>
+        <button class="btn" id="btnReqUpdate" style="width:100%;margin-top:10px;cursor:pointer">Request Update</button>
+      </div>
+
+      <div class="empty" style="display:block;">
+        <div style="color:var(--text);font-weight:900;margin-bottom:10px;">Tutorial Cara Menonton</div>
+        <div style="line-height:1.7;">
+          1. Masuk ke <b>Beranda</b> lalu pilih video.<br>
+          2. Di halaman player, tunggu video siap lalu tekan <b>Play</b>.<br>
+          3. Kalau video tidak jalan, coba tekan <b>Reload</b> di atas atau ganti jaringan/browser.<br>
+          4. Kalau ada masalah (blank/loading), kirim <b>Laporan</b> lewat tombol di atas + sertakan link video.
+        </div>
+      </div>
+
+      <div class="empty" style="display:block;">
+        <div style="color:var(--text);font-weight:900;margin-bottom:10px;">Tutorial Cara Download</div>
+        <div style="line-height:1.7;">
+          1. Buka video yang mau didownload.<br>
+          2. Cari tombol <b>DOWNLOAD FULL</b> (kalau tersedia).<br>
+          3. Klik <b>DOWNLOAD FULL</b> lalu ikuti langkah yang muncul di halaman (kalau ada hitungan/wait).<br>
+          4. Setelah selesai, link download akan kebuka otomatis / kamu tinggal balik dan diarahkan ke link download.<br>
+          5. Kalau tombol download tidak ada, berarti video itu belum ada link download-nya.
+        </div>
       </div>
     </div>
 
@@ -378,26 +386,13 @@
     <div class="bottomNavSpace"></div>
   </div>
 
-  <!-- Bottom Menu -->
+  <!-- Bottom Menu (UPDATE DIHAPUS) -->
   <div class="bottomNav">
     <div class="wrap">
       <div class="navItem active" id="navHome">
         <!-- house -->
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg>
         <div class="navText">Beranda</div>
-      </div>
-
-      <div class="navItem" id="navUpdate">
-        <!-- wifi + spin ring -->
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <g class="wifiSpin">
-            <path d="M2 8.5a16 16 0 0 1 20 0"></path>
-            <path d="M5 12a11 11 0 0 1 14 0"></path>
-            <path d="M8.5 15.5a6 6 0 0 1 7 0"></path>
-            <path d="M12 19h0"></path>
-          </g>
-        </svg>
-        <div class="navText">Update</div>
       </div>
 
       <div class="navItem" id="navSupport">
@@ -463,14 +458,6 @@
       const m = Math.floor(n / 60);
       const s = Math.floor(n % 60).toString().padStart(2,"0");
       return `${m}:${s}`;
-    }
-    function shuffle(arr){
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
     }
     function cardHTML(v){
       const kind = (v.kind || "link").toUpperCase();
@@ -648,36 +635,6 @@
       renderList(pageList, totalPages);
     }
 
-    // ===== Update view =====
-    function renderUpdate(){
-      const grid = document.getElementById("updateGrid");
-      const empty = document.getElementById("updateEmpty");
-      grid.innerHTML = "";
-
-      // sort created_at desc (kalau kosong, dorong ke bawah)
-      const sorted = all.slice().sort((a,b)=>{
-        const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
-        const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
-        return tb - ta;
-      });
-
-      const pick = sorted.slice(0, 12);
-      if (!pick.length){
-        empty.style.display = "block";
-        return;
-      }
-      empty.style.display = "none";
-
-      pick.forEach(v=>{
-        const a = document.createElement("a");
-        a.className = "card anim";
-        a.href = "player.html?id=" + encodeURIComponent(v.id);
-        a.innerHTML = cardHTML(v);
-        grid.appendChild(a);
-        requestAnimationFrame(()=>a.classList.add("show"));
-      });
-    }
-
     // ===== Profile view (history max 50) =====
     const HIST_KEY = "narapoi_watch_history_v1";
     function safeParse(s, fallback){
@@ -685,7 +642,6 @@
     }
     function loadHistory(){
       const arr = safeParse(localStorage.getItem(HIST_KEY) || "[]", []);
-      // pastiin max 50
       const sliced = arr.slice(0, 50);
       if (sliced.length !== arr.length) localStorage.setItem(HIST_KEY, JSON.stringify(sliced));
       return sliced;
@@ -724,13 +680,11 @@
     // ===== Views switch =====
     const views = {
       home: document.getElementById("viewHome"),
-      update: document.getElementById("viewUpdate"),
       support: document.getElementById("viewSupport"),
       profile: document.getElementById("viewProfile"),
     };
     const navs = {
       home: document.getElementById("navHome"),
-      update: document.getElementById("navUpdate"),
       support: document.getElementById("navSupport"),
       profile: document.getElementById("navProfile"),
     };
@@ -739,20 +693,23 @@
       Object.keys(views).forEach(k => views[k].classList.toggle("show", k === name));
       Object.keys(navs).forEach(k => navs[k].classList.toggle("active", k === name));
 
-      // render on enter
-      if (name === "home") { apply(); }
-      if (name === "update") { renderUpdate(); }
-      if (name === "profile") { renderProfile(); }
+      if (name === "home") apply();
+      if (name === "profile") renderProfile();
     }
 
     navs.home.onclick = () => setActiveView("home");
-    navs.update.onclick = () => setActiveView("update");
     navs.support.onclick = () => setActiveView("support");
     navs.profile.onclick = () => setActiveView("profile");
 
-    // support email (simple)
+    // dukungan actions
     document.getElementById("btnReport").onclick = () => {
-      location.href = "mailto:admin@example.com?subject=Narapoi%20Support";
+      location.href = "mailto:admin@example.com?subject=Narapoi%20-%20Laporan%20Masalah";
+    };
+    document.getElementById("btnDonate").onclick = () => {
+      location.href = "mailto:admin@example.com?subject=Narapoi%20-%20Donate";
+    };
+    document.getElementById("btnReqUpdate").onclick = () => {
+      location.href = "mailto:admin@example.com?subject=Narapoi%20-%20Request%20Update";
     };
 
     // ===== load data =====
@@ -761,23 +718,18 @@
       const data = await res.json();
       all = data.videos || [];
 
-      // Popular + Chips + Home list
       renderPopular();
       const genres = [...new Set(all.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
       renderChips(genres);
 
-      // refresh current view content
       const current =
-        navs.update.classList.contains("active") ? "update" :
         navs.support.classList.contains("active") ? "support" :
         navs.profile.classList.contains("active") ? "profile" : "home";
 
       if (current === "home") apply();
-      if (current === "update") renderUpdate();
       if (current === "profile") renderProfile();
     }
 
-    // reload button (fix: bener2 reload data dan rerender)
     document.getElementById("reload").onclick = () => load();
 
     document.getElementById("q").addEventListener("input", () => {
