@@ -175,7 +175,6 @@
       right:0;
       background:linear-gradient(to left, rgba(11,13,16,1), rgba(11,13,16,0));
     }
-    /* biar fade gak nutup tombol */
     .popFade.left{padding-left:40px}
     .popFade.right{padding-right:40px}
 
@@ -253,6 +252,68 @@
       opacity:.5;
       cursor:not-allowed;
     }
+
+    /* =========================
+       ADDED: Views (home/update/dukungan/profil) + Bottom menu
+       ========================= */
+    .view{display:none}
+    .view.active{display:block}
+
+    .panelCard{
+      background:linear-gradient(180deg, rgba(18,22,28,.9), rgba(15,19,24,.9));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r);
+      box-shadow: var(--shadow);
+      padding:12px;
+      margin-top:12px;
+    }
+    .panelTitle{
+      font-weight:950;
+      margin:0 0 6px;
+      letter-spacing:.2px;
+    }
+    .panelText{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    /* bottom nav fixed */
+    .bottomNavSpace{height:72px;} /* biar konten ga ketutup nav */
+    .bottomNav{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      z-index:50;
+      border-top:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(to top, rgba(11,13,16,.96), rgba(11,13,16,.78));
+      backdrop-filter: blur(10px);
+    }
+    .bottomNav .wrap{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+    }
+    .navBtn{
+      flex:1;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.85);
+      color:var(--muted);
+      border-radius:999px;
+      padding:10px 10px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      text-align:center;
+      user-select:none;
+    }
+    .navBtn.active{
+      color:var(--text);
+      border-color:rgba(255,77,109,.35);
+      background:rgba(255,77,109,.10);
+    }
   </style>
 </head>
 <body>
@@ -289,38 +350,131 @@
 
   <div class="wrap">
 
-    <!-- Popular -->
-    <div class="sectionHead" id="popularHead" style="display:none;">
-      <h2 class="sectionTitle">Popular posts</h2>
-      <div class="sectionNote">Top by views (min 1000)</div>
+    <!-- =========================
+         HOME VIEW (default)
+         ========================= -->
+    <div class="view active" id="viewHome">
+
+      <!-- Popular -->
+      <div class="sectionHead" id="popularHead" style="display:none;">
+        <h2 class="sectionTitle">Popular posts</h2>
+        <div class="sectionNote">Top by views (min 1000)</div>
+      </div>
+
+      <div class="popWrap" id="popWrap" style="display:none;">
+        <div class="popNav popPrev" id="popPrev" aria-label="Prev">‹</div>
+        <div class="popNav popNext" id="popNext" aria-label="Next">›</div>
+        <div class="popFade left" id="popFadeL"></div>
+        <div class="popFade right" id="popFadeR"></div>
+        <div id="popularRow" class="popRow"></div>
+      </div>
+
+      <!-- GENRE chips di bawah popular -->
+      <div class="chips" id="chips"></div>
+
+      <!-- daftar video (paginasi) -->
+      <div id="grid" class="grid"></div>
+
+      <!-- pager -->
+      <div class="pager" id="pager" style="display:none;">
+        <button class="btn" id="prevBtn">Prev</button>
+        <div class="pagerInfo" id="pagerInfo">Page 1</div>
+        <button class="btn" id="nextBtn">Next</button>
+      </div>
+
+      <div id="empty" class="empty" style="display:none;">Belum ada video.</div>
     </div>
 
-    <div class="popWrap" id="popWrap" style="display:none;">
-      <div class="popNav popPrev" id="popPrev" aria-label="Prev">‹</div>
-      <div class="popNav popNext" id="popNext" aria-label="Next">›</div>
+    <!-- =========================
+         UPDATE VIEW (ADDED)
+         ========================= -->
+    <div class="view" id="viewUpdate">
+      <div class="panelCard">
+        <h3 class="panelTitle">Update terbaru</h3>
+        <p class="panelText">
+          Di sini kamu bisa lihat konten yang baru di-upload + info jadwal update.
+        </p>
+      </div>
 
-      <!-- gradient fades -->
-      <div class="popFade left" id="popFadeL"></div>
-      <div class="popFade right" id="popFadeR"></div>
+      <div class="panelCard">
+        <h3 class="panelTitle">Jadwal update</h3>
+        <p class="panelText">
+          • Senin–Jumat: 1–3 upload<br>
+          • Weekend: random (kalau admin semangat 😄)
+        </p>
+      </div>
 
-      <div id="popularRow" class="popRow"></div>
+      <div class="panelCard">
+        <h3 class="panelTitle">Baru ditambahkan</h3>
+        <div id="updateList" class="grid" style="margin-top:10px;"></div>
+        <div id="updateEmpty" class="empty" style="display:none;margin-top:10px;">Belum ada update.</div>
+      </div>
     </div>
 
-    <!-- GENRE chips di bawah popular -->
-    <div class="chips" id="chips"></div>
+    <!-- =========================
+         DUKUNGAN VIEW (ADDED)
+         ========================= -->
+    <div class="view" id="viewDukungan">
+      <div class="panelCard">
+        <h3 class="panelTitle">Dukungan</h3>
+        <p class="panelText">
+          Kalau ada video error / thumbnail rusak / request fitur, laporin di sini.
+          (Form ini masih versi ringan, belum perlu backend.)
+        </p>
+      </div>
 
-    <!-- daftar video (paginasi) -->
-    <div id="grid" class="grid"></div>
+      <div class="panelCard">
+        <h3 class="panelTitle">Laporkan masalah</h3>
+        <p class="panelText" style="margin-bottom:10px;">
+          Klik tombol di bawah buat kirim laporan via email/chat (ganti sesuai kontak lu).
+        </p>
+        <button class="btn" id="reportBtn" style="width:100%;">Kirim laporan</button>
+      </div>
 
-    <!-- pager -->
-    <div class="pager" id="pager" style="display:none;">
-      <button class="btn" id="prevBtn">Prev</button>
-      <div class="pagerInfo" id="pagerInfo">Page 1</div>
-      <button class="btn" id="nextBtn">Next</button>
+      <div class="panelCard">
+        <h3 class="panelTitle">Donate / VIP</h3>
+        <p class="panelText">
+          • Donate: (isi link saweria/dll)<br>
+          • VIP: (isi benefit + cara join)<br>
+        </p>
+      </div>
     </div>
 
-    <div id="empty" class="empty" style="display:none;">Belum ada video.</div>
+    <!-- =========================
+         PROFIL VIEW (ADDED)
+         ========================= -->
+    <div class="view" id="viewProfil">
+      <div class="panelCard">
+        <h3 class="panelTitle">Profil (Anonim)</h3>
+        <p class="panelText">
+          Profil ini anonim (tanpa login). Riwayat bisa muncul kalau player nyimpen history ke localStorage.
+        </p>
+      </div>
+
+      <div class="panelCard">
+        <h3 class="panelTitle">Riwayat tontonan</h3>
+        <div id="historyList" class="grid" style="margin-top:10px;"></div>
+        <div id="historyEmpty" class="empty" style="display:none;margin-top:10px;">Belum ada riwayat tontonan.</div>
+        <div class="panelText" style="margin-top:10px;">
+          (Nanti gue bisa bantu tambah 3 baris script di player biar history otomatis keisi.)
+        </div>
+      </div>
+    </div>
+
+    <div class="bottomNavSpace"></div>
     <div class="footer">Narapoi Punya</div>
+  </div>
+
+  <!-- =========================
+       ADDED: Bottom menu (Home/Update/Dukungan/Profil)
+       ========================= -->
+  <div class="bottomNav">
+    <div class="wrap">
+      <div class="navBtn active" id="navHome">Home</div>
+      <div class="navBtn" id="navUpdate">Update</div>
+      <div class="navBtn" id="navDukungan">Dukungan</div>
+      <div class="navBtn" id="navProfil">Profil</div>
+    </div>
   </div>
 
   <script>
@@ -419,7 +573,6 @@
         .sort((a,b) => (Number(b.views||0) - Number(a.views||0)))
         .slice(0, POP_MAX);
 
-      // kalau nggak ada yang >= 1000 -> hide semuanya
       if (!top.length){
         popHead.style.display = "none";
         popWrap.style.display = "none";
@@ -438,7 +591,6 @@
         requestAnimationFrame(() => a.classList.add("show"));
       });
 
-      // nav buttons
       const prev = document.getElementById("popPrev");
       const next = document.getElementById("popNext");
 
@@ -451,7 +603,6 @@
       prev.onclick = () => scrollByOne(-1);
       next.onclick = () => scrollByOne(1);
 
-      // fade show/hide sesuai scroll position
       const fadeL = document.getElementById("popFadeL");
       const fadeR = document.getElementById("popFadeR");
 
@@ -462,7 +613,6 @@
         fadeL.style.opacity = (x > 2) ? "1" : "0";
         fadeR.style.opacity = (x < maxScroll - 2) ? "1" : "0";
 
-        // kalau item sedikit & ga bisa scroll, fade & nav disembunyiin biar rapih
         const canScroll = row.scrollWidth > row.clientWidth + 5;
         prev.classList.toggle("hide", !canScroll);
         next.classList.toggle("hide", !canScroll);
@@ -571,20 +721,154 @@
       render(pageList, totalPages);
     }
 
-    async function load(){
-      const res = await fetch(API + "/api/videos");
-      const data = await res.json();
-      all = data.videos || [];
+    /* =========================
+       ADDED: Update view render
+       ========================= */
+    function renderUpdateView(){
+      const box = document.getElementById("updateList");
+      const empty = document.getElementById("updateEmpty");
+      box.innerHTML = "";
 
-      renderPopular();
+      const sorted = all.slice().sort((a,b)=>{
+        const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return tb - ta;
+      });
 
-      const genres = [...new Set(all.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
-      renderChips(genres);
+      const latest = sorted.slice(0, 12);
+      if (!latest.length){
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
 
-      apply();
+      latest.forEach(v=>{
+        const a = document.createElement("a");
+        a.className = "card anim";
+        a.href = "player.html?id=" + encodeURIComponent(v.id);
+        a.innerHTML = cardHTML(v);
+        box.appendChild(a);
+        requestAnimationFrame(() => a.classList.add("show"));
+      });
     }
 
-    document.getElementById("reload").onclick = () => load();
+    /* =========================
+       ADDED: Profil view (history) - baca localStorage
+       Player bisa isi key ini nanti:
+       LS_HISTORY = "narapoi_watch_history_v1"
+       item: {id,title,thumb_url,ts}
+       ========================= */
+    const LS_HISTORY = "narapoi_watch_history_v1";
+    function renderProfileView(){
+      const box = document.getElementById("historyList");
+      const empty = document.getElementById("historyEmpty");
+      box.innerHTML = "";
+
+      let hist = [];
+      try { hist = JSON.parse(localStorage.getItem(LS_HISTORY) || "[]"); } catch { hist = []; }
+      hist = Array.isArray(hist) ? hist : [];
+      hist = hist.slice().sort((a,b)=> (Number(b.ts||0) - Number(a.ts||0))).slice(0, 12);
+
+      if (!hist.length){
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      hist.forEach(it=>{
+        // cari data video dari "all" kalau ada (biar views/duration ikut)
+        const v = all.find(x => x.id === it.id) || it;
+
+        const a = document.createElement("a");
+        a.className = "card anim";
+        a.href = "player.html?id=" + encodeURIComponent(it.id);
+        a.innerHTML = cardHTML(v);
+        box.appendChild(a);
+        requestAnimationFrame(() => a.classList.add("show"));
+      });
+    }
+
+    /* =========================
+       ADDED: View switcher + bottom nav
+       ========================= */
+    function setActiveNav(id){
+      ["navHome","navUpdate","navDukungan","navProfil"].forEach(k=>{
+        document.getElementById(k).classList.toggle("active", k===id);
+      });
+    }
+    function showView(viewId){
+      ["viewHome","viewUpdate","viewDukungan","viewProfil"].forEach(v=>{
+        document.getElementById(v).classList.toggle("active", v===viewId);
+      });
+
+      // setiap pindah view, render section yg perlu
+      if (viewId === "viewHome"){
+        renderPopular();
+        apply(); // biar grid tetap hidup + anim
+      }
+      if (viewId === "viewUpdate"){
+        renderUpdateView();
+      }
+      if (viewId === "viewProfil"){
+        renderProfileView();
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.getElementById("navHome").onclick = () => { setActiveNav("navHome"); showView("viewHome"); };
+    document.getElementById("navUpdate").onclick = () => { setActiveNav("navUpdate"); showView("viewUpdate"); };
+    document.getElementById("navDukungan").onclick = () => { setActiveNav("navDukungan"); showView("viewDukungan"); };
+    document.getElementById("navProfil").onclick = () => { setActiveNav("navProfil"); showView("viewProfil"); };
+
+    // dukungan button
+    document.getElementById("reportBtn").onclick = () => {
+      const text = encodeURIComponent("Halo admin, saya mau lapor masalah di Narapoi:\n\n- Judul video:\n- Link halaman:\n- Masalah:\n\nTerima kasih.");
+      // ganti email lu kalau ada:
+      location.href = "mailto:admin@example.com?subject=Laporan%20Masalah%20Narapoi&body=" + text;
+    };
+
+    async function load(){
+      // FIX: anti blank karena cache / fetch fail
+      const url = API + "/api/videos?ts=" + Date.now();
+      try{
+        const res = await fetch(url, { cache: "no-store" });
+        const data = await res.json();
+        all = data.videos || [];
+
+        // render home pieces
+        renderPopular();
+
+        const genres = [...new Set(all.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
+        renderChips(genres);
+
+        // reset page kalau kebablasan
+        if (page < 1) page = 1;
+
+        apply();
+
+        // kalau sedang bukan home, tetap refresh kontennya juga
+        if (document.getElementById("viewUpdate").classList.contains("active")) renderUpdateView();
+        if (document.getElementById("viewProfil").classList.contains("active")) renderProfileView();
+
+      }catch(e){
+        // kalau gagal, jangan bikin all jadi undefined → tampil empty
+        all = [];
+        document.getElementById("popularHead").style.display = "none";
+        document.getElementById("popWrap").style.display = "none";
+        document.getElementById("chips").innerHTML = "";
+        document.getElementById("grid").innerHTML = "";
+        document.getElementById("pager").style.display = "none";
+        document.getElementById("empty").style.display = "block";
+        document.getElementById("empty").textContent = "Gagal load video. Coba Reload lagi.";
+      }
+    }
+
+    // reload button: pastiin selalu works
+    document.getElementById("reload").onclick = () => {
+      // biar aman: tetap page 1 kalau user pengen
+      page = 1;
+      load();
+    };
 
     document.getElementById("q").addEventListener("input", () => {
       page = 1;
