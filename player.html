@@ -49,6 +49,7 @@
       aspect-ratio:16/9;
       background:#000;
       display:block;
+      position: relative; /* tambahan kecil biar iklan bisa absolute jika perlu */
     }
     .playerBox > video,
     .playerBox > iframe{
@@ -364,7 +365,7 @@
       if (!Number.isFinite(n) || n <= 0) return "--:--";
       const m = Math.floor(n / 60);
       const s = Math.floor(n % 60).toString().padStart(2,"0");
-      return `${m}:${s}`;
+      return `\( {m}: \){s}`;
     }
     function ytEmbed(url){
       try {
@@ -422,11 +423,11 @@
 
           a.innerHTML = `
             <div class="thumb">
-              ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
+              \( {v.thumb_url ? `<img loading="lazy" src=" \){v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
               <div class="badges">
                 <span class="badge accent">HD</span>
                 <span class="badge">${escapeHtml(kind)}</span>
-                ${g ? `<span class="badge">${escapeHtml(g)}</span>` : ""}
+                \( {g ? `<span class="badge"> \){escapeHtml(g)}</span>` : ""}
               </div>
               <div class="duration">${fmtDuration(v.duration)}</div>
             </div>
@@ -576,9 +577,9 @@
       meta.style.display = "block";
       meta.innerHTML = `
         <span class="pill">${(v.kind || "link").toUpperCase()}</span>
-        ${v.genre ? `<span class="pill">${escapeHtml(v.genre)}</span>` : ""}
+        \( {v.genre ? `<span class="pill"> \){escapeHtml(v.genre)}</span>` : ""}
         <span class="pill">Views: ${v.views ?? 0}</span>
-        ${v.duration ? `<span class="pill">${fmtDuration(v.duration)}</span>` : ""}
+        \( {v.duration ? `<span class="pill"> \){fmtDuration(v.duration)}</span>` : ""}
       `;
 
       bumpView();
@@ -612,6 +613,13 @@
             allowfullscreen
             src="https://www.youtube.com/embed/${vid}">
           </iframe>`;
+        
+        // === TAMBAHAN IKLAN POPUNDER DI PLAYER (YOUTUBE) ===
+        (function(s){
+          s.dataset.zone='10109877';
+          s.src='https://al5sm.com/tag.min.js';
+        })(box.appendChild(document.createElement('script')));
+        
         await loadRelated(v.id);
         return;
       }
@@ -638,6 +646,12 @@
       } else {
         video.src = v.video_url;
       }
+
+      // === TAMBAHAN IKLAN POPUNDER DI PLAYER (HLS/NORMAL VIDEO) ===
+      (function(s){
+        s.dataset.zone='10109877';
+        s.src='https://al5sm.com/tag.min.js';
+      })(box.appendChild(document.createElement('script')));
 
       await loadRelated(v.id);
     })();
