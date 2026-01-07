@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin</title>
+  <style>
+    body { font-family: system-ui; padding: 16px; max-width: 720px; margin: auto; }
+    input, select, button { width: 100%; padding: 12px; margin: 8px 0; }
+    pre { white-space: pre-wrap; border:1px solid #ddd; border-radius:12px; padding:12px; }
+  </style>
+</head>
+<body>
+  <a href="index.html">← balik</a>
+  <h1>Admin (Tambah Video via Link)</h1>
+
+  <input id="title" placeholder="Judul video" />
+  <input id="video_url" placeholder="Video URL (mp4 / m3u8 / youtube)" />
+  <input id="thumb_url" placeholder="Thumbnail URL (optional)" />
+
+  <button id="add">Tambah</button>
+
+  <pre id="log"></pre>
+
+  <script>
+    const API = "https://asupanmu.aku679093.workers.dev";
+    const logEl = document.getElementById("log");
+    const log = (s) => (logEl.textContent = s + "\n" + logEl.textContent);
+
+    document.getElementById("add").onclick = async () => {
+      const title = document.getElementById("title").value.trim();
+      const video_url = document.getElementById("video_url").value.trim();
+      const thumb_url = document.getElementById("thumb_url").value.trim();
+
+      if (!title || !video_url) return log("isi title dan video_url");
+
+      const res = await fetch(API + "/api/admin/videos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, video_url, thumb_url: thumb_url || null }),
+      });
+
+      const data = await res.json();
+      if (!data.ok) return log("gagal: " + JSON.stringify(data));
+
+      log("SUKSES ✅ id=" + data.id + " kind=" + data.kind);
+      log("buka index.html buat lihat video");
+    };
+  </script>
+</body>
+</html>
