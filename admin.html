@@ -94,6 +94,10 @@
         <label>Video URL (mp4 / m3u8 / youtube)</label>
         <input id="video_url" placeholder="https://..." />
 
+        <!-- ✅ ADDED: Download URL (opsional) -->
+        <label>Download URL (opsional)</label>
+        <input id="download_url" placeholder="https://..." />
+
         <div class="row">
           <div>
             <label>Pilih Genre (opsional)</label>
@@ -286,6 +290,8 @@
           $("thumb_url").value = it.thumb_url || "";
           $("genre_new").value = it.genre || "";
           $("genre_pick").value = it.genre || "";
+          // ✅ ADDED: fill download_url
+          $("download_url").value = it.download_url || "";
           window.scrollTo({ top: 0, behavior: "smooth" });
           return;
         }
@@ -296,6 +302,8 @@
             video_url: it.video_url || "",
             thumb_url: it.thumb_url || null,
             genre: it.genre || null,
+            // ✅ ADDED: include download_url
+            download_url: it.download_url || null,
           };
           await copyToClipboard(JSON.stringify(payload, null, 2));
           $("log").textContent = "Copied JSON ✅\n" + $("log").textContent;
@@ -348,6 +356,9 @@
         const video_url = $("video_url").value.trim();
         const thumb_url = $("thumb_url").value.trim();
 
+        // ✅ ADDED: download_url input (opsional)
+        const download_url = $("download_url").value.trim();
+
         const pick = $("genre_pick").value.trim();
         const typed = $("genre_new").value.trim();
         const genre = (typed || pick || "").trim() || null;
@@ -357,7 +368,8 @@
           return;
         }
 
-        const payload = { title, video_url, thumb_url: thumb_url || null, genre };
+        // ✅ ADDED: include download_url in payload
+        const payload = { title, video_url, thumb_url: thumb_url || null, genre, download_url: download_url || null };
 
         let data = null;
         try{
@@ -381,6 +393,8 @@
           video_url,
           thumb_url: thumb_url || null,
           genre,
+          // ✅ ADDED: persist download_url
+          download_url: download_url || null,
           resp: data,
         };
         addHistory(histItem);
@@ -399,6 +413,8 @@
         $("thumb_url").value = "";
         $("genre_new").value = "";
         $("genre_pick").value = "";
+        // ✅ ADDED: clear download_url
+        $("download_url").value = "";
 
         await loadGenres();
       };
