@@ -108,7 +108,7 @@
     .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
 
     /* =========================
-       ADDED: Download button + tutorial
+       Download button + tutorial
        ========================= */
     .dlWrap{margin-top:12px}
     .dlBtn{
@@ -138,7 +138,7 @@
     .dlHint a{color:#ffd6de;text-decoration:underline}
 
     /* =========================
-       ADDED: Download Popup (bottom sheet) + Petasan anim
+       Download Popup (bottom sheet) + Petasan anim
        ========================= */
     .sheetOverlay{
       position:fixed;inset:0;z-index:9999;
@@ -158,7 +158,7 @@
       box-shadow: var(--shadow);
       transform: translateY(22px);
       opacity:0;
-      transition: transform 2s ease, opacity 2s ease; /* fade + slide 2 detik */
+      transition: transform 2s ease, opacity 2s ease; /* 2 detik */
       overflow:hidden;
       position:relative;
     }
@@ -247,9 +247,7 @@
       100%{transform: translateY(-18px) scale(1.2);opacity:0}
     }
 
-    /* =========================
-       ADDED: Related animation
-       ========================= */
+    /* Related animation */
     .relAnim{
       opacity:0;
       transform: translateY(8px);
@@ -258,61 +256,9 @@
     @keyframes relIn{
       to{opacity:1; transform: translateY(0)}
     }
-
-    /* =========================
-       ADDED: Anti-adblock notice (sopan)
-       ========================= */
-    .abOverlay{
-      position:fixed;inset:0;z-index:10000;
-      background:rgba(0,0,0,.62);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
-    }
-    .abOverlay.show{display:flex}
-    .abCard{
-      width:100%;
-      max-width:560px;
-      border-radius:18px;
-      background:rgba(18,22,28,.96);
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow: var(--shadow);
-      padding:14px;
-    }
-    .abTitle{
-      font-weight:950;
-      font-size:16px;
-      margin:0 0 6px;
-      letter-spacing:.2px;
-    }
-    .abText{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.55;
-      margin:0 0 12px;
-      white-space:pre-line;
-    }
-    .abBtn{
-      width:100%;
-      border:0;
-      border-radius:14px;
-      padding:12px 12px;
-      background:linear-gradient(135deg, #ff4d6d, #ff6b81);
-      color:#fff;
-      font-weight:900;
-      cursor:pointer;
-    }
-    .abSmall{
-      margin-top:10px;
-      font-size:12px;
-      color:rgba(154,164,175,.85);
-      line-height:1.45;
-    }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
   <div class="topbar">
     <div class="wrap">
       <a class="brand" href="index.html"><span class="dot"></span><span>Narapoi</span></a>
@@ -323,9 +269,7 @@
     </div>
   </div>
 
-  <!-- =========================
-       ADDED: Download Popup
-       ========================= -->
+  <!-- Download Popup -->
   <div class="sheetOverlay" id="dlSheetOverlay" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true">
       <div class="sparkWrap" aria-hidden="true">
@@ -352,24 +296,6 @@
     </div>
   </div>
 
-  <!-- =========================
-       ADDED: Anti-adblock notice (sopan)
-       ========================= -->
-  <div class="abOverlay" id="abOverlay" aria-hidden="true">
-    <div class="abCard" role="dialog" aria-modal="true">
-      <div class="abTitle">Mohon dukung admin</div>
-      <div class="abText" id="abText">
-Untuk Memberku🥰
-Matikan DNS / VPN terlebih dulu untuk mendukung admin yah agar admin makin semangat up nya
-TERIMAKASIH❤️
-      </div>
-      <button class="abBtn" id="abReload">Saya sudah matikan</button>
-      <div class="abSmall">
-        Kalau masih muncul, coba refresh atau ganti browser. (Ini cuma pengingat sopan ya.)
-      </div>
-    </div>
-  </div>
-
   <div class="wrap">
     <h1 id="title">Loading...</h1>
 
@@ -378,23 +304,15 @@ TERIMAKASIH❤️
       <div class="info" id="meta" style="display:none;"></div>
     </div>
 
-    <!-- =========================
-         ADDED: DOWNLOAD FULL button (di atas tombol kembali)
-         (auto-hide kalau download_url kosong)
-         ========================= -->
     <div class="dlWrap" id="dlWrap" style="display:none;">
-      <button class="dlBtn" id="downloadFullBtn">⬇️ DOWNLOAD FULL</button>
+      <button class="dlBtn" id="downloadFullBtn">DOWNLOAD FULL</button>
     </div>
 
-    <!-- tombol kembali di bawah player -->
     <div class="belowActions">
       <a class="btn" href="index.html">← Balik ke Home</a>
       <a class="btn" href="admin.html" style="display:none" id="adminHidden">Admin</a>
     </div>
 
-    <!-- =========================
-         ADDED: Tutorial text (di bawah tombol kembali)
-         ========================= -->
     <div class="dlHint" id="dlHint" style="display:none;">
       <b>CARA DOWNLOAD FULL NYA?</b><br>
       1. Klik tombol <b>DOWNLOAD FULL</b><br>
@@ -411,12 +329,6 @@ TERIMAKASIH❤️
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-  <!-- =========================
-       ADDED: Popunder script (sesuai request)
-       ========================= -->
-  <script data-cfasync="false" async type="text/javascript" src="//bv.verdmanque.com/rOMLtv6V0xH2B7lN/131146"></script>
-
   <script>
     const API = "https://asupanmu.aku679093.workers.dev";
     const id = new URLSearchParams(location.search).get("id");
@@ -439,7 +351,6 @@ TERIMAKASIH❤️
       } catch {}
       return null;
     }
-
     function shuffle(arr){
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--){
@@ -469,7 +380,6 @@ TERIMAKASIH❤️
         const data = await res.json();
         let vids = (data.videos || []).filter(v => v.id !== current);
 
-        // kalau genre ada, prioritas genre sama (biar lebih nyambung), tapi tetap random
         const sameGenre = vids.filter(v => (v.genre || "") && (v.genre === (window.__CURRENT_GENRE__ || "")));
         const others = vids.filter(v => v.genre !== (window.__CURRENT_GENRE__ || ""));
 
@@ -479,7 +389,7 @@ TERIMAKASIH❤️
         picked.forEach((v, idx)=>{
           const a = document.createElement("a");
           a.className = "card relAnim";
-          a.style.animationDelay = (idx * 55) + "ms"; /* ADDED: stagger */
+          a.style.animationDelay = (idx * 55) + "ms";
           a.href = "player.html?id=" + encodeURIComponent(v.id);
 
           const kind = (v.kind || "link").toUpperCase();
@@ -509,12 +419,9 @@ TERIMAKASIH❤️
           relGrid.appendChild(a);
         });
 
-      }catch(e){
-        // kalau gagal fetch, biarin kosong
-      }
+      }catch(e){}
     }
 
-    // Header search: enter => redirect ke index dengan query q (biar "feel" sama)
     const qEl = document.getElementById("q");
     qEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -525,49 +432,7 @@ TERIMAKASIH❤️
 
     document.getElementById("reload").onclick = () => location.reload();
 
-    /* =========================
-       ADDED: Anti-adblock detector (sopan, bukan bypass)
-       ========================= */
-    function showAdblockNotice(){
-      const ov = document.getElementById("abOverlay");
-      ov.classList.add("show");
-      ov.setAttribute("aria-hidden", "false");
-      document.getElementById("abReload").onclick = () => location.reload();
-    }
-
-    function detectAdblockSoft(){
-      // "bait" element yang sering di-hide oleh adblock
-      const bait = document.createElement("div");
-      bait.className = "ads ad adsbox adsbygoogle ad-banner ad-unit";
-      bait.style.cssText = "position:absolute;left:-9999px;top:-9999px;height:10px;width:10px;";
-      document.body.appendChild(bait);
-
-      // cek setelah layout
-      setTimeout(() => {
-        const st = window.getComputedStyle(bait);
-        const blocked =
-          st.display === "none" ||
-          st.visibility === "hidden" ||
-          bait.offsetParent === null ||
-          bait.offsetHeight === 0;
-
-        bait.remove();
-
-        // kalau popunder script gagal load, seringnya karena DNS/VPN/adblock
-        const scriptBlocked = !document.querySelector('script[src*="verdmanque.com"]');
-
-        if (blocked || scriptBlocked) showAdblockNotice();
-      }, 450);
-    }
-
-    // run detector once
-    window.addEventListener("load", () => {
-      detectAdblockSoft();
-    });
-
-    /* =========================
-       ADDED: Download popup handlers
-       ========================= */
+    // Popup handlers
     const dlSheetOverlay = document.getElementById("dlSheetOverlay");
     const dlSheetClose = document.getElementById("dlSheetClose");
     const dlSheetCancel = document.getElementById("dlSheetCancel");
@@ -581,21 +446,15 @@ TERIMAKASIH❤️
       dlSheetOverlay.classList.remove("show");
       dlSheetOverlay.setAttribute("aria-hidden", "true");
     }
-
     dlSheetClose.onclick = closeSheet;
     dlSheetCancel.onclick = closeSheet;
     dlSheetOverlay.addEventListener("click", (e) => {
       if (e.target === dlSheetOverlay) closeSheet();
     });
 
-    /* =========================
-       ADDED: Download redirect flow
-       - Klik DOWNLOAD -> (sekarang buka popup)
-       - Klik LANJUT DOWNLOAD -> redirect ke iklan
-       - Setelah user back, auto redirect ke link download
-       ========================= */
+    // Download flow: direct link -> back -> auto to download
     const AD_URL = "https://lt.wetterdefames.com/iQDHyQUDulo0R9YZ/131416";
-    const DL_PENDING_KEY = "narapoi_dl_pending_v1"; // sessionStorage
+    const DL_PENDING_KEY = "narapoi_dl_pending_v1";
     function setPendingDownload(url){
       const payload = { url, startedAt: Date.now() };
       sessionStorage.setItem(DL_PENDING_KEY, JSON.stringify(payload));
@@ -620,7 +479,6 @@ TERIMAKASIH❤️
         return;
       }
 
-      // kalau user balik sebelum 5 detik, tunggu sisa detiknya lalu auto ke download
       setTimeout(() => {
         const again = getPendingDownload();
         if (!again || !again.url) return;
@@ -630,7 +488,6 @@ TERIMAKASIH❤️
       }, wait);
     }
 
-    // pageshow kepake buat kasus "back" dari iklan (bfcache)
     window.addEventListener("pageshow", () => {
       maybeAutoGoDownload();
     });
@@ -638,7 +495,6 @@ TERIMAKASIH❤️
     (async () => {
       if (!id) {
         document.getElementById("title").textContent = "ID kosong";
-        // ADDED: kalau id kosong, pastiin download/tutor hidden
         document.getElementById("dlWrap").style.display = "none";
         document.getElementById("dlHint").style.display = "none";
         return;
@@ -649,7 +505,6 @@ TERIMAKASIH❤️
 
       if (!data.ok) {
         document.getElementById("title").textContent = "Video tidak ketemu";
-        // ADDED: hide download/tutor kalau ga ketemu
         document.getElementById("dlWrap").style.display = "none";
         document.getElementById("dlHint").style.display = "none";
         return;
@@ -671,31 +526,22 @@ TERIMAKASIH❤️
 
       bumpView();
 
-      /* =========================
-         ADDED: show/hide DOWNLOAD FULL
-         - muncul kalau ada v.download_url (diisi dari admin)
-         ========================= */
       const dlWrap = document.getElementById("dlWrap");
       const dlHint = document.getElementById("dlHint");
       const dlBtn = document.getElementById("downloadFullBtn");
 
-      const downloadUrl = (v.download_url || "").trim(); // harus ada dari API
+      const downloadUrl = (v.download_url || "").trim();
       if (downloadUrl){
         dlWrap.style.display = "block";
         dlHint.style.display = "block";
 
-        // CHANGED BEHAVIOR (ADDED): klik tombol -> buka popup
-        dlBtn.onclick = () => {
-          openSheet();
-        };
+        dlBtn.onclick = () => openSheet();
 
-        // tombol di popup -> baru redirect ke iklan + pending download
         dlSheetGo.onclick = () => {
           closeSheet();
           setPendingDownload(downloadUrl);
           location.href = AD_URL;
         };
-
       } else {
         dlWrap.style.display = "none";
         dlHint.style.display = "none";
@@ -703,7 +549,6 @@ TERIMAKASIH❤️
 
       const box = document.getElementById("box");
 
-      // Youtube (iframe 16:9 locked by playerBox)
       if ((v.kind || "") === "youtube") {
         const vid = ytEmbed(v.video_url);
         box.innerHTML = `
@@ -717,7 +562,6 @@ TERIMAKASIH❤️
         return;
       }
 
-      // mp4 / hls (video 16:9 locked)
       const video = document.createElement("video");
       video.controls = true;
       video.playsInline = true;
