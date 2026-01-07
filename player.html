@@ -5,34 +5,139 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Player</title>
   <style>
-    :root{--bg:#0b0d10;--panel:#12161c;--text:#e8edf2;--muted:#9aa4af;--accent:#ff4d6d;--r:14px}
+    :root{
+      --bg:#0b0d10;--panel:#12161c;--text:#e8edf2;--muted:#9aa4af;
+      --accent:#ff4d6d;--chip:#1b2330;--shadow:0 10px 30px rgba(0,0,0,.45);--r:14px
+    }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
     a{color:inherit;text-decoration:none}
-    .wrap{max-width:980px;margin:0 auto;padding:12px}
-    .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .btn{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(18,22,28,.9)}
-    h1{font-size:18px;margin:10px 0 8px}
-    .player{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);overflow:hidden}
-    video,iframe{width:100%;display:block;background:#000}
-    .info{
-      margin-top:10px;padding:12px;background:rgba(18,22,28,.85);
-      border:1px solid rgba(255,255,255,.06);border-radius:var(--r);
-      color:var(--muted);font-size:13px;line-height:1.35
+    .wrap{max-width:1100px;margin:0 auto;padding:12px}
+
+    /* ===== header sama kayak index ===== */
+    .topbar{
+      position:sticky;top:0;z-index:10;
+      background:linear-gradient(to bottom, rgba(11,13,16,.95), rgba(11,13,16,.65));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-    .pill{display:inline-block;padding:6px 9px;border-radius:999px;background:rgba(255,77,109,.16);border:1px solid rgba(255,77,109,.30);color:#ffd6de;font-weight:700;font-size:12px;margin-right:6px}
+    .topbar .wrap{display:flex;gap:10px;align-items:center}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 18px rgba(255,77,109,.55)}
+    .search{flex:1}
+    .search input{
+      width:100%;padding:11px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);
+      background:rgba(18,22,28,.9);color:var(--text);outline:none
+    }
+    .btn{
+      padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.9);color:var(--text)
+    }
+
+    /* ===== player ===== */
+    h1{font-size:18px;margin:12px 0 10px}
+    .playerShell{
+      background:rgba(18,22,28,.9);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    /* KUNCI 16:9 */
+    .playerBox{
+      width:100%;
+      aspect-ratio:16/9;
+      background:#000;
+      display:block;
+    }
+    .playerBox > video,
+    .playerBox > iframe{
+      width:100%;
+      height:100%;
+      display:block;
+      background:#000;
+    }
+
+    .info{
+      padding:12px;
+      border-top:1px solid rgba(255,255,255,.06);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+    .pill{
+      display:inline-block;padding:6px 9px;border-radius:999px;
+      background:rgba(255,77,109,.16);
+      border:1px solid rgba(255,77,109,.30);
+      color:#ffd6de;font-weight:700;font-size:12px;margin-right:6px
+    }
+
+    .belowActions{display:flex;gap:10px;margin:12px 0 8px}
+    .belowActions .btn{flex:1;text-align:center}
+
+    /* ===== related ===== */
+    .sectionTitle{margin:14px 0 10px;font-weight:800;letter-spacing:.2px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,1fr)} }
+    .card{
+      background:linear-gradient(180deg, rgba(18,22,28,.9), rgba(15,19,24,.9));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .card:hover{transform: translateY(-2px);border-color:rgba(255,77,109,.35)}
+    .thumb{position:relative;aspect-ratio:16/9;background:#0f1318;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .badges{position:absolute;left:8px;top:8px;display:flex;gap:6px;flex-wrap:wrap}
+    .badge{font-size:11px;font-weight:700;padding:5px 7px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.10)}
+    .badge.accent{background:rgba(255,77,109,.18);border-color:rgba(255,77,109,.35);color:#ffd6de}
+    .duration{
+      position:absolute;right:8px;bottom:8px;
+      font-size:11px;padding:5px 7px;border-radius:8px;
+      background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.10);color:#fff
+    }
+    .body{padding:10px}
+    .title{
+      font-weight:750;font-size:13px;line-height:1.2;margin:0 0 6px;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+    }
+    .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
+
+    .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <a class="btn" href="index.html">← Balik</a>
+  <!-- HEADER -->
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html"><span class="dot"></span><span>Asupan</span></a>
+      <div class="search">
+        <input id="q" placeholder="Cari video..." />
+      </div>
+      <button class="btn" id="reload">Reload</button>
     </div>
+  </div>
 
+  <div class="wrap">
     <h1 id="title">Loading...</h1>
 
-    <div class="player" id="box"></div>
-    <div class="info" id="meta" style="display:none;"></div>
+    <div class="playerShell">
+      <div class="playerBox" id="box"></div>
+      <div class="info" id="meta" style="display:none;"></div>
+    </div>
+
+    <!-- tombol kembali di bawah player -->
+    <div class="belowActions">
+      <a class="btn" href="index.html">← Balik ke Home</a>
+      <a class="btn" href="admin.html" style="display:none" id="adminHidden">Admin</a>
+    </div>
+
+    <div class="sectionTitle">Related videos</div>
+    <div id="relGrid" class="grid"></div>
+
+    <div class="footer">Narapoi Punya</div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -40,6 +145,16 @@
     const API = "https://asupanmu.aku679093.workers.dev";
     const id = new URLSearchParams(location.search).get("id");
 
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+    }
+    function fmtDuration(sec){
+      const n = Number(sec);
+      if (!Number.isFinite(n) || n <= 0) return "--:--";
+      const m = Math.floor(n / 60);
+      const s = Math.floor(n % 60).toString().padStart(2,"0");
+      return `${m}:${s}`;
+    }
     function ytEmbed(url){
       try {
         const u = new URL(url);
@@ -49,11 +164,18 @@
       return null;
     }
 
-    async function bumpView(){
-      // fire-and-forget
-      fetch(API + "/api/videos/" + encodeURIComponent(id) + "/view", { method: "POST" });
+    function shuffle(arr){
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
 
+    async function bumpView(){
+      fetch(API + "/api/videos/" + encodeURIComponent(id) + "/view", { method: "POST" });
+    }
     async function sendDuration(seconds){
       fetch(API + "/api/videos/" + encodeURIComponent(id) + "/duration", {
         method: "POST",
@@ -62,7 +184,76 @@
       });
     }
 
+    async function loadRelated(current){
+      const relGrid = document.getElementById("relGrid");
+      relGrid.innerHTML = "";
+
+      try{
+        const res = await fetch(API + "/api/videos");
+        const data = await res.json();
+        let vids = (data.videos || []).filter(v => v.id !== current);
+
+        // kalau genre ada, prioritas genre sama (biar lebih nyambung), tapi tetap random
+        const sameGenre = vids.filter(v => (v.genre || "") && (v.genre === (window.__CURRENT_GENRE__ || "")));
+        const others = vids.filter(v => v.genre !== (window.__CURRENT_GENRE__ || ""));
+
+        let picked = shuffle(sameGenre).concat(shuffle(others));
+        picked = picked.slice(0, 10);
+
+        picked.forEach(v=>{
+          const a = document.createElement("a");
+          a.className = "card";
+          a.href = "player.html?id=" + encodeURIComponent(v.id);
+
+          const kind = (v.kind || "link").toUpperCase();
+          const created = v.created_at ? new Date(v.created_at).toLocaleDateString() : "";
+          const g = v.genre ? v.genre : "";
+          const views = v.views ?? 0;
+
+          a.innerHTML = `
+            <div class="thumb">
+              ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
+              <div class="badges">
+                <span class="badge accent">HD</span>
+                <span class="badge">${escapeHtml(kind)}</span>
+                ${g ? `<span class="badge">${escapeHtml(g)}</span>` : ""}
+              </div>
+              <div class="duration">${fmtDuration(v.duration)}</div>
+            </div>
+            <div class="body">
+              <p class="title">${escapeHtml(v.title || "Untitled")}</p>
+              <div class="meta">
+                <span>${created || "Today"}</span>
+                <span style="opacity:.5">•</span>
+                <span>Views: ${views}</span>
+              </div>
+            </div>
+          `;
+          relGrid.appendChild(a);
+        });
+
+      }catch(e){
+        // kalau gagal fetch, biarin kosong
+      }
+    }
+
+    // Header search: enter => redirect ke index dengan query q (biar "feel" sama)
+    const qEl = document.getElementById("q");
+    qEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const q = qEl.value.trim();
+        location.href = "index.html" + (q ? ("?q=" + encodeURIComponent(q)) : "");
+      }
+    });
+
+    document.getElementById("reload").onclick = () => location.reload();
+
     (async () => {
+      if (!id) {
+        document.getElementById("title").textContent = "ID kosong";
+        return;
+      }
+
       const res = await fetch(API + "/api/videos/" + encodeURIComponent(id));
       const data = await res.json();
 
@@ -72,32 +263,38 @@
       }
 
       const v = data.video;
+      window.__CURRENT_GENRE__ = v.genre || "";
+
       document.getElementById("title").textContent = v.title || "Video";
 
       const meta = document.getElementById("meta");
       meta.style.display = "block";
       meta.innerHTML = `
         <span class="pill">${(v.kind || "link").toUpperCase()}</span>
-        ${v.genre ? `<span class="pill">${v.genre}</span>` : ""}
-        <div style="margin-top:8px">Views: <b>${v.views ?? 0}</b></div>
+        ${v.genre ? `<span class="pill">${escapeHtml(v.genre)}</span>` : ""}
+        <span class="pill">Views: ${v.views ?? 0}</span>
+        ${v.duration ? `<span class="pill">${fmtDuration(v.duration)}</span>` : ""}
       `;
 
       bumpView();
 
       const box = document.getElementById("box");
 
+      // Youtube (iframe 16:9 locked by playerBox)
       if ((v.kind || "") === "youtube") {
         const vid = ytEmbed(v.video_url);
         box.innerHTML = `
-          <iframe height="520" frameborder="0"
+          <iframe
+            frameborder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
             src="https://www.youtube.com/embed/${vid}">
           </iframe>`;
-        // durasi youtube nggak bisa kita ambil dari browser tanpa API khusus → skip
+        await loadRelated(v.id);
         return;
       }
 
+      // mp4 / hls (video 16:9 locked)
       const video = document.createElement("video");
       video.controls = true;
       video.playsInline = true;
@@ -120,6 +317,8 @@
       } else {
         video.src = v.video_url;
       }
+
+      await loadRelated(v.id);
     })();
   </script>
 </body>
