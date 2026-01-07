@@ -10,8 +10,8 @@
     body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
     .wrap{max-width:720px;margin:0 auto;padding:12px}
     a{color:inherit;text-decoration:none}
-    .top{display:flex;gap:10px;margin-bottom:10px}
-    .btn{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(18,22,28,.9);color:var(--text)}
+    .top{display:flex;gap:10px;margin-bottom:10px;align-items:center}
+    .btn{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(18,22,28,.9);color:var(--text);cursor:pointer}
     h1{font-size:20px;margin:10px 0 10px}
     .card{background:rgba(18,22,28,.9);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:12px}
     label{display:block;color:var(--muted);font-size:12px;margin-top:10px}
@@ -23,57 +23,194 @@
     .row > div{flex:1}
     button.primary{
       width:100%;margin-top:12px;padding:12px;border-radius:12px;border:0;
-      background:var(--accent);color:#fff;font-weight:800
+      background:var(--accent);color:#fff;font-weight:800;cursor:pointer
     }
     pre{white-space:pre-wrap;margin-top:12px;color:var(--muted);font-size:12px}
     .hint{font-size:12px;color:var(--muted);margin-top:8px}
+
+    /* login */
+    .center{min-height: calc(100vh - 24px); display:flex; align-items:center; justify-content:center}
+    .loginBox{width:100%; max-width:420px}
+    .titleSmall{color:var(--muted);font-size:12px;margin-top:-6px}
+
+    /* history */
+    .historyHeader{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}
+    .historyHeader h2{margin:0;font-size:14px}
+    .historyTools{display:flex;gap:10px;flex-wrap:wrap}
+    .historyList{margin-top:10px;display:flex;flex-direction:column;gap:10px}
+    .item{
+      padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.06);
+      background:rgba(15,19,24,.7)
+    }
+    .itemTop{display:flex;gap:10px;justify-content:space-between;align-items:flex-start}
+    .itemTitle{font-weight:800;font-size:13px;line-height:1.2}
+    .itemMeta{color:var(--muted);font-size:12px;margin-top:4px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .mini{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(18,22,28,.9);color:var(--text);cursor:pointer;font-size:12px}
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(18,22,28,.7);color:var(--muted);font-size:11px}
+    .ok{color:#a7ffcf}
+    .bad{color:#ffb3b3}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <a class="btn" href="index.html">← Balik</a>
-      <a class="btn" href="index.html" onclick="location.href='index.html';return false;">Home</a>
-    </div>
+  <div id="loginView" class="center" style="display:none;">
+    <div class="wrap loginBox">
+      <h1>Admin Login</h1>
+      <div class="titleSmall">Masuk dulu ya bro.</div>
 
-    <h1>Admin</h1>
+      <div class="card">
+        <label>Username</label>
+        <input id="lu" placeholder="Username" autocomplete="username" />
 
-    <div class="card">
-      <label>Judul</label>
-      <input id="title" placeholder="Judul video..." />
+        <label>Password</label>
+        <input id="lp" placeholder="Password" type="password" autocomplete="current-password" />
 
-      <label>Thumbnail URL (opsional)</label>
-      <input id="thumb_url" placeholder="https://..." />
+        <button class="primary" id="loginBtn">Login</button>
+        <pre id="loginLog"></pre>
 
-      <label>Video URL (mp4 / m3u8 / youtube)</label>
-      <input id="video_url" placeholder="https://..." />
-
-      <div class="row">
-        <div>
-          <label>Pilih Genre (opsional)</label>
-          <select id="genre_pick">
-            <option value="">(kosong)</option>
-          </select>
+        <div class="hint">
+          * Login ini pakai localStorage (buat ngunci halaman). Bukan security backend.
         </div>
-        <div>
-          <label>Atau tulis genre baru</label>
-          <input id="genre_new" placeholder="misal: asian, cosplay" />
+      </div>
+    </div>
+  </div>
+
+  <div id="appView" style="display:none;">
+    <div class="wrap">
+      <div class="top">
+        <span class="pill">ADMIN</span>
+        <button class="btn" id="logoutBtn">Logout</button>
+        <a class="btn" href="index.html">Home</a>
+      </div>
+
+      <h1>Admin</h1>
+
+      <div class="card">
+        <label>Judul</label>
+        <input id="title" placeholder="Judul video..." />
+
+        <label>Thumbnail URL (opsional)</label>
+        <input id="thumb_url" placeholder="https://..." />
+
+        <label>Video URL (mp4 / m3u8 / youtube)</label>
+        <input id="video_url" placeholder="https://..." />
+
+        <div class="row">
+          <div>
+            <label>Pilih Genre (opsional)</label>
+            <select id="genre_pick">
+              <option value="">(kosong)</option>
+            </select>
+          </div>
+          <div>
+            <label>Atau tulis genre baru</label>
+            <input id="genre_new" placeholder="misal: asian, cosplay" />
+          </div>
+        </div>
+
+        <div class="hint">Kalau isi “genre baru”, itu yang dipakai. Kalau kosong semua = tanpa genre.</div>
+
+        <button class="primary" id="add">Tambah</button>
+
+        <pre id="log"></pre>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="historyHeader">
+        <h2>History (localStorage)</h2>
+        <div class="historyTools">
+          <button class="btn" id="refreshGenres">Refresh Genre</button>
+          <button class="btn" id="clearHistory">Clear History</button>
         </div>
       </div>
 
-      <div class="hint">Kalau isi “genre baru”, itu yang dipakai. Kalau kosong semua = tanpa genre.</div>
+      <div class="historyList" id="historyList"></div>
 
-      <button class="primary" id="add">Tambah</button>
-
-      <pre id="log"></pre>
+      <div class="hint" style="margin-top:12px;">
+        History ini nggak hilang walau refresh. Hilang kalau lo clear data browser / site data.
+      </div>
     </div>
   </div>
 
   <script>
+    // ===== CONFIG =====
     const API = "https://asupanmu.aku679093.workers.dev";
-    const logEl = document.getElementById("log");
-    const log = (s) => (logEl.textContent = s + "\n" + logEl.textContent);
 
+    // login creds (sesuai request lo)
+    const ADMIN_USER = "Narapoi";
+    const ADMIN_PASS = "Wwwaaa123";
+
+    // localStorage keys
+    const LS_AUTH = "asupan_admin_authed";
+    const LS_HIST = "asupan_admin_history_v1";
+
+    // ===== helpers =====
+    const $ = (id) => document.getElementById(id);
+
+    function nowTs(){ return Date.now(); }
+
+    function safeJsonParse(s, fallback){
+      try { return JSON.parse(s); } catch { return fallback; }
+    }
+
+    function copyToClipboard(text){
+      if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
+      // fallback
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      return Promise.resolve();
+    }
+
+    function formatTime(ms){
+      try { return new Date(ms).toLocaleString(); } catch { return ""; }
+    }
+
+    function getHistory(){
+      return safeJsonParse(localStorage.getItem(LS_HIST) || "[]", []);
+    }
+
+    function setHistory(arr){
+      localStorage.setItem(LS_HIST, JSON.stringify(arr));
+    }
+
+    function addHistory(item){
+      const arr = getHistory();
+      arr.unshift(item);
+      // keep max 50 biar nggak bengkak
+      setHistory(arr.slice(0, 50));
+    }
+
+    function removeHistory(idx){
+      const arr = getHistory();
+      arr.splice(idx, 1);
+      setHistory(arr);
+    }
+
+    // ===== auth =====
+    function isAuthed(){
+      return localStorage.getItem(LS_AUTH) === "1";
+    }
+
+    function showLogin(){
+      $("loginView").style.display = "flex";
+      $("appView").style.display = "none";
+    }
+
+    function showApp(){
+      $("loginView").style.display = "none";
+      $("appView").style.display = "block";
+    }
+
+    function logout(){
+      localStorage.removeItem(LS_AUTH);
+      showLogin();
+    }
+
+    // ===== genres =====
     async function loadGenres(){
       try{
         const res = await fetch(API + "/api/videos");
@@ -81,42 +218,216 @@
         const vids = data.videos || [];
         const genres = [...new Set(vids.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
 
-        const sel = document.getElementById("genre_pick");
-        sel.innerHTML = `<option value="">(kosong)</option>` + genres.map(g => `<option value="${g}">${g}</option>`).join("");
+        const sel = $("genre_pick");
+        sel.innerHTML =
+          `<option value="">(kosong)</option>` +
+          genres.map(g => `<option value="${g}">${g}</option>`).join("");
       } catch {}
     }
 
-    document.getElementById("add").onclick = async () => {
-      const title = document.getElementById("title").value.trim();
-      const video_url = document.getElementById("video_url").value.trim();
-      const thumb_url = document.getElementById("thumb_url").value.trim();
+    // ===== history render =====
+    function renderHistory(){
+      const list = $("historyList");
+      const hist = getHistory();
+      list.innerHTML = "";
 
-      const pick = document.getElementById("genre_pick").value.trim();
-      const typed = document.getElementById("genre_new").value.trim();
-      const genre = (typed || pick || "").trim() || null;
+      if (!hist.length){
+        list.innerHTML = `<div class="item"><div class="itemMeta">Belum ada history.</div></div>`;
+        return;
+      }
 
-      if (!title || !video_url) return log("isi title + video_url");
+      hist.forEach((it, idx) => {
+        const wrap = document.createElement("div");
+        wrap.className = "item";
 
-      const res = await fetch(API + "/api/admin/videos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, video_url, thumb_url: thumb_url || null, genre }),
+        const status = it.ok ? `<span class="pill ok">OK</span>` : `<span class="pill bad">FAIL</span>`;
+        const genrePill = it.genre ? `<span class="pill">${it.genre}</span>` : "";
+        const kindPill = it.kind ? `<span class="pill">${it.kind}</span>` : "";
+
+        const idLine = it.id ? `ID: ${it.id}` : "";
+        const when = it.ts ? formatTime(it.ts) : "";
+
+        wrap.innerHTML = `
+          <div class="itemTop">
+            <div>
+              <div class="itemTitle">${it.title ? it.title : "(no title)"}</div>
+              <div class="itemMeta">
+                ${status} ${kindPill} ${genrePill}
+                <div style="margin-top:6px">${idLine}</div>
+                <div style="margin-top:4px">${when}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="mini" data-act="fill" data-idx="${idx}">Isi ke Form</button>
+            <button class="mini" data-act="copyjson" data-idx="${idx}">Copy JSON</button>
+            <button class="mini" data-act="copyplayer" data-idx="${idx}">Copy Link Player</button>
+            <button class="mini" data-act="del" data-idx="${idx}">Hapus</button>
+          </div>
+        `;
+
+        list.appendChild(wrap);
       });
 
-      const data = await res.json();
-      if (!data.ok) return log("gagal: " + JSON.stringify(data));
+      // action handler (delegation)
+      list.onclick = async (e) => {
+        const btn = e.target.closest("button[data-act]");
+        if (!btn) return;
 
-      log("SUKSES ✅ id=" + data.id + " kind=" + data.kind + (data.genre ? (" genre=" + data.genre) : ""));
-      document.getElementById("title").value = "";
-      document.getElementById("video_url").value = "";
-      document.getElementById("thumb_url").value = "";
-      document.getElementById("genre_new").value = "";
-      document.getElementById("genre_pick").value = "";
+        const act = btn.getAttribute("data-act");
+        const idx = Number(btn.getAttribute("data-idx"));
+        const hist = getHistory();
+        const it = hist[idx];
+        if (!it) return;
 
+        if (act === "fill"){
+          $("title").value = it.title || "";
+          $("video_url").value = it.video_url || "";
+          $("thumb_url").value = it.thumb_url || "";
+          $("genre_new").value = it.genre || "";
+          $("genre_pick").value = it.genre || "";
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+
+        if (act === "copyjson"){
+          const payload = {
+            title: it.title || "",
+            video_url: it.video_url || "",
+            thumb_url: it.thumb_url || null,
+            genre: it.genre || null,
+          };
+          await copyToClipboard(JSON.stringify(payload, null, 2));
+          $("log").textContent = "Copied JSON ✅\n" + $("log").textContent;
+          return;
+        }
+
+        if (act === "copyplayer"){
+          if (!it.id) {
+            $("log").textContent = "Belum ada ID (gagal post?)\n" + $("log").textContent;
+            return;
+          }
+          const link = location.origin + location.pathname.replace(/\/admin\.html$/, "/player.html?id=" + encodeURIComponent(it.id));
+          await copyToClipboard(link);
+          $("log").textContent = "Copied player link ✅\n" + $("log").textContent;
+          return;
+        }
+
+        if (act === "del"){
+          removeHistory(idx);
+          renderHistory();
+          return;
+        }
+      };
+    }
+
+    // ===== main app logic =====
+    async function initApp(){
+      // remove tombol balik = sesuai request (udah nggak ada)
       await loadGenres();
-    };
+      renderHistory();
 
-    loadGenres();
+      $("refreshGenres").onclick = async () => {
+        await loadGenres();
+        $("log").textContent = "Genre refreshed ✅\n" + $("log").textContent;
+      };
+
+      $("clearHistory").onclick = () => {
+        if (!confirm("Yakin mau hapus semua history?")) return;
+        localStorage.removeItem(LS_HIST);
+        renderHistory();
+      };
+
+      $("logoutBtn").onclick = logout;
+
+      const logEl = $("log");
+      const log = (s) => (logEl.textContent = s + "\n" + logEl.textContent);
+
+      $("add").onclick = async () => {
+        const title = $("title").value.trim();
+        const video_url = $("video_url").value.trim();
+        const thumb_url = $("thumb_url").value.trim();
+
+        const pick = $("genre_pick").value.trim();
+        const typed = $("genre_new").value.trim();
+        const genre = (typed || pick || "").trim() || null;
+
+        if (!title || !video_url) {
+          log("isi title + video_url");
+          return;
+        }
+
+        const payload = { title, video_url, thumb_url: thumb_url || null, genre };
+
+        let data = null;
+        try{
+          const res = await fetch(API + "/api/admin/videos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          data = await res.json();
+        } catch (e){
+          data = { ok:false, error:"network error", detail:String(e) };
+        }
+
+        // simpan history (ok maupun fail)
+        const histItem = {
+          ts: nowTs(),
+          ok: !!data?.ok,
+          id: data?.id || null,
+          kind: data?.kind || null,
+          title,
+          video_url,
+          thumb_url: thumb_url || null,
+          genre,
+          resp: data,
+        };
+        addHistory(histItem);
+        renderHistory();
+
+        if (!data.ok) {
+          log("gagal: " + JSON.stringify(data));
+          return;
+        }
+
+        log("SUKSES ✅ id=" + data.id + " kind=" + data.kind + (data.genre ? (" genre=" + data.genre) : ""));
+
+        // clear form
+        $("title").value = "";
+        $("video_url").value = "";
+        $("thumb_url").value = "";
+        $("genre_new").value = "";
+        $("genre_pick").value = "";
+
+        await loadGenres();
+      };
+    }
+
+    // ===== boot =====
+    (function boot(){
+      // auth gate
+      if (!isAuthed()){
+        showLogin();
+        $("loginBtn").onclick = () => {
+          const u = $("lu").value.trim();
+          const p = $("lp").value.trim();
+
+          if (u === ADMIN_USER && p === ADMIN_PASS){
+            localStorage.setItem(LS_AUTH, "1");
+            showApp();
+            initApp();
+            return;
+          }
+          $("loginLog").textContent = "Username / Password salah.";
+        };
+        return;
+      }
+
+      showApp();
+      initApp();
+    })();
   </script>
 </body>
 </html>
