@@ -136,6 +136,179 @@
     }
     .dlHint b{color:var(--text)}
     .dlHint a{color:#ffd6de;text-decoration:underline}
+
+    /* =========================
+       ADDED: Download Popup (bottom sheet) + Petasan anim
+       ========================= */
+    .sheetOverlay{
+      position:fixed;inset:0;z-index:9999;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:14px;
+    }
+    .sheetOverlay.show{display:flex}
+    .sheet{
+      width:100%;
+      max-width:560px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(18,22,28,.96);
+      box-shadow: var(--shadow);
+      transform: translateY(22px);
+      opacity:0;
+      transition: transform 2s ease, opacity 2s ease; /* fade + slide 2 detik */
+      overflow:hidden;
+      position:relative;
+    }
+    .sheetOverlay.show .sheet{
+      transform: translateY(0);
+      opacity:1;
+    }
+    .sheetTop{
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .sheetTitle{
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .sheetClose{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.9);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .sheetBody{padding:14px}
+    .sheetText{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      margin:0 0 12px;
+    }
+    .sheetActions{display:flex;gap:10px}
+    .sheetPrimary{
+      flex:1;
+      border:0;
+      border-radius:14px;
+      padding:12px 12px;
+      background:linear-gradient(135deg, #ff4d6d, #ff6b81);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .sheetGhost{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.9);
+      color:var(--text);
+      border-radius:14px;
+      padding:12px 12px;
+      cursor:pointer;
+      font-weight:900;
+      flex:1;
+    }
+
+    /* Petasan (sparkles) */
+    .sparkWrap{
+      position:absolute;
+      left:0;right:0;
+      top:-40px;
+      height:40px;
+      pointer-events:none;
+      opacity:0;
+      transition: opacity .25s ease;
+      overflow:visible;
+    }
+    .sheetOverlay.show .sparkWrap{opacity:1}
+    .spark{
+      position:absolute;
+      top:18px;
+      width:6px;height:6px;border-radius:999px;
+      background:rgba(255,77,109,.95);
+      box-shadow:0 0 14px rgba(255,77,109,.65);
+      animation: pop 900ms ease-out infinite;
+    }
+    .spark:nth-child(2){left:20%;animation-delay:120ms;background:rgba(255,214,222,.95);box-shadow:0 0 14px rgba(255,214,222,.65)}
+    .spark:nth-child(3){left:40%;animation-delay:260ms}
+    .spark:nth-child(4){left:60%;animation-delay:380ms;background:rgba(255,214,222,.95);box-shadow:0 0 14px rgba(255,214,222,.65)}
+    .spark:nth-child(5){left:80%;animation-delay:520ms}
+    .spark:nth-child(1){left:10%}
+    @keyframes pop{
+      0%{transform: translateY(10px) scale(.6);opacity:.15}
+      40%{opacity:1}
+      100%{transform: translateY(-18px) scale(1.2);opacity:0}
+    }
+
+    /* =========================
+       ADDED: Related animation
+       ========================= */
+    .relAnim{
+      opacity:0;
+      transform: translateY(8px);
+      animation: relIn 520ms ease forwards;
+    }
+    @keyframes relIn{
+      to{opacity:1; transform: translateY(0)}
+    }
+
+    /* =========================
+       ADDED: Anti-adblock notice (sopan)
+       ========================= */
+    .abOverlay{
+      position:fixed;inset:0;z-index:10000;
+      background:rgba(0,0,0,.62);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+    .abOverlay.show{display:flex}
+    .abCard{
+      width:100%;
+      max-width:560px;
+      border-radius:18px;
+      background:rgba(18,22,28,.96);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      padding:14px;
+    }
+    .abTitle{
+      font-weight:950;
+      font-size:16px;
+      margin:0 0 6px;
+      letter-spacing:.2px;
+    }
+    .abText{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+      margin:0 0 12px;
+      white-space:pre-line;
+    }
+    .abBtn{
+      width:100%;
+      border:0;
+      border-radius:14px;
+      padding:12px 12px;
+      background:linear-gradient(135deg, #ff4d6d, #ff6b81);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .abSmall{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(154,164,175,.85);
+      line-height:1.45;
+    }
   </style>
 </head>
 <body>
@@ -147,6 +320,53 @@
         <input id="q" placeholder="Cari video..." />
       </div>
       <button class="btn" id="reload">Reload</button>
+    </div>
+  </div>
+
+  <!-- =========================
+       ADDED: Download Popup
+       ========================= -->
+  <div class="sheetOverlay" id="dlSheetOverlay" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sparkWrap" aria-hidden="true">
+        <span class="spark"></span>
+        <span class="spark"></span>
+        <span class="spark"></span>
+        <span class="spark"></span>
+        <span class="spark"></span>
+      </div>
+
+      <div class="sheetTop">
+        <div class="sheetTitle">Download Full</div>
+        <button class="sheetClose" id="dlSheetClose">Tutup</button>
+      </div>
+      <div class="sheetBody">
+        <p class="sheetText">
+          Kamu akan diarahkan ke halaman iklan dulu. Setelah itu tunggu 5 detik, lalu kembali agar otomatis menuju link download.
+        </p>
+        <div class="sheetActions">
+          <button class="sheetPrimary" id="dlSheetGo">LANJUT DOWNLOAD</button>
+          <button class="sheetGhost" id="dlSheetCancel">BATAL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       ADDED: Anti-adblock notice (sopan)
+       ========================= -->
+  <div class="abOverlay" id="abOverlay" aria-hidden="true">
+    <div class="abCard" role="dialog" aria-modal="true">
+      <div class="abTitle">Mohon dukung admin</div>
+      <div class="abText" id="abText">
+Untuk Memberku🥰
+Matikan DNS / VPN terlebih dulu untuk mendukung admin yah agar admin makin semangat up nya
+TERIMAKASIH❤️
+      </div>
+      <button class="abBtn" id="abReload">Saya sudah matikan</button>
+      <div class="abSmall">
+        Kalau masih muncul, coba refresh atau ganti browser. (Ini cuma pengingat sopan ya.)
+      </div>
     </div>
   </div>
 
@@ -191,6 +411,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <!-- =========================
+       ADDED: Popunder script (sesuai request)
+       ========================= -->
+  <script data-cfasync="false" async type="text/javascript" src="//bv.verdmanque.com/rOMLtv6V0xH2B7lN/131146"></script>
+
   <script>
     const API = "https://asupanmu.aku679093.workers.dev";
     const id = new URLSearchParams(location.search).get("id");
@@ -250,9 +476,10 @@
         let picked = shuffle(sameGenre).concat(shuffle(others));
         picked = picked.slice(0, 10);
 
-        picked.forEach(v=>{
+        picked.forEach((v, idx)=>{
           const a = document.createElement("a");
-          a.className = "card";
+          a.className = "card relAnim";
+          a.style.animationDelay = (idx * 55) + "ms"; /* ADDED: stagger */
           a.href = "player.html?id=" + encodeURIComponent(v.id);
 
           const kind = (v.kind || "link").toUpperCase();
@@ -299,8 +526,72 @@
     document.getElementById("reload").onclick = () => location.reload();
 
     /* =========================
+       ADDED: Anti-adblock detector (sopan, bukan bypass)
+       ========================= */
+    function showAdblockNotice(){
+      const ov = document.getElementById("abOverlay");
+      ov.classList.add("show");
+      ov.setAttribute("aria-hidden", "false");
+      document.getElementById("abReload").onclick = () => location.reload();
+    }
+
+    function detectAdblockSoft(){
+      // "bait" element yang sering di-hide oleh adblock
+      const bait = document.createElement("div");
+      bait.className = "ads ad adsbox adsbygoogle ad-banner ad-unit";
+      bait.style.cssText = "position:absolute;left:-9999px;top:-9999px;height:10px;width:10px;";
+      document.body.appendChild(bait);
+
+      // cek setelah layout
+      setTimeout(() => {
+        const st = window.getComputedStyle(bait);
+        const blocked =
+          st.display === "none" ||
+          st.visibility === "hidden" ||
+          bait.offsetParent === null ||
+          bait.offsetHeight === 0;
+
+        bait.remove();
+
+        // kalau popunder script gagal load, seringnya karena DNS/VPN/adblock
+        const scriptBlocked = !document.querySelector('script[src*="verdmanque.com"]');
+
+        if (blocked || scriptBlocked) showAdblockNotice();
+      }, 450);
+    }
+
+    // run detector once
+    window.addEventListener("load", () => {
+      detectAdblockSoft();
+    });
+
+    /* =========================
+       ADDED: Download popup handlers
+       ========================= */
+    const dlSheetOverlay = document.getElementById("dlSheetOverlay");
+    const dlSheetClose = document.getElementById("dlSheetClose");
+    const dlSheetCancel = document.getElementById("dlSheetCancel");
+    const dlSheetGo = document.getElementById("dlSheetGo");
+
+    function openSheet(){
+      dlSheetOverlay.classList.add("show");
+      dlSheetOverlay.setAttribute("aria-hidden", "false");
+    }
+    function closeSheet(){
+      dlSheetOverlay.classList.remove("show");
+      dlSheetOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    dlSheetClose.onclick = closeSheet;
+    dlSheetCancel.onclick = closeSheet;
+    dlSheetOverlay.addEventListener("click", (e) => {
+      if (e.target === dlSheetOverlay) closeSheet();
+    });
+
+    /* =========================
        ADDED: Download redirect flow
-       - Klik DOWNLOAD -> redirect ke iklan
+       - Klik DOWNLOAD -> (sekarang buka popup)
+       - Klik LANJUT DOWNLOAD -> redirect ke iklan
        - Setelah user back, auto redirect ke link download
        ========================= */
     const AD_URL = "https://lt.wetterdefames.com/iQDHyQUDulo0R9YZ/131416";
@@ -393,11 +684,18 @@
         dlWrap.style.display = "block";
         dlHint.style.display = "block";
 
+        // CHANGED BEHAVIOR (ADDED): klik tombol -> buka popup
         dlBtn.onclick = () => {
-          // set pending then redirect ke iklan
+          openSheet();
+        };
+
+        // tombol di popup -> baru redirect ke iklan + pending download
+        dlSheetGo.onclick = () => {
+          closeSheet();
           setPendingDownload(downloadUrl);
           location.href = AD_URL;
         };
+
       } else {
         dlWrap.style.display = "none";
         dlHint.style.display = "none";
