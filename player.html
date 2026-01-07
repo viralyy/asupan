@@ -365,7 +365,7 @@
       if (!Number.isFinite(n) || n <= 0) return "--:--";
       const m = Math.floor(n / 60);
       const s = Math.floor(n % 60).toString().padStart(2,"0");
-      return `\( {m}: \){s}`;
+      return `${m}:${s}`;
     }
     function ytEmbed(url){
       try {
@@ -423,11 +423,11 @@
 
           a.innerHTML = `
             <div class="thumb">
-              \( {v.thumb_url ? `<img loading="lazy" src=" \){v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
+              ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
               <div class="badges">
                 <span class="badge accent">HD</span>
                 <span class="badge">${escapeHtml(kind)}</span>
-                \( {g ? `<span class="badge"> \){escapeHtml(g)}</span>` : ""}
+                ${g ? `<span class="badge">${escapeHtml(g)}</span>` : ""}
               </div>
               <div class="duration">${fmtDuration(v.duration)}</div>
             </div>
@@ -466,16 +466,13 @@
       document.body.classList.add("ab-locked");
       const ov = document.getElementById("abOverlay");
       ov.setAttribute("aria-hidden", "false");
-      // stop scroll background
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     }
 
-    // tombol doang
     document.getElementById("abReload").onclick = () => location.reload();
     document.getElementById("abHome").onclick = () => location.href = "index.html";
 
-    // blok ESC biar nggak bisa nutup
     window.addEventListener("keydown", (e) => {
       if (document.body.classList.contains("ab-locked") && e.key === "Escape") {
         e.preventDefault();
@@ -483,7 +480,6 @@
       }
     }, true);
 
-    // detector soft: bait element + optional check script ads (kalau mau)
     function detectAdblockSoft(){
       const bait = document.createElement("div");
       bait.className = "ads ad adsbox adsbygoogle ad-banner ad-unit";
@@ -577,9 +573,9 @@
       meta.style.display = "block";
       meta.innerHTML = `
         <span class="pill">${(v.kind || "link").toUpperCase()}</span>
-        \( {v.genre ? `<span class="pill"> \){escapeHtml(v.genre)}</span>` : ""}
+        ${v.genre ? `<span class="pill">${escapeHtml(v.genre)}</span>` : ""}
         <span class="pill">Views: ${v.views ?? 0}</span>
-        \( {v.duration ? `<span class="pill"> \){fmtDuration(v.duration)}</span>` : ""}
+        ${v.duration ? `<span class="pill">${fmtDuration(v.duration)}</span>` : ""}
       `;
 
       bumpView();
@@ -606,6 +602,12 @@
 
       if ((v.kind || "") === "youtube") {
         const vid = ytEmbed(v.video_url);
+        if (!vid){
+          box.innerHTML = `<div style="padding:12px;color:#9aa4af">Link YouTube tidak valid.</div>`;
+          await loadRelated(v.id);
+          return;
+        }
+
         box.innerHTML = `
           <iframe
             frameborder="0"
@@ -613,13 +615,13 @@
             allowfullscreen
             src="https://www.youtube.com/embed/${vid}">
           </iframe>`;
-        
-        // === TAMBAHAN IKLAN POPUNDER DI PLAYER (YOUTUBE) ===
+
+        // popunder script (kalau mau) — tetap jalan
         (function(s){
           s.dataset.zone='10109877';
           s.src='https://al5sm.com/tag.min.js';
         })(box.appendChild(document.createElement('script')));
-        
+
         await loadRelated(v.id);
         return;
       }
@@ -647,7 +649,7 @@
         video.src = v.video_url;
       }
 
-      // === TAMBAHAN IKLAN POPUNDER DI PLAYER (HLS/NORMAL VIDEO) ===
+      // popunder script (kalau mau) — tetap jalan
       (function(s){
         s.dataset.zone='10109877';
         s.src='https://al5sm.com/tag.min.js';
