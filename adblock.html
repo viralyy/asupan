@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Perlu Dukungan</title>
+  <style>
+    :root{
+      --bg:#0b0d10;--panel:#12161c;--text:#e8edf2;--muted:#9aa4af;
+      --accent:#ff4d6d;--shadow:0 10px 30px rgba(0,0,0,.45);--r:16px
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
+    a{color:inherit}
+    .wrap{max-width:720px;margin:0 auto;padding:16px}
+    .card{
+      background:rgba(18,22,28,.92);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .top{
+      padding:14px 14px 12px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex;align-items:center;gap:10px;justify-content:space-between;
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.3px}
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 18px rgba(255,77,109,.55)}
+    .pill{
+      font-size:12px;font-weight:800;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,77,109,.35);
+      background:rgba(255,77,109,.10);
+      color:#ffd6de;
+      white-space:nowrap;
+    }
+    .body{padding:14px}
+    h1{font-size:18px;margin:0 0 6px}
+    p{margin:0 0 10px;color:var(--muted);line-height:1.55;font-size:13px}
+    .steps{
+      margin:12px 0 0;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(15,19,24,.7);
+    }
+    .steps b{color:var(--text)}
+    ol{margin:8px 0 0 18px;padding:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .actions{
+      display:flex;gap:10px;flex-wrap:wrap;
+      padding:14px;
+      border-top:1px solid rgba(255,255,255,.06);
+      background:rgba(11,13,16,.35);
+    }
+    .btn{
+      flex:1;
+      min-width:140px;
+      padding:12px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.9);
+      color:var(--text);
+      font-weight:900;
+      cursor:pointer;
+      text-align:center;
+      text-decoration:none;
+    }
+    .btn.primary{
+      border:0;
+      background:linear-gradient(135deg,#ff4d6d,#ff6b81);
+      color:#fff;
+    }
+    .small{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(154,164,175,.85);
+      line-height:1.55;
+    }
+    .footer{
+      text-align:center;
+      color:rgba(154,164,175,.75);
+      font-size:12px;
+      padding:14px 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="brand">
+          <span class="dot"></span>
+          <span>Narapoi</span>
+        </div>
+        <span class="pill">Perlu Dukungan</span>
+      </div>
+
+      <div class="body">
+        <h1>Mohon matikan DNS / VPN dulu</h1>
+        <p>
+          Sepertinya browser kamu memblokir script/iklan (sering karena <b>DNS Adblock</b>, <b>VPN</b>, atau <b>adblocker</b>).
+          Biar situs tetap bisa jalan dan admin semangat upload, bantu izinkan dulu ya.
+        </p>
+
+        <div class="steps">
+          <p style="margin:0 0 6px;color:var(--text);font-weight:900;">
+            Untuk Memberku 🥰
+          </p>
+          <p style="margin:0;">
+            <span style="color:var(--muted);">
+              Matikan DNS / VPN terlebih dulu untuk mendukung admin agar admin makin semangat upload.
+              Terima kasih ❤️
+            </span>
+          </p>
+
+          <ol>
+            <li>Matikan <b>VPN</b> (kalau nyala).</li>
+            <li>Kalau pakai <b>DNS Adblock</b> (AdGuard/NextDNS/1.1.1.1 WARP), coba nonaktifkan sementara.</li>
+            <li>Kalau ada <b>Adblock Extension</b> (browser lain), coba disable untuk situs ini.</li>
+            <li>Setelah itu klik tombol <b>Refresh</b> di bawah.</li>
+          </ol>
+
+          <div class="small">
+            Catatan: kalau tetap muncul, coba buka pakai browser lain / mode incognito.
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="refreshBtn">Saya sudah matikan — Refresh</button>
+        <a class="btn" href="index.html">Balik ke Home</a>
+      </div>
+    </div>
+
+    <div class="footer">Narapoi Punya</div>
+  </div>
+
+  <script>
+    document.getElementById("refreshBtn").onclick = () => location.reload();
+  </script>
+</body>
+</html>
