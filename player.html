@@ -136,9 +136,178 @@
     }
     .dlHint b{color:var(--text)}
     .dlHint a{color:#ffd6de;text-decoration:underline}
+
+    /* =========================
+       ADDED: Adblock popup (card persis + modal)
+       - NO close button
+       - NO close on backdrop
+       - NO close on ESC
+       ========================= */
+    body.ab-locked .wrap,
+    body.ab-locked .topbar{
+      filter: blur(10px);
+      pointer-events:none;
+      user-select:none;
+    }
+    .abOverlay{
+      position:fixed;inset:0;z-index:99999;
+      display:none;
+      align-items:flex-start;
+      justify-content:center;
+      padding:18px 14px;
+      background:rgba(0,0,0,.55);
+    }
+    body.ab-locked .abOverlay{display:flex}
+    .abCard{
+      width:100%;
+      max-width:760px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(18,22,28,.96), rgba(15,19,24,.92));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .abTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .abBrand{
+      display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.2px;
+    }
+    .abPill{
+      padding:8px 12px;border-radius:999px;
+      border:1px solid rgba(255,77,109,.25);
+      background:rgba(255,77,109,.10);
+      color:#ffd6de;
+      font-weight:800;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .abBody{padding:14px}
+    .abH1{
+      margin:0 0 8px;
+      font-size:22px;
+      font-weight:950;
+      letter-spacing:.2px;
+    }
+    .abSub{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
+    }
+    .abInner{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(11,13,16,.35);
+      padding:14px;
+    }
+    .abInnerTitle{
+      margin:0 0 8px;
+      font-weight:900;
+      font-size:16px;
+    }
+    .abList{
+      margin:0;
+      padding-left:18px;
+      color:rgba(232,237,242,.88);
+      line-height:1.7;
+    }
+    .abList b{color:var(--text)}
+    .abNote{
+      margin-top:12px;
+      color:rgba(154,164,175,.9);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .abActions{
+      display:flex;
+      gap:12px;
+      margin-top:16px;
+      flex-wrap:wrap;
+    }
+    .abBtnPrimary{
+      flex:1;
+      min-width:220px;
+      border:0;
+      border-radius:999px;
+      padding:14px 16px;
+      background:linear-gradient(135deg, #ff4d6d, #ff6b81);
+      color:#fff;
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 14px 30px rgba(255,77,109,.18);
+    }
+    .abBtnGhost{
+      flex:1;
+      min-width:220px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      padding:14px 16px;
+      background:rgba(18,22,28,.9);
+      color:var(--text);
+      font-weight:950;
+      cursor:pointer;
+    }
+    .abFooter{
+      padding:12px 14px;
+      color:rgba(154,164,175,.85);
+      text-align:center;
+      font-size:12px;
+    }
   </style>
 </head>
 <body>
+  <!-- =========================
+       ADDED: Adblock popup (modal)
+       ========================= -->
+  <div class="abOverlay" id="abOverlay" aria-hidden="true">
+    <div class="abCard" role="dialog" aria-modal="true">
+      <div class="abTop">
+        <div class="abBrand">
+          <span class="dot"></span>
+          <span>Narapoi</span>
+        </div>
+        <div class="abPill">Perlu Dukungan</div>
+      </div>
+
+      <div class="abBody">
+        <h2 class="abH1">Mohon matikan DNS / VPN dulu</h2>
+        <p class="abSub">
+          Sepertinya browser kamu memblokir script/iklan (sering karena DNS Adblock, VPN, atau adblocker).
+          Biar situs tetap bisa jalan dan admin semangat upload, bantu izinkan dulu ya.
+        </p>
+
+        <div class="abInner">
+          <div class="abInnerTitle">Untuk Memberku 🥰</div>
+          <p class="abSub" style="margin:0 0 10px;">
+            Matikan DNS / VPN terlebih dulu untuk mendukung admin agar admin makin semangat upload. Terima kasih ❤️
+          </p>
+          <ol class="abList">
+            <li><b>Matikan VPN</b> (kalau nyala).</li>
+            <li>Kalau pakai <b>DNS Adblock</b> (AdGuard/NextDNS/1.1.1.1 WARP), coba nonaktifkan sementara.</li>
+            <li>Kalau ada <b>Adblock Extension</b> (browser lain), coba disable untuk situs ini.</li>
+            <li>Setelah itu klik tombol <b>Refresh</b> di bawah.</li>
+          </ol>
+          <div class="abNote">
+            Catatan: kalau tetap muncul, coba buka pakai browser lain / mode incognito.
+          </div>
+        </div>
+
+        <div class="abActions">
+          <button class="abBtnPrimary" id="abReload">Saya sudah matikan — Refresh</button>
+          <button class="abBtnGhost" id="abHome">Balik ke Home</button>
+        </div>
+      </div>
+
+      <div class="abFooter">Narapoi Punya</div>
+    </div>
+  </div>
+
   <!-- HEADER -->
   <div class="topbar">
     <div class="wrap">
@@ -158,23 +327,15 @@
       <div class="info" id="meta" style="display:none;"></div>
     </div>
 
-    <!-- =========================
-         ADDED: DOWNLOAD FULL button (di atas tombol kembali)
-         (auto-hide kalau download_url kosong)
-         ========================= -->
     <div class="dlWrap" id="dlWrap" style="display:none;">
       <button class="dlBtn" id="downloadFullBtn">DOWNLOAD FULL</button>
     </div>
 
-    <!-- tombol kembali di bawah player -->
     <div class="belowActions">
       <a class="btn" href="index.html">← Balik ke Home</a>
       <a class="btn" href="admin.html" style="display:none" id="adminHidden">Admin</a>
     </div>
 
-    <!-- =========================
-         ADDED: Tutorial text (di bawah tombol kembali)
-         ========================= -->
     <div class="dlHint" id="dlHint" style="display:none;">
       <b>CARA DOWNLOAD FULL NYA?</b><br>
       1. Klik tombol <b>DOWNLOAD FULL</b><br>
@@ -243,7 +404,6 @@
         const data = await res.json();
         let vids = (data.videos || []).filter(v => v.id !== current);
 
-        // kalau genre ada, prioritas genre sama (biar lebih nyambung), tapi tetap random
         const sameGenre = vids.filter(v => (v.genre || "") && (v.genre === (window.__CURRENT_GENRE__ || "")));
         const others = vids.filter(v => v.genre !== (window.__CURRENT_GENRE__ || ""));
 
@@ -287,7 +447,7 @@
       }
     }
 
-    // Header search: enter => redirect ke index dengan query q (biar "feel" sama)
+    // Header search: enter => redirect ke index dengan query q
     const qEl = document.getElementById("q");
     qEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -299,9 +459,56 @@
     document.getElementById("reload").onclick = () => location.reload();
 
     /* =========================
-       ADDED: Download redirect flow
-       - Klik DOWNLOAD -> redirect ke iklan
-       - Setelah user back, auto redirect ke link download
+       ADDED: Adblock popup control (NO CLOSE)
+       ========================= */
+    function lockAdblock(){
+      document.body.classList.add("ab-locked");
+      const ov = document.getElementById("abOverlay");
+      ov.setAttribute("aria-hidden", "false");
+      // stop scroll background
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+
+    // tombol doang
+    document.getElementById("abReload").onclick = () => location.reload();
+    document.getElementById("abHome").onclick = () => location.href = "index.html";
+
+    // blok ESC biar nggak bisa nutup
+    window.addEventListener("keydown", (e) => {
+      if (document.body.classList.contains("ab-locked") && e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    // detector soft: bait element + optional check script ads (kalau mau)
+    function detectAdblockSoft(){
+      const bait = document.createElement("div");
+      bait.className = "ads ad adsbox adsbygoogle ad-banner ad-unit";
+      bait.style.cssText = "position:absolute;left:-9999px;top:-9999px;height:10px;width:10px;";
+      document.body.appendChild(bait);
+
+      setTimeout(() => {
+        const st = window.getComputedStyle(bait);
+        const blocked =
+          st.display === "none" ||
+          st.visibility === "hidden" ||
+          bait.offsetParent === null ||
+          bait.offsetHeight === 0;
+
+        bait.remove();
+
+        if (blocked) lockAdblock();
+      }, 450);
+    }
+
+    window.addEventListener("load", () => {
+      detectAdblockSoft();
+    });
+
+    /* =========================
+       Download redirect flow (tetap)
        ========================= */
     const AD_URL = "https://lt.wetterdefames.com/iQDHyQUDulo0R9YZ/131416";
     const DL_PENDING_KEY = "narapoi_dl_pending_v1"; // sessionStorage
@@ -329,7 +536,6 @@
         return;
       }
 
-      // kalau user balik sebelum 5 detik, tunggu sisa detiknya lalu auto ke download
       setTimeout(() => {
         const again = getPendingDownload();
         if (!again || !again.url) return;
@@ -339,7 +545,6 @@
       }, wait);
     }
 
-    // pageshow kepake buat kasus "back" dari iklan (bfcache)
     window.addEventListener("pageshow", () => {
       maybeAutoGoDownload();
     });
@@ -347,7 +552,6 @@
     (async () => {
       if (!id) {
         document.getElementById("title").textContent = "ID kosong";
-        // ADDED: kalau id kosong, pastiin download/tutor hidden
         document.getElementById("dlWrap").style.display = "none";
         document.getElementById("dlHint").style.display = "none";
         return;
@@ -358,7 +562,6 @@
 
       if (!data.ok) {
         document.getElementById("title").textContent = "Video tidak ketemu";
-        // ADDED: hide download/tutor kalau ga ketemu
         document.getElementById("dlWrap").style.display = "none";
         document.getElementById("dlHint").style.display = "none";
         return;
@@ -380,21 +583,16 @@
 
       bumpView();
 
-      /* =========================
-         ADDED: show/hide DOWNLOAD FULL
-         - muncul kalau ada v.download_url (diisi dari admin)
-         ========================= */
       const dlWrap = document.getElementById("dlWrap");
       const dlHint = document.getElementById("dlHint");
       const dlBtn = document.getElementById("downloadFullBtn");
 
-      const downloadUrl = (v.download_url || "").trim(); // harus ada dari API
+      const downloadUrl = (v.download_url || "").trim();
       if (downloadUrl){
         dlWrap.style.display = "block";
         dlHint.style.display = "block";
 
         dlBtn.onclick = () => {
-          // set pending then redirect ke iklan
           setPendingDownload(downloadUrl);
           location.href = AD_URL;
         };
@@ -405,7 +603,6 @@
 
       const box = document.getElementById("box");
 
-      // Youtube (iframe 16:9 locked by playerBox)
       if ((v.kind || "") === "youtube") {
         const vid = ytEmbed(v.video_url);
         box.innerHTML = `
@@ -419,7 +616,6 @@
         return;
       }
 
-      // mp4 / hls (video 16:9 locked)
       const video = document.createElement("video");
       video.controls = true;
       video.playsInline = true;
