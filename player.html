@@ -106,6 +106,36 @@
     .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
 
     .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
+
+    /* =========================
+       ADDED: Download button + tutorial
+       ========================= */
+    .dlWrap{margin-top:12px}
+    .dlBtn{
+      width:100%;
+      text-align:center;
+      padding:12px 12px;
+      border-radius:999px;
+      border:0;
+      background:linear-gradient(135deg, #ff4d6d, #ff6b81);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow: var(--shadow);
+    }
+    .dlBtn:disabled{opacity:.55;cursor:not-allowed}
+    .dlHint{
+      margin-top:10px;
+      padding:12px;
+      border-radius:var(--r);
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(18,22,28,.65);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .dlHint b{color:var(--text)}
+    .dlHint a{color:#ffd6de;text-decoration:underline}
   </style>
 </head>
 <body>
@@ -128,10 +158,30 @@
       <div class="info" id="meta" style="display:none;"></div>
     </div>
 
+    <!-- =========================
+         ADDED: DOWNLOAD FULL button (di atas tombol kembali)
+         (auto-hide kalau download_url kosong)
+         ========================= -->
+    <div class="dlWrap" id="dlWrap" style="display:none;">
+      <button class="dlBtn" id="downloadFullBtn">⬇️ DOWNLOAD FULL</button>
+    </div>
+
     <!-- tombol kembali di bawah player -->
     <div class="belowActions">
       <a class="btn" href="index.html">← Balik ke Home</a>
       <a class="btn" href="admin.html" style="display:none" id="adminHidden">Admin</a>
+    </div>
+
+    <!-- =========================
+         ADDED: Tutorial text (di bawah tombol kembali)
+         ========================= -->
+    <div class="dlHint" id="dlHint" style="display:none;">
+      <b>CARA DOWNLOAD FULL NYA?</b><br>
+      1. Klik tombol <b>DOWNLOAD FULL</b><br>
+      2. Ketika sudah masuk tunggu <b>5 detik</b><br>
+      3. setelah selesai menunggu 5 detik kamu bisa kembali lalu otomatis menuju link download<br>
+      4. Jika suka jangan lupa subscribe channel
+      <a href="https://youtube.com/@phidey-local" target="_blank" rel="noopener">@Narapoi</a>
     </div>
 
     <div class="sectionTitle">Related videos</div>
@@ -248,9 +298,58 @@
 
     document.getElementById("reload").onclick = () => location.reload();
 
+    /* =========================
+       ADDED: Download redirect flow
+       - Klik DOWNLOAD -> redirect ke iklan
+       - Setelah user back, auto redirect ke link download
+       ========================= */
+    const AD_URL = "https://lt.wetterdefames.com/iQDHyQUDulo0R9YZ/131416";
+    const DL_PENDING_KEY = "narapoi_dl_pending_v1"; // sessionStorage
+    function setPendingDownload(url){
+      const payload = { url, startedAt: Date.now() };
+      sessionStorage.setItem(DL_PENDING_KEY, JSON.stringify(payload));
+    }
+    function getPendingDownload(){
+      try { return JSON.parse(sessionStorage.getItem(DL_PENDING_KEY) || "null"); } catch { return null; }
+    }
+    function clearPendingDownload(){
+      sessionStorage.removeItem(DL_PENDING_KEY);
+    }
+    function maybeAutoGoDownload(){
+      const pending = getPendingDownload();
+      if (!pending || !pending.url) return;
+
+      const elapsed = Date.now() - (pending.startedAt || 0);
+      const wait = 5000 - elapsed;
+
+      if (wait <= 0){
+        const target = pending.url;
+        clearPendingDownload();
+        location.href = target;
+        return;
+      }
+
+      // kalau user balik sebelum 5 detik, tunggu sisa detiknya lalu auto ke download
+      setTimeout(() => {
+        const again = getPendingDownload();
+        if (!again || !again.url) return;
+        const target = again.url;
+        clearPendingDownload();
+        location.href = target;
+      }, wait);
+    }
+
+    // pageshow kepake buat kasus "back" dari iklan (bfcache)
+    window.addEventListener("pageshow", () => {
+      maybeAutoGoDownload();
+    });
+
     (async () => {
       if (!id) {
         document.getElementById("title").textContent = "ID kosong";
+        // ADDED: kalau id kosong, pastiin download/tutor hidden
+        document.getElementById("dlWrap").style.display = "none";
+        document.getElementById("dlHint").style.display = "none";
         return;
       }
 
@@ -259,6 +358,9 @@
 
       if (!data.ok) {
         document.getElementById("title").textContent = "Video tidak ketemu";
+        // ADDED: hide download/tutor kalau ga ketemu
+        document.getElementById("dlWrap").style.display = "none";
+        document.getElementById("dlHint").style.display = "none";
         return;
       }
 
@@ -277,6 +379,29 @@
       `;
 
       bumpView();
+
+      /* =========================
+         ADDED: show/hide DOWNLOAD FULL
+         - muncul kalau ada v.download_url (diisi dari admin)
+         ========================= */
+      const dlWrap = document.getElementById("dlWrap");
+      const dlHint = document.getElementById("dlHint");
+      const dlBtn = document.getElementById("downloadFullBtn");
+
+      const downloadUrl = (v.download_url || "").trim(); // harus ada dari API
+      if (downloadUrl){
+        dlWrap.style.display = "block";
+        dlHint.style.display = "block";
+
+        dlBtn.onclick = () => {
+          // set pending then redirect ke iklan
+          setPendingDownload(downloadUrl);
+          location.href = AD_URL;
+        };
+      } else {
+        dlWrap.style.display = "none";
+        dlHint.style.display = "none";
+      }
 
       const box = document.getElementById("box");
 
