@@ -5,15 +5,35 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Player</title>
   <style>
-    body { font-family: system-ui; padding: 16px; max-width: 980px; margin: auto; }
-    video, iframe { width:100%; border-radius:14px; background:#000; }
-    .box { margin-top: 12px; }
+    :root{--bg:#0b0d10;--panel:#12161c;--text:#e8edf2;--muted:#9aa4af;--accent:#ff4d6d;--r:14px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:980px;margin:0 auto;padding:12px}
+    .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .btn{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(18,22,28,.9)}
+    h1{font-size:18px;margin:10px 0 8px}
+    .player{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);overflow:hidden}
+    video,iframe{width:100%;display:block;background:#000}
+    .info{
+      margin-top:10px;padding:12px;background:rgba(18,22,28,.85);
+      border:1px solid rgba(255,255,255,.06);border-radius:var(--r);
+      color:var(--muted);font-size:13px;line-height:1.35
+    }
+    .pill{display:inline-block;padding:6px 9px;border-radius:999px;background:rgba(255,77,109,.16);border:1px solid rgba(255,77,109,.30);color:#ffd6de;font-weight:700;font-size:12px;margin-right:6px}
   </style>
 </head>
 <body>
-  <a href="index.html">← balik</a>
-  <h1 id="title">Loading...</h1>
-  <div id="box" class="box"></div>
+  <div class="wrap">
+    <div class="top">
+      <a class="btn" href="index.html">← Balik</a>
+    </div>
+
+    <h1 id="title">Loading...</h1>
+
+    <div class="player" id="box"></div>
+    <div class="info" id="meta" style="display:none;"></div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
@@ -29,9 +49,23 @@
       return null;
     }
 
+    async function bumpView(){
+      // fire-and-forget
+      fetch(API + "/api/videos/" + encodeURIComponent(id) + "/view", { method: "POST" });
+    }
+
+    async function sendDuration(seconds){
+      fetch(API + "/api/videos/" + encodeURIComponent(id) + "/duration", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ duration: seconds })
+      });
+    }
+
     (async () => {
       const res = await fetch(API + "/api/videos/" + encodeURIComponent(id));
       const data = await res.json();
+
       if (!data.ok) {
         document.getElementById("title").textContent = "Video tidak ketemu";
         return;
@@ -40,9 +74,19 @@
       const v = data.video;
       document.getElementById("title").textContent = v.title || "Video";
 
+      const meta = document.getElementById("meta");
+      meta.style.display = "block";
+      meta.innerHTML = `
+        <span class="pill">${(v.kind || "link").toUpperCase()}</span>
+        ${v.genre ? `<span class="pill">${v.genre}</span>` : ""}
+        <div style="margin-top:8px">Views: <b>${v.views ?? 0}</b></div>
+      `;
+
+      bumpView();
+
       const box = document.getElementById("box");
 
-      if (v.kind === "youtube") {
+      if ((v.kind || "") === "youtube") {
         const vid = ytEmbed(v.video_url);
         box.innerHTML = `
           <iframe height="520" frameborder="0"
@@ -50,6 +94,7 @@
             allowfullscreen
             src="https://www.youtube.com/embed/${vid}">
           </iframe>`;
+        // durasi youtube nggak bisa kita ambil dari browser tanpa API khusus → skip
         return;
       }
 
@@ -58,7 +103,17 @@
       video.playsInline = true;
       box.appendChild(video);
 
-      if (v.kind === "hls" && window.Hls && Hls.isSupported()) {
+      let sent = false;
+      video.addEventListener("loadedmetadata", () => {
+        if (sent) return;
+        const d = Math.floor(video.duration);
+        if (Number.isFinite(d) && d > 0) {
+          sent = true;
+          sendDuration(d);
+        }
+      });
+
+      if ((v.kind || "") === "hls" && window.Hls && Hls.isSupported()) {
         const hls = new Hls();
         hls.loadSource(v.video_url);
         hls.attachMedia(video);
