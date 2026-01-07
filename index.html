@@ -3,22 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Narapoi</title>
+  <title>Asupan</title>
   <style>
     :root{
-      --bg:#0b0d10;
-      --panel:#12161c;
-      --panel2:#0f1318;
-      --text:#e8edf2;
-      --muted:#9aa4af;
-      --line:#222a33;
-      --accent:#ff4d6d;
-      --chip:#1b2330;
-      --shadow: 0 10px 30px rgba(0,0,0,.45);
-      --radius:14px;
+      --bg:#0b0d10;--panel:#12161c;--text:#e8edf2;--muted:#9aa4af;
+      --line:#222a33;--accent:#ff4d6d;--chip:#1b2330;--shadow:0 10px 30px rgba(0,0,0,.45);--r:14px
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+    body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
     a{color:inherit;text-decoration:none}
     .wrap{max-width:1100px;margin:0 auto;padding:12px}
     .topbar{
@@ -28,57 +20,42 @@
       border-bottom:1px solid rgba(255,255,255,.06);
     }
     .topbar .wrap{display:flex;gap:10px;align-items:center}
-    .brand{
-      display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px
-    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
     .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 18px rgba(255,77,109,.55)}
-    .search{flex:1;display:flex;gap:8px}
+    .search{flex:1}
     .search input{
       width:100%;padding:11px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);
       background:rgba(18,22,28,.9);color:var(--text);outline:none
     }
-    .btn{
-      padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);
-      background:rgba(18,22,28,.9);color:var(--text)
+    .btn{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(18,22,28,.9);color:var(--text)}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
+    .chip{
+      padding:8px 10px;border-radius:999px;background:var(--chip);
+      border:1px solid rgba(255,255,255,.06);color:var(--muted);font-size:12px;cursor:pointer;user-select:none
     }
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-    .chip{padding:8px 10px;border-radius:999px;background:var(--chip);border:1px solid rgba(255,255,255,.06);color:var(--muted);font-size:12px}
+    .chip.active{color:var(--text);border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.10)}
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
     @media (min-width:860px){ .grid{grid-template-columns:repeat(4,1fr)} }
     .card{
       background:linear-gradient(180deg, rgba(18,22,28,.9), rgba(15,19,24,.9));
       border:1px solid rgba(255,255,255,.06);
-      border-radius:var(--radius);
+      border-radius:var(--r);
       overflow:hidden;
       box-shadow: var(--shadow);
       transition: transform .15s ease, border-color .15s ease;
     }
     .card:hover{transform: translateY(-2px);border-color:rgba(255,77,109,.35)}
-    .thumb{
-      position:relative;
-      aspect-ratio:16/9;
-      background:#0f1318;
-      overflow:hidden;
-    }
-    .thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.02)}
+    .thumb{position:relative;aspect-ratio:16/9;background:#0f1318;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .badges{position:absolute;left:8px;top:8px;display:flex;gap:6px}
-    .badge{
-      font-size:11px;font-weight:700;
-      padding:5px 7px;border-radius:999px;
-      background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.10)
-    }
+    .badge{font-size:11px;font-weight:700;padding:5px 7px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.10)}
     .badge.accent{background:rgba(255,77,109,.18);border-color:rgba(255,77,109,.35);color:#ffd6de}
-    .duration{
-      position:absolute;right:8px;bottom:8px;
-      font-size:11px;padding:5px 7px;border-radius:8px;
-      background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.10);color:#fff
-    }
+    .duration{position:absolute;right:8px;bottom:8px;font-size:11px;padding:5px 7px;border-radius:8px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.10);color:#fff}
     .body{padding:10px}
     .title{font-weight:750;font-size:13px;line-height:1.2;margin:0 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
-    .meta .sep{opacity:.5}
+    .empty{padding:18px;margin-top:10px;border:1px dashed rgba(255,255,255,.12);border-radius:var(--r);color:var(--muted)}
     .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
-    .empty{padding:18px;margin-top:10px;border:1px dashed rgba(255,255,255,.12);border-radius:var(--radius);color:var(--muted)}
   </style>
 </head>
 <body>
@@ -88,39 +65,51 @@
       <div class="search">
         <input id="q" placeholder="Cari video..." />
       </div>
-      <a class="btn" href="admin.html">Admin</a>
+      <!-- tombol admin di-hide (nggak ada di UI) -->
+      <!-- kalau mau buka admin: ketik manual /admin.html -->
+      <button class="btn" id="reload">Reload</button>
     </div>
   </div>
 
   <div class="wrap">
-    <div class="chips">
-      <span class="chip">Terbaru</span>
-      <span class="chip">MP4</span>
-      <span class="chip">HLS</span>
-      <span class="chip">YouTube</span>
-      <button class="btn" id="reload" style="margin-left:auto">Reload</button>
-    </div>
+    <div class="chips" id="chips"></div>
 
     <div id="grid" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">Belum ada video. Tambah dulu dari Admin.</div>
+    <div id="empty" class="empty" style="display:none;">Belum ada video.</div>
 
-    <div class="footer">Made with Workers + D1 + KV</div>
+    <div class="footer">Asupan • Workers + D1 + KV</div>
   </div>
 
   <script>
     const API = "https://asupanmu.aku679093.workers.dev";
     let all = [];
+    let activeGenre = ""; // "" = all
 
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
     }
 
-    // durasi belum ada di DB → placeholder ringan biar UI hidup (nanti bisa diganti data beneran)
     function fakeDuration(id){
       const n = [...String(id)].reduce((a,c)=>a + c.charCodeAt(0), 0);
       const min = (n % 12) + 1;
       const sec = (n * 7 % 60).toString().padStart(2,"0");
       return `${min}:${sec}`;
+    }
+
+    function renderChips(genres){
+      const el = document.getElementById("chips");
+      el.innerHTML = "";
+
+      const mk = (label, value) => {
+        const s = document.createElement("span");
+        s.className = "chip" + (activeGenre === value ? " active" : "");
+        s.textContent = label;
+        s.onclick = () => { activeGenre = value; apply(); renderChips(genres); };
+        return s;
+      };
+
+      el.appendChild(mk("Semua", ""));
+      genres.forEach(g => el.appendChild(mk(g, g)));
     }
 
     function render(list){
@@ -138,6 +127,7 @@
 
         const kind = (v.kind || "link").toUpperCase();
         const created = v.created_at ? new Date(v.created_at).toLocaleDateString() : "";
+        const g = v.genre ? v.genre : "";
 
         a.innerHTML = `
           <div class="thumb">
@@ -145,6 +135,7 @@
             <div class="badges">
               <span class="badge accent">HD</span>
               <span class="badge">${escapeHtml(kind)}</span>
+              ${g ? `<span class="badge">${escapeHtml(g)}</span>` : ""}
             </div>
             <div class="duration">${fakeDuration(v.id)}</div>
           </div>
@@ -152,7 +143,7 @@
             <p class="title">${escapeHtml(v.title || "Untitled")}</p>
             <div class="meta">
               <span>${created || "Today"}</span>
-              <span class="sep">•</span>
+              <span style="opacity:.5">•</span>
               <span>Views: —</span>
             </div>
           </div>
@@ -161,20 +152,33 @@
       });
     }
 
+    function apply(){
+      const q = document.getElementById("q").value.toLowerCase().trim();
+
+      let list = all;
+
+      if (activeGenre) {
+        list = list.filter(v => (v.genre || "").trim() === activeGenre);
+      }
+      if (q) {
+        list = list.filter(v => (v.title || "").toLowerCase().includes(q));
+      }
+
+      render(list);
+    }
+
     async function load(){
       const res = await fetch(API + "/api/videos");
       const data = await res.json();
       all = data.videos || [];
-      render(all);
+
+      const genres = [...new Set(all.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
+      renderChips(genres);
+      apply();
     }
 
     document.getElementById("reload").onclick = load;
-
-    document.getElementById("q").addEventListener("input", (e)=>{
-      const q = e.target.value.toLowerCase().trim();
-      if (!q) return render(all);
-      render(all.filter(v => (v.title || "").toLowerCase().includes(q)));
-    });
+    document.getElementById("q").addEventListener("input", apply);
 
     load();
   </script>
