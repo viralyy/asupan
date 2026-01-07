@@ -3,36 +3,109 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Daftar Video</title>
+  <title>Narapoi</title>
   <style>
-    body { font-family: system-ui; padding: 16px; max-width: 980px; margin: auto; }
-    header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-    .top { display:flex; gap:8px; margin-top:12px; }
-    input { flex:1; padding:10px; border-radius:10px; border:1px solid #ddd; }
-    button { padding:10px 12px; border-radius:10px; border:1px solid #ddd; background:#fff; }
-    .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
-    @media (min-width: 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-    a.card { display:block; padding: 12px; border:1px solid #ddd; border-radius: 14px; text-decoration:none; color:inherit; }
-    a.card:hover { border-color:#999; }
-    img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:12px; background:#f2f2f2; margin-bottom:10px; }
-    .title { font-weight:700; margin-bottom:6px; }
-    .meta { font-size:12px; opacity:.7; }
-    .empty { opacity:.7; margin-top:16px; }
+    :root{
+      --bg:#0b0d10;
+      --panel:#12161c;
+      --panel2:#0f1318;
+      --text:#e8edf2;
+      --muted:#9aa4af;
+      --line:#222a33;
+      --accent:#ff4d6d;
+      --chip:#1b2330;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1100px;margin:0 auto;padding:12px}
+    .topbar{
+      position:sticky;top:0;z-index:10;
+      background:linear-gradient(to bottom, rgba(11,13,16,.95), rgba(11,13,16,.65));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .topbar .wrap{display:flex;gap:10px;align-items:center}
+    .brand{
+      display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px
+    }
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 18px rgba(255,77,109,.55)}
+    .search{flex:1;display:flex;gap:8px}
+    .search input{
+      width:100%;padding:11px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);
+      background:rgba(18,22,28,.9);color:var(--text);outline:none
+    }
+    .btn{
+      padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.9);color:var(--text)
+    }
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    .chip{padding:8px 10px;border-radius:999px;background:var(--chip);border:1px solid rgba(255,255,255,.06);color:var(--muted);font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media (min-width:860px){ .grid{grid-template-columns:repeat(4,1fr)} }
+    .card{
+      background:linear-gradient(180deg, rgba(18,22,28,.9), rgba(15,19,24,.9));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .card:hover{transform: translateY(-2px);border-color:rgba(255,77,109,.35)}
+    .thumb{
+      position:relative;
+      aspect-ratio:16/9;
+      background:#0f1318;
+      overflow:hidden;
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.02)}
+    .badges{position:absolute;left:8px;top:8px;display:flex;gap:6px}
+    .badge{
+      font-size:11px;font-weight:700;
+      padding:5px 7px;border-radius:999px;
+      background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.10)
+    }
+    .badge.accent{background:rgba(255,77,109,.18);border-color:rgba(255,77,109,.35);color:#ffd6de}
+    .duration{
+      position:absolute;right:8px;bottom:8px;
+      font-size:11px;padding:5px 7px;border-radius:8px;
+      background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.10);color:#fff
+    }
+    .body{padding:10px}
+    .title{font-weight:750;font-size:13px;line-height:1.2;margin:0 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
+    .meta .sep{opacity:.5}
+    .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
+    .empty{padding:18px;margin-top:10px;border:1px dashed rgba(255,255,255,.12);border-radius:var(--radius);color:var(--muted)}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Daftar Video</h1>
-    <a href="admin.html">Admin</a>
-  </header>
-
-  <div class="top">
-    <input id="q" placeholder="Search judul..." />
-    <button id="reload">Reload</button>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand"><span class="dot"></span><span>Asupan</span></div>
+      <div class="search">
+        <input id="q" placeholder="Cari video..." />
+      </div>
+      <a class="btn" href="admin.html">Admin</a>
+    </div>
   </div>
 
-  <div id="grid" class="grid"></div>
-  <div id="empty" class="empty" style="display:none;">Belum ada video. Tambah dari admin.</div>
+  <div class="wrap">
+    <div class="chips">
+      <span class="chip">Terbaru</span>
+      <span class="chip">MP4</span>
+      <span class="chip">HLS</span>
+      <span class="chip">YouTube</span>
+      <button class="btn" id="reload" style="margin-left:auto">Reload</button>
+    </div>
+
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">Belum ada video. Tambah dulu dari Admin.</div>
+
+    <div class="footer">Made with Workers + D1 + KV</div>
+  </div>
 
   <script>
     const API = "https://asupanmu.aku679093.workers.dev";
@@ -42,29 +115,47 @@
       return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
     }
 
+    // durasi belum ada di DB → placeholder ringan biar UI hidup (nanti bisa diganti data beneran)
+    function fakeDuration(id){
+      const n = [...String(id)].reduce((a,c)=>a + c.charCodeAt(0), 0);
+      const min = (n % 12) + 1;
+      const sec = (n * 7 % 60).toString().padStart(2,"0");
+      return `${min}:${sec}`;
+    }
+
     function render(list){
       const grid = document.getElementById("grid");
       const empty = document.getElementById("empty");
       grid.innerHTML = "";
 
-      if (!list.length) {
-        empty.style.display = "block";
-        return;
-      }
-      empty.style.display = "none";
+      if (!list.length) { empty.style.display="block"; return; }
+      empty.style.display="none";
 
-      list.forEach(v => {
+      list.forEach(v=>{
         const a = document.createElement("a");
         a.className = "card";
         a.href = "player.html?id=" + encodeURIComponent(v.id);
 
-        const thumb = v.thumb_url ? `<img src="${v.thumb_url}" alt="">` : `<img alt="">`;
-        const created = v.created_at ? new Date(v.created_at).toLocaleString() : "";
+        const kind = (v.kind || "link").toUpperCase();
+        const created = v.created_at ? new Date(v.created_at).toLocaleDateString() : "";
 
         a.innerHTML = `
-          ${thumb}
-          <div class="title">${escapeHtml(v.title || "Untitled")}</div>
-          <div class="meta">${escapeHtml(v.kind || "")}${created ? " • " + created : ""}</div>
+          <div class="thumb">
+            ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
+            <div class="badges">
+              <span class="badge accent">HD</span>
+              <span class="badge">${escapeHtml(kind)}</span>
+            </div>
+            <div class="duration">${fakeDuration(v.id)}</div>
+          </div>
+          <div class="body">
+            <p class="title">${escapeHtml(v.title || "Untitled")}</p>
+            <div class="meta">
+              <span>${created || "Today"}</span>
+              <span class="sep">•</span>
+              <span>Views: —</span>
+            </div>
+          </div>
         `;
         grid.appendChild(a);
       });
@@ -79,7 +170,7 @@
 
     document.getElementById("reload").onclick = load;
 
-    document.getElementById("q").addEventListener("input", (e) => {
+    document.getElementById("q").addEventListener("input", (e)=>{
       const q = e.target.value.toLowerCase().trim();
       if (!q) return render(all);
       render(all.filter(v => (v.title || "").toLowerCase().includes(q)));
