@@ -480,28 +480,59 @@
       }
     }, true);
 
-    function detectAdblockSoft(){
+    /* =========================
+       ADDED: Deteksi DNS Adblock (tes load script iklan)
+       ========================= */
+    function testAdScriptBlocked(url, timeoutMs = 1300){
+      return new Promise((resolve) => {
+        const s = document.createElement("script");
+        let done = false;
+
+        const finish = (blocked) => {
+          if (done) return;
+          done = true;
+          s.remove();
+          resolve(blocked);
+        };
+
+        const t = setTimeout(() => finish(true), timeoutMs);
+
+        s.src = url + (url.includes("?") ? "&" : "?") + "cb=" + Date.now();
+        s.async = true;
+        s.onload = () => { clearTimeout(t); finish(false); };
+        s.onerror = () => { clearTimeout(t); finish(true); };
+
+        (document.head || document.documentElement).appendChild(s);
+      });
+    }
+
+    async function detectAdblockDNS(){
+      // 1) DNS Adblock: kalau domain iklan keblok, onerror/timeout => true
+      const blockedByDNS = await testAdScriptBlocked("https://al5sm.com/tag.min.js", 1300);
+      if (blockedByDNS) return true;
+
+      // 2) fallback: extension adblock (bait class)
       const bait = document.createElement("div");
       bait.className = "ads ad adsbox adsbygoogle ad-banner ad-unit";
       bait.style.cssText = "position:absolute;left:-9999px;top:-9999px;height:10px;width:10px;";
       document.body.appendChild(bait);
 
-      setTimeout(() => {
-        const st = window.getComputedStyle(bait);
-        const blocked =
-          st.display === "none" ||
-          st.visibility === "hidden" ||
-          bait.offsetParent === null ||
-          bait.offsetHeight === 0;
+      await new Promise(r => setTimeout(r, 350));
 
-        bait.remove();
+      const st = window.getComputedStyle(bait);
+      const blocked =
+        st.display === "none" ||
+        st.visibility === "hidden" ||
+        bait.offsetParent === null ||
+        bait.offsetHeight === 0;
 
-        if (blocked) lockAdblock();
-      }, 450);
+      bait.remove();
+      return blocked;
     }
 
-    window.addEventListener("load", () => {
-      detectAdblockSoft();
+    window.addEventListener("load", async () => {
+      const blocked = await detectAdblockDNS();
+      if (blocked) lockAdblock();
     });
 
     /* =========================
@@ -546,28 +577,6 @@
       maybeAutoGoDownload();
     });
 
-    /* =========================
-       ADDED: Watch history (max 50) buat masuk ke Profil
-       ========================= */
-    const HIST_KEY = "narapoi_watch_history_v1";
-    function safeParse(s, fallback){
-      try { return JSON.parse(s); } catch { return fallback; }
-    }
-    function pushHistory(video){
-      if (!video || !video.id) return;
-      const arr = safeParse(localStorage.getItem(HIST_KEY) || "[]", []);
-      const filtered = arr.filter(x => x && x.id !== video.id);
-
-      filtered.unshift({
-        id: video.id,
-        title: video.title || "Untitled",
-        thumb_url: video.thumb_url || "",
-        ts: Date.now()
-      });
-
-      localStorage.setItem(HIST_KEY, JSON.stringify(filtered.slice(0, 50)));
-    }
-
     (async () => {
       if (!id) {
         document.getElementById("title").textContent = "ID kosong";
@@ -588,11 +597,6 @@
 
       const v = data.video;
       window.__CURRENT_GENRE__ = v.genre || "";
-
-      /* =========================
-         ADDED: simpan ke riwayat (max 50)
-         ========================= */
-      pushHistory(v);
 
       document.getElementById("title").textContent = v.title || "Video";
 
