@@ -546,6 +546,28 @@
       maybeAutoGoDownload();
     });
 
+    /* =========================
+       ADDED: Watch history (max 50) buat masuk ke Profil
+       ========================= */
+    const HIST_KEY = "narapoi_watch_history_v1";
+    function safeParse(s, fallback){
+      try { return JSON.parse(s); } catch { return fallback; }
+    }
+    function pushHistory(video){
+      if (!video || !video.id) return;
+      const arr = safeParse(localStorage.getItem(HIST_KEY) || "[]", []);
+      const filtered = arr.filter(x => x && x.id !== video.id);
+
+      filtered.unshift({
+        id: video.id,
+        title: video.title || "Untitled",
+        thumb_url: video.thumb_url || "",
+        ts: Date.now()
+      });
+
+      localStorage.setItem(HIST_KEY, JSON.stringify(filtered.slice(0, 50)));
+    }
+
     (async () => {
       if (!id) {
         document.getElementById("title").textContent = "ID kosong";
@@ -566,6 +588,11 @@
 
       const v = data.video;
       window.__CURRENT_GENRE__ = v.genre || "";
+
+      /* =========================
+         ADDED: simpan ke riwayat (max 50)
+         ========================= */
+      pushHistory(v);
 
       document.getElementById("title").textContent = v.title || "Video";
 
