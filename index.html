@@ -486,6 +486,16 @@
       `;
     }
 
+    // =========================
+    // MULTI GENRE (CSV) - ADDED
+    // =========================
+    function splitGenres(s){
+      return String(s || "")
+        .split(",")
+        .map(x => x.trim())
+        .filter(Boolean);
+    }
+
     // ===== Popular slider =====
     function renderPopular(){
       const popHead = document.getElementById("popularHead");
@@ -543,7 +553,7 @@
       window.addEventListener("resize", updateFades);
     }
 
-    // ===== Genre chips =====
+    // ===== Genre chips (MULTI GENRE) =====
     function renderChips(genres){
       const el = document.getElementById("chips");
       el.innerHTML = "";
@@ -623,7 +633,9 @@
       const q = document.getElementById("q").value.toLowerCase().trim();
       let list = all;
 
-      if (activeGenre) list = list.filter(v => (v.genre || "").trim() === activeGenre);
+      // ===== MULTI GENRE FILTER =====
+      if (activeGenre) list = list.filter(v => splitGenres(v.genre).includes(activeGenre));
+
       if (q) list = list.filter(v => (v.title || "").toLowerCase().includes(q));
 
       const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
@@ -719,7 +731,12 @@
       all = data.videos || [];
 
       renderPopular();
-      const genres = [...new Set(all.map(v => (v.genre || "").trim()).filter(Boolean))].sort();
+
+      // ===== MULTI GENRE: kumpulin dari CSV =====
+      const genres = [...new Set(
+        all.flatMap(v => splitGenres(v.genre))
+      )].sort();
+
       renderChips(genres);
 
       const current =
@@ -742,3 +759,4 @@
   </script>
 </body>
 </html>
+```0
