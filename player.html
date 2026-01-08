@@ -460,14 +460,38 @@
     document.getElementById("reload").onclick = () => location.reload();
 
     /* =========================
-       ADDED: Adblock popup control (NO CLOSE)
+       ADDED: Adblock popup control (AUTO CLOSE kalau sudah aman)
        ========================= */
+    let __abInterval = null;
+
     function lockAdblock(){
+      if (document.body.classList.contains("ab-locked")) return;
       document.body.classList.add("ab-locked");
       const ov = document.getElementById("abOverlay");
       ov.setAttribute("aria-hidden", "false");
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
+
+      if (!__abInterval){
+        __abInterval = setInterval(async () => {
+          const blocked = await detectAdblockOnce();
+          if (!blocked) unlockAdblock();
+        }, 1000);
+      }
+    }
+
+    function unlockAdblock(){
+      if (!document.body.classList.contains("ab-locked")) return;
+      document.body.classList.remove("ab-locked");
+      const ov = document.getElementById("abOverlay");
+      ov.setAttribute("aria-hidden", "true");
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+
+      if (__abInterval){
+        clearInterval(__abInterval);
+        __abInterval = null;
+      }
     }
 
     document.getElementById("abReload").onclick = () => location.reload();
@@ -480,59 +504,35 @@
       }
     }, true);
 
-    /* =========================
-       ADDED: Deteksi DNS Adblock (tes load script iklan)
-       ========================= */
-    function testAdScriptBlocked(url, timeoutMs = 1300){
+    function detectAdblockOnce(){
       return new Promise((resolve) => {
-        const s = document.createElement("script");
-        let done = false;
+        const bait = document.createElement("div");
+        bait.className = "ads ad adsbox adsbygoogle ad-banner ad-unit";
+        bait.style.cssText = "position:absolute;left:-9999px;top:-9999px;height:10px;width:10px;";
+        document.body.appendChild(bait);
 
-        const finish = (blocked) => {
-          if (done) return;
-          done = true;
-          s.remove();
-          resolve(blocked);
-        };
+        setTimeout(() => {
+          const st = window.getComputedStyle(bait);
+          const blocked =
+            st.display === "none" ||
+            st.visibility === "hidden" ||
+            bait.offsetParent === null ||
+            bait.offsetHeight === 0;
 
-        const t = setTimeout(() => finish(true), timeoutMs);
-
-        s.src = url + (url.includes("?") ? "&" : "?") + "cb=" + Date.now();
-        s.async = true;
-        s.onload = () => { clearTimeout(t); finish(false); };
-        s.onerror = () => { clearTimeout(t); finish(true); };
-
-        (document.head || document.documentElement).appendChild(s);
+          bait.remove();
+          resolve(!!blocked);
+        }, 450);
       });
     }
 
-    async function detectAdblockDNS(){
-      // 1) DNS Adblock: kalau domain iklan keblok, onerror/timeout => true
-      const blockedByDNS = await testAdScriptBlocked("https://al5sm.com/tag.min.js", 1300);
-      if (blockedByDNS) return true;
-
-      // 2) fallback: extension adblock (bait class)
-      const bait = document.createElement("div");
-      bait.className = "ads ad adsbox adsbygoogle ad-banner ad-unit";
-      bait.style.cssText = "position:absolute;left:-9999px;top:-9999px;height:10px;width:10px;";
-      document.body.appendChild(bait);
-
-      await new Promise(r => setTimeout(r, 350));
-
-      const st = window.getComputedStyle(bait);
-      const blocked =
-        st.display === "none" ||
-        st.visibility === "hidden" ||
-        bait.offsetParent === null ||
-        bait.offsetHeight === 0;
-
-      bait.remove();
-      return blocked;
+    async function detectAdblockSoft(){
+      const blocked = await detectAdblockOnce();
+      if (blocked) lockAdblock();
+      else unlockAdblock();
     }
 
-    window.addEventListener("load", async () => {
-      const blocked = await detectAdblockDNS();
-      if (blocked) lockAdblock();
+    window.addEventListener("load", () => {
+      detectAdblockSoft();
     });
 
     /* =========================
