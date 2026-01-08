@@ -49,7 +49,7 @@
       aspect-ratio:16/9;
       background:#000;
       display:block;
-      position: relative; /* tambahan kecil biar iklan bisa absolute jika perlu */
+      position: relative;
     }
     .playerBox > video,
     .playerBox > iframe{
@@ -108,9 +108,7 @@
 
     .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
 
-    /* =========================
-       ADDED: Download button + tutorial
-       ========================= */
+    /* ===== download ===== */
     .dlWrap{margin-top:12px}
     .dlBtn{
       width:100%;
@@ -138,12 +136,7 @@
     .dlHint b{color:var(--text)}
     .dlHint a{color:#ffd6de;text-decoration:underline}
 
-    /* =========================
-       ADDED: Adblock popup (card persis + modal)
-       - NO close button
-       - NO close on backdrop
-       - NO close on ESC
-       ========================= */
+    /* ===== adblock modal ===== */
     body.ab-locked .wrap,
     body.ab-locked .topbar{
       filter: blur(10px);
@@ -260,12 +253,48 @@
       text-align:center;
       font-size:12px;
     }
+
+    /* ===== extra actions (fav/share/report) ===== */
+    #playerExtraActions .btn{cursor:pointer}
+
+    /* ===== pause overlay ===== */
+    .pauseOverlay{
+      position:fixed;inset:0;z-index:60;
+      background:rgba(0,0,0,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+    }
+    .pauseOverlay.show{display:flex}
+    .pauseBox{
+      width:100%;
+      max-width:560px;
+      background:rgba(18,22,28,.95);
+      border-radius:14px;
+      padding:14px 16px;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+    }
+    .pauseTitle{font-weight:950;font-size:16px;margin:0 0 6px}
+    .pauseMeta{font-size:12px;color:var(--muted);margin:0}
+
+    /* ===== watermark ===== */
+    .wm{
+      position:fixed;
+      right:10px;
+      bottom:90px;
+      font-size:12px;
+      font-weight:900;
+      opacity:.35;
+      pointer-events:none;
+      user-select:none;
+      z-index:55;
+    }
   </style>
 </head>
 <body>
-  <!-- =========================
-       ADDED: Adblock popup (modal)
-       ========================= -->
+
   <div class="abOverlay" id="abOverlay" aria-hidden="true">
     <div class="abCard" role="dialog" aria-modal="true">
       <div class="abTop">
@@ -309,6 +338,17 @@
     </div>
   </div>
 
+  <!-- Pause overlay -->
+  <div class="pauseOverlay" id="pauseOverlay" aria-hidden="true">
+    <div class="pauseBox">
+      <p class="pauseTitle" id="pauseTitle"></p>
+      <p class="pauseMeta" id="pauseMeta"></p>
+    </div>
+  </div>
+
+  <!-- Watermark -->
+  <div class="wm">Narapoi</div>
+
   <!-- HEADER -->
   <div class="topbar">
     <div class="wrap">
@@ -335,6 +375,12 @@
     <div class="belowActions">
       <a class="btn" href="index.html">← Balik ke Home</a>
       <a class="btn" href="admin.html" style="display:none" id="adminHidden">Admin</a>
+    </div>
+
+    <div class="belowActions" id="playerExtraActions">
+      <button class="btn" id="btnFav">🤍 Favorit</button>
+      <button class="btn" id="btnShare">🔗 Share</button>
+      <button class="btn" id="btnReport">🚨 Report</button>
     </div>
 
     <div class="dlHint" id="dlHint" style="display:none;">
@@ -459,9 +505,7 @@
 
     document.getElementById("reload").onclick = () => location.reload();
 
-    /* =========================
-       ADDED: Adblock popup control (AUTO CLOSE kalau sudah aman)
-       ========================= */
+    // ===== Adblock popup =====
     let __abInterval = null;
 
     function lockAdblock(){
@@ -535,9 +579,7 @@
       detectAdblockSoft();
     });
 
-    /* =========================
-       Download redirect flow (tetap)
-       ========================= */
+    // ===== Download redirect flow =====
     const AD_URL = "https://lt.wetterdefames.com/iQDHyQUDulo0R9YZ/131416";
     const DL_PENDING_KEY = "narapoi_dl_pending_v1"; // sessionStorage
     function setPendingDownload(url){
@@ -577,6 +619,96 @@
       maybeAutoGoDownload();
     });
 
+    // ===== extras: fav/share/report + history/resume/pause =====
+    const HIST_KEY = "narapoi_watch_history_v1";
+    const FAV_KEY  = "narapoi_favorites_v1";
+
+    const pauseOverlay = document.getElementById("pauseOverlay");
+    const pauseTitle = document.getElementById("pauseTitle");
+    const pauseMeta = document.getElementById("pauseMeta");
+    function showPause(title, t){
+      pauseTitle.textContent = title || "";
+      pauseMeta.textContent = "Paused at " + Math.floor(t || 0) + "s";
+      pauseOverlay.classList.add("show");
+      pauseOverlay.setAttribute("aria-hidden","false");
+    }
+    function hidePause(){
+      pauseOverlay.classList.remove("show");
+      pauseOverlay.setAttribute("aria-hidden","true");
+    }
+    pauseOverlay.onclick = hidePause;
+
+    function getFav(){ return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); }
+    function isFav(videoId){ return getFav().some(v => v.id === videoId); }
+    function setFavBtn(videoId){
+      const btn = document.getElementById("btnFav");
+      btn.textContent = isFav(videoId) ? "❤️ Favorit" : "🤍 Favorit";
+    }
+    function toggleFav(videoId, title){
+      let arr = getFav();
+      if (isFav(videoId)) arr = arr.filter(v => v.id !== videoId);
+      else arr.unshift({ id: videoId, title: title || "Video", ts: Date.now() });
+      localStorage.setItem(FAV_KEY, JSON.stringify(arr.slice(0,100)));
+      setFavBtn(videoId);
+    }
+
+    function saveHistoryOnce(videoId, title, thumb){
+      const arr = (() => { try { return JSON.parse(localStorage.getItem(HIST_KEY) || "[]"); } catch { return []; } })();
+      const cleaned = arr.filter(x => x && x.id && x.id !== videoId);
+      cleaned.unshift({ id: videoId, title: title || "Video", thumb_url: thumb || null, ts: Date.now() });
+      localStorage.setItem(HIST_KEY, JSON.stringify(cleaned.slice(0,50)));
+    }
+
+    function initVideoTracking(video, v){
+      const RESUME_KEY = "narapoi_resume_v1:" + v.id;
+      let playStart = 0;
+      let historySaved = false;
+
+      function saveResume(){
+        try{
+          if (video.currentTime > 3) localStorage.setItem(RESUME_KEY, String(video.currentTime));
+        } catch {}
+      }
+      function loadResume(){
+        try{
+          const t = Number(localStorage.getItem(RESUME_KEY));
+          if (t && t > 3) video.currentTime = t;
+        } catch {}
+      }
+
+      video.addEventListener("loadedmetadata", loadResume);
+      video.addEventListener("play", () => { hidePause(); playStart = Date.now(); });
+      video.addEventListener("timeupdate", () => {
+        saveResume();
+        if (!historySaved && playStart && (Date.now() - playStart) >= 3000){
+          historySaved = true;
+          saveHistoryOnce(v.id, v.title, v.thumb_url);
+        }
+      });
+      video.addEventListener("pause", () => { if (!video.ended) showPause(v.title, video.currentTime); });
+      video.addEventListener("ended", () => { try { localStorage.removeItem(RESUME_KEY); } catch {} hidePause(); });
+
+      window.addEventListener("beforeunload", saveResume);
+    }
+
+    document.getElementById("btnShare").onclick = async () => {
+      const title = document.getElementById("title")?.textContent || "Video";
+      try{
+        if (navigator.share) await navigator.share({ title, url: location.href });
+        else {
+          await navigator.clipboard.writeText(location.href);
+          alert("Link disalin");
+        }
+      }catch{}
+    };
+
+    document.getElementById("btnReport").onclick = () => {
+      const title = document.getElementById("title")?.textContent || "Video";
+      location.href =
+        "mailto:narapoiofc@haren.uk?subject=Report Video&body=" +
+        encodeURIComponent(title + "\n" + location.href);
+    };
+
     (async () => {
       if (!id) {
         document.getElementById("title").textContent = "ID kosong";
@@ -599,6 +731,10 @@
       window.__CURRENT_GENRE__ = v.genre || "";
 
       document.getElementById("title").textContent = v.title || "Video";
+
+      // fav init
+      setFavBtn(v.id);
+      document.getElementById("btnFav").onclick = () => toggleFav(v.id, v.title);
 
       const meta = document.getElementById("meta");
       meta.style.display = "block";
@@ -647,7 +783,11 @@
             src="https://www.youtube.com/embed/${vid}">
           </iframe>`;
 
-        // popunder script (kalau mau) — tetap jalan
+        // history fallback (youtube ga bisa detect play di iframe)
+        setTimeout(() => {
+          saveHistoryOnce(v.id, v.title, v.thumb_url);
+        }, 3000);
+
         (function(s){
           s.dataset.zone='10109877';
           s.src='https://al5sm.com/tag.min.js';
@@ -680,7 +820,9 @@
         video.src = v.video_url;
       }
 
-      // popunder script (kalau mau) — tetap jalan
+      // init tracking: resume + history 3 detik + pause overlay
+      initVideoTracking(video, v);
+
       (function(s){
         s.dataset.zone='10109877';
         s.src='https://al5sm.com/tag.min.js';
