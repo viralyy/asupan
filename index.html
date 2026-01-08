@@ -58,7 +58,6 @@
     .empty{padding:18px;margin-top:10px;border:1px dashed rgba(255,255,255,.12);border-radius:var(--r);color:var(--muted)}
     .footer{padding:22px 12px;color:var(--muted);text-align:center;font-size:12px}
 
-    /* ===== 18+ Gate (added) ===== */
     body.age-locked .wrap,
     body.age-locked .topbar {
       filter: blur(10px);
@@ -94,9 +93,6 @@
     }
     .age-actions .primary{background: var(--accent);border:0}
 
-    /* =========================
-       Popular slider (kecil & ramping)
-       ========================= */
     .sectionHead{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
       margin-top:12px;margin-bottom:10px
@@ -140,7 +136,6 @@
     @media (max-width:420px){ .popPrev{left:0} .popNext{right:0} }
     .popNav.hide{display:none}
 
-    /* anim “web gede” (tanpa delay) */
     .card.anim{
       opacity:0;
       transform: translateY(10px);
@@ -149,7 +144,6 @@
     }
     .card.anim.show{opacity:1;transform: translateY(0)}
 
-    /* pager */
     .pager{
       margin-top:14px;
       display:none;
@@ -169,15 +163,9 @@
     }
     .pager .btn:disabled{opacity:.5;cursor:not-allowed}
 
-    /* =========================
-       Views (home/support/profile)
-       ========================= */
     .view{display:none}
     .view.show{display:block}
 
-    /* =========================
-       Bottom Menu (SVG + text)
-       ========================= */
     .bottomNavSpace{height:78px}
     .bottomNav{
       position:fixed;left:0;right:0;bottom:0;z-index:50;
@@ -220,7 +208,6 @@
     }
     .navItem.active .navText{color:#ffd6de}
 
-    /* Profile cards list */
     .miniList{
       display:flex;
       flex-direction:column;
@@ -264,88 +251,49 @@
       font-size:11px;
     }
 
-    /* =========================
-       ADDED: features 1,2,3,4,5,6,7,8,10 (frontend only)
-       ========================= */
-    .sectionCard{
-      border:1px solid rgba(255,255,255,.06);
-      background:rgba(18,22,28,.55);
-      border-radius:var(--r);
+    /* ========= Genre overflow modal ========= */
+    .genreOverlay{
+      position:fixed;inset:0;z-index:9998;
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:14px;
+      background:rgba(0,0,0,.55);
+    }
+    .genreOverlay.show{display:flex}
+    .genreModal{
+      width:100%;
+      max-width:820px;
+      background:rgba(18,22,28,.98);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
       box-shadow: var(--shadow);
-      padding:10px;
-      margin-top:10px;
-    }
-    .sectionRow{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;
-    }
-    .sectionRow .sectionTitle{font-size:13px}
-    .toolsRow{display:flex;gap:8px;flex-wrap:wrap}
-    .btn.small{padding:8px 10px;font-size:12px}
-    .btn.primary{background:rgba(255,77,109,.16);border-color:rgba(255,77,109,.30);color:#ffd6de;font-weight:900}
-    .tagPill{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 9px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(18,22,28,.7);
-      color:var(--muted);font-size:12px;
-    }
-    .mark{
-      background:rgba(255,77,109,.22);
-      border:1px solid rgba(255,77,109,.25);
-      padding:0 2px;border-radius:4px;color:#ffd6de;
-    }
-    .favBtn{
-      position:absolute;right:8px;top:8px;
-      width:32px;height:32px;border-radius:999px;
-      display:flex;align-items:center;justify-content:center;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.45);
-      cursor:pointer;
-      z-index:6;
-    }
-    .favBtn svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;opacity:.9}
-    .favBtn.on{background:rgba(255,77,109,.22);border-color:rgba(255,77,109,.35)}
-    .favBtn.on svg{fill:#ff4d6d;stroke:#ff4d6d}
-    .skeletonGrid{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:10px
-    }
-    @media (min-width:860px){ .skeletonGrid{grid-template-columns:repeat(4,1fr)} }
-    .skCard{
-      border-radius:var(--r);
-      border:1px solid rgba(255,255,255,.06);
       overflow:hidden;
-      background:rgba(18,22,28,.55);
-      box-shadow: var(--shadow);
     }
-    .skThumb{aspect-ratio:16/9;background:rgba(255,255,255,.06)}
-    .skBody{padding:10px}
-    .skLine{height:10px;border-radius:999px;background:rgba(255,255,255,.06);margin-top:8px}
-    .skLine.w60{width:60%}
-    .skLine.w85{width:85%}
-    .skLine.w45{width:45%}
-    @keyframes shimmer{
-      0%{transform:translateX(-100%)}
-      100%{transform:translateX(100%)}
+    .genreModalTop{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-    .skThumb::after, .skLine::after{
-      content:"";
-      display:block;
-      height:100%;
-      width:60%;
-      background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.10), rgba(255,255,255,0));
-      animation:shimmer 1.2s infinite;
+    .genreModalTitle{font-weight:900;font-size:13px;color:var(--text)}
+    .genreClose{
+      padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(18,22,28,.9);color:var(--text);cursor:pointer
     }
-
-    /* theme switch (10) */
-    body.amoled{
-      --bg:#000000;
-      --panel:#0b0d10;
+    .genreModalBody{
+      padding:12px;
+      max-height:min(60vh,520px);
+      overflow:auto;
+    }
+    .genreGrid{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== 18+ Gate (added) ===== -->
   <div class="age-overlay" id="ageOverlay" aria-hidden="true">
     <div class="age-modal" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
       <div class="age-title" id="ageTitle">Peringatan 18+</div>
@@ -377,12 +325,8 @@
 
   <div class="wrap">
 
-    <!-- =========================
-         HOME VIEW
-         ========================= -->
     <div class="view show" id="viewHome">
 
-      <!-- Popular -->
       <div class="sectionHead" id="popularHead" style="display:none;">
         <h2 class="sectionTitle">Popular posts</h2>
         <div class="sectionNote">Top by views</div>
@@ -396,42 +340,24 @@
         <div id="popularRow" class="popRow"></div>
       </div>
 
-      <!-- =========================
-           ADDED: Continue Watching + Tools
-           ========================= -->
-      <div class="sectionCard" id="cwCard" style="display:none;">
-        <div class="sectionRow">
-          <h2 class="sectionTitle">Lanjutkan menonton</h2>
-          <div class="toolsRow">
-            <span class="tagPill" id="watchTimePill">0 menit ditonton</span>
-            <button class="btn small" id="btnRandom">Nonton random</button>
-            <button class="btn small" id="btnTheme">AMOLED</button>
-          </div>
-        </div>
-        <div id="cwSlot"></div>
-      </div>
-
-      <!-- =========================
-           ADDED: Recently Added
-           ========================= -->
-      <div class="sectionCard" id="raCard" style="display:none;">
-        <div class="sectionRow">
-          <h2 class="sectionTitle">Baru ditambahkan</h2>
-          <div class="sectionNote">Newest</div>
-        </div>
-        <div id="recentGrid" class="grid"></div>
-      </div>
-
       <!-- GENRE chips -->
       <div class="chips" id="chips"></div>
 
-      <!-- daftar video (paginasi) -->
+      <!-- Genre overflow modal -->
+      <div class="genreOverlay" id="genreOverlay" aria-hidden="true">
+        <div class="genreModal" role="dialog" aria-modal="true">
+          <div class="genreModalTop">
+            <div class="genreModalTitle">Semua Genre</div>
+            <button class="genreClose" id="genreClose">Tutup</button>
+          </div>
+          <div class="genreModalBody">
+            <div class="genreGrid" id="genreAllWrap"></div>
+          </div>
+        </div>
+      </div>
+
       <div id="grid" class="grid"></div>
 
-      <!-- skeleton loader (5) -->
-      <div id="skel" class="skeletonGrid" style="display:none;"></div>
-
-      <!-- pager -->
       <div class="pager" id="pager">
         <button class="btn" id="prevBtn">Prev</button>
         <div class="pagerInfo" id="pagerInfo">Page 1</div>
@@ -441,9 +367,6 @@
       <div id="empty" class="empty" style="display:none;">Belum ada video.</div>
     </div>
 
-    <!-- =========================
-         DUKUNGAN VIEW (UPDATED ISI)
-         ========================= -->
     <div class="view" id="viewSupport">
       <div class="chips" style="margin-top:12px;">
         <span class="chip active">Dukungan</span>
@@ -477,25 +400,11 @@
       </div>
     </div>
 
-    <!-- =========================
-         PROFIL VIEW
-         ========================= -->
     <div class="view" id="viewProfile">
       <div class="chips" style="margin-top:12px;">
         <span class="chip active">Profil</span>
         <span class="pillTiny" id="anonIdPill"></span>
-        <span class="pillTiny" id="favCountPill" style="display:none;"></span>
       </div>
-
-      <!-- ADDED: Favorites list (3) -->
-      <div class="sectionCard" id="favCard" style="display:none;">
-        <div class="sectionRow">
-          <h2 class="sectionTitle">Favorit</h2>
-          <button class="btn small" id="clearFav">Clear</button>
-        </div>
-        <div id="favList" class="miniList"></div>
-      </div>
-
       <div id="profileList" class="miniList"></div>
       <div id="profileEmpty" class="empty" style="display:none;">Belum ada riwayat.</div>
     </div>
@@ -504,7 +413,6 @@
     <div class="bottomNavSpace"></div>
   </div>
 
-  <!-- Bottom Menu (UPDATE DIHAPUS) -->
   <div class="bottomNav">
     <div class="wrap">
       <div class="navItem active" id="navHome">
@@ -534,7 +442,6 @@
     const POP_MIN_VIEWS = 1000;
     const POP_MAX = 10;
 
-    // ===== 18+ Gate =====
     const AGE_KEY = "narapoi_age_ok_v1";
     function lockAgeGate(){
       document.body.classList.add("age-locked");
@@ -551,7 +458,6 @@
       document.getElementById("ageNo").onclick = () => { location.href="about:blank"; };
     })();
 
-    // ===== anon id =====
     const ANON_ID_KEY = "narapoi_anon_id_v1";
     function ensureAnonId(){
       let id = localStorage.getItem(ANON_ID_KEY);
@@ -563,7 +469,6 @@
       return id;
     }
 
-    // ===== helpers =====
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
     }
@@ -601,9 +506,6 @@
       `;
     }
 
-    // =========================
-    // MULTI GENRE (CSV) - ADDED
-    // =========================
     function splitGenres(s){
       return String(s || "")
         .split(",")
@@ -611,233 +513,21 @@
         .filter(Boolean);
     }
 
-    // =========================
-    // ADDED: Skeleton loader (5)
-    // =========================
-    function showSkeleton(on){
-      const sk = document.getElementById("skel");
-      if (!sk) return;
-      if (!on){ sk.style.display = "none"; sk.innerHTML = ""; return; }
-      sk.style.display = "grid";
-      sk.innerHTML = "";
-      for (let i=0;i<8;i++){
-        const d = document.createElement("div");
-        d.className = "skCard";
-        d.innerHTML = `<div class="skThumb"></div><div class="skBody">
-          <div class="skLine w85"></div>
-          <div class="skLine w60"></div>
-          <div class="skLine w45"></div>
-        </div>`;
-        sk.appendChild(d);
-      }
+    function shufflePick(arr){
+      if (!arr || !arr.length) return null;
+      return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    // =========================
-    // ADDED: Favorites (3)
-    // =========================
-    const FAV_KEY = "narapoi_favs_v1";
-    function readFavs(){
-      try { return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); } catch { return []; }
-    }
-    function writeFavs(arr){
-      localStorage.setItem(FAV_KEY, JSON.stringify(arr.slice(0,200)));
-    }
-    function isFav(id){
-      const s = new Set(readFavs());
-      return s.has(id);
-    }
-    function toggleFav(id){
-      const arr = readFavs();
-      const set = new Set(arr);
-      if (set.has(id)) set.delete(id);
-      else set.add(id);
-      writeFavs([...set]);
+    function getFilteredList(){
+      const q = document.getElementById("q").value.toLowerCase().trim();
+      let list = all;
+
+      if (activeGenre) list = list.filter(v => splitGenres(v.genre).includes(activeGenre));
+      if (q) list = list.filter(v => (v.title || "").toLowerCase().includes(q));
+
+      return list;
     }
 
-    // =========================
-    // ADDED: Smart highlight (6)
-    // =========================
-    function escReg(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
-    function highlightTitle(title, q){
-      const t = String(title || "");
-      if (!q) return escapeHtml(t);
-      const rx = new RegExp(escReg(q), "ig");
-      return escapeHtml(t).replace(rx, (m)=>`<span class="mark">${m}</span>`);
-    }
-
-    // =========================
-    // ADDED: History normalize + fix tampil (index) (history muncul)
-    // =========================
-    const HIST_KEY = "narapoi_watch_history_v1";
-    const HIST_FALLBACK_KEYS = [
-      "narapoi_history_v1",
-      "watch_history",
-      "history",
-      "narapoi_watch_v1"
-    ];
-    function safeParse(s, fallback){
-      try { return JSON.parse(s); } catch { return fallback; }
-    }
-    function loadHistoryRaw(){
-      let arr = safeParse(localStorage.getItem(HIST_KEY) || "[]", []);
-      if (Array.isArray(arr) && arr.length) return arr;
-
-      // fallback keys
-      for (const k of HIST_FALLBACK_KEYS){
-        const a = safeParse(localStorage.getItem(k) || "[]", []);
-        if (Array.isArray(a) && a.length) return a;
-      }
-      return [];
-    }
-    function normalizeHistItem(it){
-      // support banyak format: {id,title,thumb_url,ts} atau {video:{...}, at} dll
-      if (!it) return null;
-
-      if (it.video && typeof it.video === "object"){
-        const v = it.video;
-        return {
-          id: v.id || it.id || null,
-          title: v.title || it.title || "",
-          thumb_url: v.thumb_url || it.thumb_url || null,
-          ts: it.ts || it.at || v.ts || null
-        };
-      }
-
-      return {
-        id: it.id || it.video_id || null,
-        title: it.title || it.name || "",
-        thumb_url: it.thumb_url || it.thumb || null,
-        ts: it.ts || it.at || null
-      };
-    }
-    function loadHistory(){
-      const raw = loadHistoryRaw();
-      const norm = raw.map(normalizeHistItem).filter(x => x && x.id);
-      // dedupe by id keep latest
-      const map = new Map();
-      norm.forEach(x => map.set(x.id, x));
-      const out = [...map.values()].sort((a,b)=>(Number(b.ts||0)-Number(a.ts||0)));
-      return out.slice(0, 50);
-    }
-
-    // =========================
-    // ADDED: Continue Watching (1)
-    // =========================
-    function renderContinueWatching(){
-      const card = document.getElementById("cwCard");
-      const slot = document.getElementById("cwSlot");
-      if (!card || !slot) return;
-
-      const hist = loadHistory();
-      if (!hist.length){ card.style.display = "none"; slot.innerHTML = ""; return; }
-
-      const it = hist[0];
-      card.style.display = "block";
-
-      // cari data lengkap dari all kalau ada
-      const v = all.find(x => x.id === it.id) || it;
-
-      const a = document.createElement("a");
-      a.className = "card";
-      a.href = "player.html?id=" + encodeURIComponent(v.id);
-
-      a.innerHTML = `
-        <div class="thumb" style="position:relative">
-          ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
-          <div class="badges">
-            <span class="badge accent">Continue</span>
-          </div>
-        </div>
-        <div class="body">
-          <p class="title">${escapeHtml(v.title || "Untitled")}</p>
-          <div class="meta">
-            <span>${it.ts ? new Date(it.ts).toLocaleString() : ""}</span>
-          </div>
-        </div>
-      `;
-
-      slot.innerHTML = "";
-      slot.appendChild(a);
-    }
-
-    // =========================
-    // ADDED: Recently Added (2)
-    // =========================
-    function renderRecentlyAdded(){
-      const card = document.getElementById("raCard");
-      const grid = document.getElementById("recentGrid");
-      if (!card || !grid) return;
-
-      const list = all.slice().sort((a,b)=>{
-        const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
-        const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
-        return tb - ta;
-      }).slice(0, 8);
-
-      if (!list.length){
-        card.style.display = "none";
-        grid.innerHTML = "";
-        return;
-      }
-
-      card.style.display = "block";
-      grid.innerHTML = "";
-
-      list.forEach(v=>{
-        const a = document.createElement("a");
-        a.className = "card anim";
-        a.href = "player.html?id=" + encodeURIComponent(v.id);
-        a.innerHTML = cardHTML(v);
-        grid.appendChild(a);
-        requestAnimationFrame(()=>a.classList.add("show"));
-      });
-    }
-
-    // =========================
-    // ADDED: Auto scroll restore (4)
-    // =========================
-    const SCROLL_KEY = "narapoi_home_scroll_v1";
-    function saveScroll(){
-      if (!navs?.home?.classList?.contains("active")) return;
-      sessionStorage.setItem(SCROLL_KEY, String(window.scrollY || 0));
-    }
-    function restoreScroll(){
-      const y = Number(sessionStorage.getItem(SCROLL_KEY) || "0");
-      if (y > 0){
-        setTimeout(()=>window.scrollTo({ top:y, behavior:"instant" }), 0);
-      }
-    }
-
-    // =========================
-    // ADDED: Time watched tracker (8)
-    // =========================
-    const WT_KEY = "narapoi_watch_time_ms_v1";
-    function getWatchMs(){ return Number(localStorage.getItem(WT_KEY) || "0"); }
-    function setWatchMs(ms){ localStorage.setItem(WT_KEY, String(Math.max(0, Math.floor(ms||0)))); }
-    function renderWatchTimePill(){
-      const el = document.getElementById("watchTimePill");
-      if (!el) return;
-      const m = Math.floor(getWatchMs()/60000);
-      el.textContent = `${m} menit ditonton`;
-    }
-
-    // =========================
-    // ADDED: Theme switch AMOLED (10)
-    // =========================
-    const THEME_KEY = "narapoi_theme_amoled_v1";
-    function applyTheme(){
-      const on = localStorage.getItem(THEME_KEY) === "1";
-      document.body.classList.toggle("amoled", on);
-      const btn = document.getElementById("btnTheme");
-      if (btn) btn.textContent = on ? "AMOLED ✓" : "AMOLED";
-    }
-    function toggleTheme(){
-      const on = localStorage.getItem(THEME_KEY) === "1";
-      localStorage.setItem(THEME_KEY, on ? "0" : "1");
-      applyTheme();
-    }
-
-    // ===== Popular slider =====
     function renderPopular(){
       const popHead = document.getElementById("popularHead");
       const popWrap = document.getElementById("popWrap");
@@ -894,29 +584,82 @@
       window.addEventListener("resize", updateFades);
     }
 
-    // ===== Genre chips (MULTI GENRE) =====
+    function openGenreModal(allGenres){
+      const ov = document.getElementById("genreOverlay");
+      const wrap = document.getElementById("genreAllWrap");
+      wrap.innerHTML = "";
+
+      allGenres.forEach(g => {
+        const s = document.createElement("span");
+        s.className = "chip" + (activeGenre === g ? " active" : "");
+        s.textContent = g;
+        s.onclick = () => {
+          activeGenre = g;
+          page = 1;
+          apply();
+          renderChips(allGenres);
+          closeGenreModal();
+        };
+        wrap.appendChild(s);
+      });
+
+      ov.classList.add("show");
+      ov.setAttribute("aria-hidden","false");
+      document.getElementById("genreClose").onclick = closeGenreModal;
+
+      ov.onclick = (e) => {
+        if (e.target === ov) closeGenreModal();
+      };
+      window.addEventListener("keydown", escCloseOnce, { once:true });
+      function escCloseOnce(e){
+        if (e.key === "Escape") closeGenreModal();
+      }
+    }
+
+    function closeGenreModal(){
+      const ov = document.getElementById("genreOverlay");
+      ov.classList.remove("show");
+      ov.setAttribute("aria-hidden","true");
+    }
+
     function renderChips(genres){
       const el = document.getElementById("chips");
       el.innerHTML = "";
 
-      const mk = (label, value) => {
+      const mk = (label, value, onClick) => {
         const s = document.createElement("span");
         s.className = "chip" + (activeGenre === value ? " active" : "");
         s.textContent = label;
-        s.onclick = () => {
+        s.onclick = onClick || (() => {
           activeGenre = value;
           page = 1;
           apply();
           renderChips(genres);
-        };
+        });
         return s;
       };
 
       el.appendChild(mk("Semua", ""));
-      genres.forEach(g => el.appendChild(mk(g, g)));
+
+      // chip random: posisi setelah "Semua"
+      el.appendChild(mk("Klik untuk menonton acak", "__RANDOM__", () => {
+        const list = getFilteredList();
+        const pick = shufflePick(list);
+        if (!pick) return;
+        location.href = "player.html?id=" + encodeURIComponent(pick.id);
+      }));
+
+      const LIMIT = 12;
+      const shown = genres.slice(0, LIMIT);
+      const hidden = genres.slice(LIMIT);
+
+      shown.forEach(g => el.appendChild(mk(g, g)));
+
+      if (hidden.length){
+        el.appendChild(mk("•••", "__MORE__", () => openGenreModal(genres)));
+      }
     }
 
-    // ===== Pager (fix biar pasti muncul kalau totalPages > 1) =====
     function renderPager(totalPages){
       const pager = document.getElementById("pager");
       const prevBtn = document.getElementById("prevBtn");
@@ -945,7 +688,6 @@
       };
     }
 
-    // ===== Render main list =====
     function renderList(pageList, totalPages){
       const grid = document.getElementById("grid");
       const empty = document.getElementById("empty");
@@ -962,65 +704,16 @@
         const a = document.createElement("a");
         a.className = "card anim";
         a.href = "player.html?id=" + encodeURIComponent(v.id);
-
-        // smart highlight (6)
-        const q = document.getElementById("q").value.toLowerCase().trim();
-        const kind = (v.kind || "link").toUpperCase();
-        const created = v.created_at ? new Date(v.created_at).toLocaleDateString() : "";
-        const g = v.genre ? v.genre : "";
-        const views = v.views ?? 0;
-
-        a.innerHTML = `
-          <div class="thumb" style="position:relative">
-            ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
-            <button class="favBtn ${isFav(v.id) ? "on":""}" data-fav="${v.id}" title="Favorit" aria-label="Favorit">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.6-9.4-8.2C.8 10.1 2 7.3 4.6 6.5c1.7-.6 3.5 0 4.7 1.2L12 10.4l2.7-2.7c1.2-1.2 3-1.8 4.7-1.2 2.6.8 3.8 3.6 2 6.3C19 16.4 12 21 12 21z"/></svg>
-            </button>
-            <div class="badges">
-              <span class="badge accent">HD</span>
-              <span class="badge">${escapeHtml(kind)}</span>
-              ${g ? `<span class="badge">${escapeHtml(g)}</span>` : ""}
-            </div>
-            <div class="duration">${fmtDuration(v.duration)}</div>
-          </div>
-          <div class="body">
-            <p class="title">${highlightTitle(v.title || "Untitled", q)}</p>
-            <div class="meta">
-              <span>${created || "Today"}</span>
-              <span style="opacity:.5">•</span>
-              <span>Views: ${views}</span>
-            </div>
-          </div>
-        `;
-
+        a.innerHTML = cardHTML(v);
         grid.appendChild(a);
         requestAnimationFrame(()=>a.classList.add("show"));
-      });
-
-      // favorite click (stop link)
-      grid.querySelectorAll(".favBtn").forEach(btn=>{
-        btn.onclick = (e) => {
-          e.preventDefault(); e.stopPropagation();
-          const vid = btn.getAttribute("data-fav");
-          if (!vid) return;
-          toggleFav(vid);
-          btn.classList.toggle("on", isFav(vid));
-          renderFavPill();
-          if (navs.profile.classList.contains("active")) renderFavs();
-        };
       });
 
       renderPager(totalPages);
     }
 
     function apply(){
-      const q = document.getElementById("q").value.toLowerCase().trim();
-      let list = all;
-
-      // ===== MULTI GENRE FILTER =====
-      if (activeGenre) list = list.filter(v => splitGenres(v.genre).includes(activeGenre));
-
-      if (q) list = list.filter(v => (v.title || "").toLowerCase().includes(q));
+      const list = getFilteredList();
 
       const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
       if (page > totalPages) page = totalPages;
@@ -1031,7 +724,16 @@
       renderList(pageList, totalPages);
     }
 
-    // ===== Profile view =====
+    const HIST_KEY = "narapoi_watch_history_v1";
+    function safeParse(s, fallback){
+      try { return JSON.parse(s); } catch { return fallback; }
+    }
+    function loadHistory(){
+      const arr = safeParse(localStorage.getItem(HIST_KEY) || "[]", []);
+      const sliced = arr.slice(0, 50);
+      if (sliced.length !== arr.length) localStorage.setItem(HIST_KEY, JSON.stringify(sliced));
+      return sliced;
+    }
     function renderProfile(){
       ensureAnonId();
       const list = document.getElementById("profileList");
@@ -1041,79 +743,28 @@
       const hist = loadHistory();
       if (!hist.length){
         empty.style.display = "block";
-      } else {
-        empty.style.display = "none";
-        hist.forEach(it=>{
-          const v = all.find(x => x.id === it.id) || it;
-          const a = document.createElement("a");
-          a.className = "miniItem";
-          a.href = "player.html?id=" + encodeURIComponent(it.id);
-
-          a.innerHTML = `
-            <div class="miniThumb">
-              ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
-            </div>
-            <div style="min-width:0;flex:1">
-              <p class="miniTitle">${escapeHtml(v.title || "Untitled")}</p>
-              <div class="miniMeta">${it.ts ? new Date(it.ts).toLocaleString() : ""}</div>
-            </div>
-          `;
-          list.appendChild(a);
-        });
-      }
-
-      renderFavs();
-      renderFavPill();
-      renderWatchTimePill();
-    }
-
-    // favorites render (profile)
-    function renderFavPill(){
-      const pill = document.getElementById("favCountPill");
-      if (!pill) return;
-      const n = readFavs().length;
-      pill.style.display = "inline-block";
-      pill.textContent = `❤️ ${n}`;
-    }
-    function renderFavs(){
-      const card = document.getElementById("favCard");
-      const list = document.getElementById("favList");
-      if (!card || !list) return;
-
-      const ids = readFavs();
-      if (!ids.length){
-        card.style.display = "none";
-        list.innerHTML = "";
         return;
       }
-      card.style.display = "block";
-      list.innerHTML = "";
+      empty.style.display = "none";
 
-      ids.slice().reverse().slice(0, 50).forEach(id=>{
-        const v = all.find(x=>x.id===id);
-        if (!v) return;
+      hist.forEach(it=>{
         const a = document.createElement("a");
         a.className = "miniItem";
-        a.href = "player.html?id=" + encodeURIComponent(v.id);
+        a.href = "player.html?id=" + encodeURIComponent(it.id);
+
         a.innerHTML = `
           <div class="miniThumb">
-            ${v.thumb_url ? `<img loading="lazy" src="${v.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
+            ${it.thumb_url ? `<img loading="lazy" src="${it.thumb_url}" alt="">` : `<img loading="lazy" alt="">`}
           </div>
           <div style="min-width:0;flex:1">
-            <p class="miniTitle">${escapeHtml(v.title || "Untitled")}</p>
-            <div class="miniMeta">Favorit</div>
+            <p class="miniTitle">${escapeHtml(it.title || "Untitled")}</p>
+            <div class="miniMeta">${it.ts ? new Date(it.ts).toLocaleString() : ""}</div>
           </div>
         `;
         list.appendChild(a);
       });
     }
-    document.getElementById("clearFav").onclick = () => {
-      writeFavs([]);
-      renderFavs();
-      renderFavPill();
-    };
 
-    // ===== Views switch =====
     const views = {
       home: document.getElementById("viewHome"),
       support: document.getElementById("viewSupport"),
@@ -1137,7 +788,6 @@
     navs.support.onclick = () => setActiveView("support");
     navs.profile.onclick = () => setActiveView("profile");
 
-    // dukungan actions
     document.getElementById("btnReport").onclick = () => {
       location.href = "narapoiofc@haren.uk";
     };
@@ -1148,43 +798,18 @@
       location.href = "https://saweria.co/Narapoi";
     };
 
-    // ADDED: random (7)
-    document.getElementById("btnRandom").onclick = () => {
-      if (!all.length) return;
-      const v = all[Math.floor(Math.random()*all.length)];
-      if (!v?.id) return;
-      location.href = "player.html?id=" + encodeURIComponent(v.id);
-    };
-
-    // ADDED: theme (10)
-    document.getElementById("btnTheme").onclick = () => toggleTheme();
-    applyTheme();
-
-    // ===== load data =====
     async function load(){
-      showSkeleton(true);
-      try{
-        const res = await fetch(API + "/api/videos", { cache: "no-store" });
-        const data = await res.json();
-        all = data.videos || [];
-      } catch {
-        all = [];
-      }
-      showSkeleton(false);
+      const res = await fetch(API + "/api/videos", { cache: "no-store" });
+      const data = await res.json();
+      all = data.videos || [];
 
       renderPopular();
 
-      // ===== MULTI GENRE: kumpulin dari CSV =====
       const genres = [...new Set(
         all.flatMap(v => splitGenres(v.genre))
       )].sort();
 
       renderChips(genres);
-
-      // ADDED: sections
-      renderContinueWatching();
-      renderRecentlyAdded();
-      renderWatchTimePill();
 
       const current =
         navs.support.classList.contains("active") ? "support" :
@@ -1201,13 +826,7 @@
       if (navs.home.classList.contains("active")) apply();
     });
 
-    // auto-scroll restore (4)
-    window.addEventListener("scroll", () => saveScroll(), { passive:true });
-    window.addEventListener("pageshow", () => restoreScroll());
-
     ensureAnonId();
-    renderFavPill();
-    renderWatchTimePill();
     load();
   </script>
 </body>
