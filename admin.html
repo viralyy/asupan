@@ -139,6 +139,9 @@
     // ===== CONFIG =====
     const API = "https://asupanmu.aku679093.workers.dev";
 
+    // ✅ FIX: isi ini sama persis dengan Secret ADMIN_KEY di Cloudflare Worker
+    const ADMIN_KEY = "narapoi123";
+
     // login creds (sesuai request lo)
     const ADMIN_USER = "Narapoi";
     const ADMIN_PASS = "Wwwaaa123";
@@ -191,6 +194,19 @@
       const arr = getHistory();
       arr.splice(idx, 1);
       setHistory(arr);
+    }
+
+    // ✅ FIX: auto id + auto kind
+    function genId(){
+      return "v-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function detectKind(video_url){
+      const u = (video_url || "").trim().toLowerCase();
+      if (!u) return "mp4";
+      if (u.includes("youtube.com") || u.includes("youtu.be")) return "youtube";
+      if (u.endsWith(".m3u8") || u.includes(".m3u8?")) return "hls";
+      return "mp4";
     }
 
     // ===== auth =====
@@ -368,14 +384,22 @@
           return;
         }
 
+        // ✅ FIX: worker butuh id + (opsional) kind
+        const id = genId();
+        const kind = detectKind(video_url);
+
         // ✅ ADDED: include download_url in payload
-        const payload = { title, video_url, thumb_url: thumb_url || null, genre, download_url: download_url || null };
+        const payload = { id, title, video_url, thumb_url: thumb_url || null, genre, kind, download_url: download_url || null };
 
         let data = null;
         try{
           const res = await fetch(API + "/api/admin/videos", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              // ✅ FIX: wajib buat lewatin requireAdmin()
+              "X-Admin-Key": ADMIN_KEY,
+            },
             body: JSON.stringify(payload),
           });
           data = await res.json();
@@ -387,8 +411,8 @@
         const histItem = {
           ts: nowTs(),
           ok: !!data?.ok,
-          id: data?.id || null,
-          kind: data?.kind || null,
+          id: payload.id || null,
+          kind: payload.kind || null,
           title,
           video_url,
           thumb_url: thumb_url || null,
@@ -405,7 +429,7 @@
           return;
         }
 
-        log("SUKSES ✅ id=" + data.id + " kind=" + data.kind + (data.genre ? (" genre=" + data.genre) : ""));
+        log("SUKSES ✅ id=" + payload.id + " kind=" + payload.kind + (genre ? (" genre=" + genre) : ""));
 
         // clear form
         $("title").value = "";
