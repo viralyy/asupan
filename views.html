@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Redirecting</title>
+<style>
+body{
+  margin:0;
+  background:#05060f;
+  font-family:system-ui,Arial;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+.box{
+  background:#0b1020;
+  padding:24px;
+  border-radius:14px;
+  width:100%;
+  max-width:360px;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Processing</h2>
+  <p>Tunggu <b><span id="t">5</span></b> detik</p>
+</div>
+
+<script>
+const q=new URLSearchParams(location.search);
+const r=q.get("r");
+
+function decode(x){
+  try{return decodeURIComponent(atob(x))}
+  catch(e){return null}
+}
+
+const url=decode(r);
+if(!url){
+  document.body.innerHTML="<h3>❌ Link rusak</h3>";
+  throw "";
+}
+
+let t=5;
+const span=document.getElementById("t");
+
+const iv=setInterval(()=>{
+  t--;
+  span.textContent=t;
+  if(t<=0){
+    clearInterval(iv);
+    location.href=url;
+  }
+},1000);
+</script>
+
+</body>
+</html>
