@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Safelink Generator</title>
+<style>
+body{
+  margin:0;
+  background:#05060f;
+  font-family:system-ui,Arial;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+.box{
+  background:#0b1020;
+  padding:22px;
+  border-radius:14px;
+  width:100%;
+  max-width:420px;
+}
+input,button{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:0;
+  margin-top:10px;
+}
+input{background:#020617;color:#fff}
+button{
+  background:#3b82f6;
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Generate Safelink</h2>
+  <input id="url" placeholder="https://example.com">
+  <button onclick="gen()">Generate</button>
+  <input id="out" readonly placeholder="Hasil link...">
+</div>
+
+<script>
+function gen(){
+  const v=document.getElementById("url").value.trim();
+  if(!v.startsWith("http")) return alert("URL tidak valid");
+  const enc=btoa(encodeURIComponent(v));
+  document.getElementById("out").value=
+    location.origin+"/views.html?r="+enc;
+}
+</script>
+
+</body>
+</html>
